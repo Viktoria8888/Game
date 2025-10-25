@@ -3,13 +3,15 @@
 ### Literatura
 
 - "Writing Effective Use Cases" Alistair Cockburn
-
+- "Constraint Satisfaction Techniques in Planning and Scheduling" Roman Bart´ak1, Miguel A. Salido2, Francesca Rossi
 ### Powiązanie z CSP:
+
 Sloty = zmienne.
 Dostępne kursy = domena.
 Zasady = ograniczenia.
 
 ### Podejście do gry
+
 Liczba reguł = N
 
 Dla uproszczenia gry, uzywamy Zasad Celu Etapu($R_{goal}$) zamiast wymagania, żeby wszystkie N reguł były spełnione (jak to jest w The Password Game)
@@ -21,11 +23,11 @@ Po spełnieniu $R_{goal}$ dla 7 semestru użytkownik dostaje "dyplom ukończenia
 
 **Zasady kumulacyjne**: Te zasady są ciągłe i zawsze aktywne (po ich aktywacji), ponieważ stanowią podstawę programu studiów i logiki harmonogramowania.
 
-| ID  | Semestr | Kategoria   | Nazwa                  | Opis                                                                                                                                   |
+| ID  | Semestr | Kategoria   | Nazwa                      | Opis                                                                                                                                   |
 | --- | ------- | ----------- | -------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
 | R1  | 1–7     | Kumulacyjna | ECTS Minimum Base          | Łączna suma ECTS musi wynosić co najmniej 18 (za semestr, na start).                                                                   |
 | R2  | 1–7     | Kumulacyjna | No Collision Base          | Żaden kurs nie może nakładać się w czasie z innym kursem.                                                                              |
-| R3  | 1–7     | Kumulacyjna | Core Sequence I            | W planie bieżącego Semestru N, MUSZĄ znaleźć się wszystkie przedmioty obowiązkowe przypisane do Semestru N (i tylko te).                       |
+| R3  | 1–7     | Kumulacyjna | Core Sequence I            | W planie bieżącego Semestru N, MUSZĄ znaleźć się wszystkie przedmioty obowiązkowe przypisane do Semestru N (i tylko te).               |
 | R4  | 1       | Goal        | Type Diversity             | Musisz mieć w planie min. dwa różne kursy typu Laboratorium/Projekt i min. 1 kurs typu Seminarium.                                     |
 | R5  | 1       | Dodatkowa   | First Year Recommendation  | Co najmniej 8 ECTS musi pochodzić z kursów oznaczonych jako isFirstYearRecommended = true.                                             |
 | R6  | 1       | Dodatkowa   | ECTS Target                | Łączna suma ECTS musi wynosić dokładnie 20.                                                                                            |
