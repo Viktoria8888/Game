@@ -11,7 +11,7 @@ import {
 } from '@angular/fire/firestore';
 import { GameStateDTO } from '../models/game_state.dto';
 
-const COLLECTION_NAME = new InjectionToken<string>("collection name")
+export const COLLECTION_NAME = new InjectionToken<string>('collection name');
 @Injectable({ providedIn: 'root' })
 export class FirestoreService<T extends GameStateDTO> {
   private readonly db = inject(Firestore);
@@ -42,7 +42,6 @@ export class FirestoreService<T extends GameStateDTO> {
     await deleteDoc(docRef);
   }
 
-  /** Optional real-time sync using signals */
   subscribeToUser(userId: string, callback: (data: T | null) => void): () => void {
     const docRef = doc(this.collectionRef, userId);
     return onSnapshot(docRef, (snap) => {
