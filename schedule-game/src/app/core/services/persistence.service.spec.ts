@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { Firestore } from './firestore';
+import { PersistenceService } from './persistence.service';
 
-describe('Firestore', () => {
-  let service: Firestore;
+describe('PersistenceService', () => {
+  let service: PersistenceService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(Firestore);
+    service = TestBed.inject(PersistenceService);
   });
 
   it('should be created', () => {
