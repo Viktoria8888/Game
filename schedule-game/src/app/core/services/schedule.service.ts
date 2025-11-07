@@ -1,7 +1,7 @@
 import { Injectable, Signal, computed, WritableSignal, signal } from '@angular/core';
 import { createInitialSchedule } from '../../data/initial_schedule';
 import { ScheduleSlot, Course } from '../models/course.interface';
-import { GameStateDTO } from '../models/game_state.dto';
+import { GameStateDTO, GameStateMetadata } from '../models/game_state.dto';
 
 /**The service that is the only source of truth about the current schedule slots taken by the player.
  * It holds a signal with the current schedule slots and provides methods to modify it.
@@ -21,9 +21,9 @@ export class ScheduleService {
     metadata: null,
   }));
 
-  public setSchedule(newSlots: ScheduleSlot[], newSemester: number): void {
-    this.scheduleSignal.set(newSlots);
-    this.currentSemestr.set(newSemester);
+  public setState(state: GameStateDTO): void {
+    this.scheduleSignal.set(state.slots);
+    this.currentSemestr.set(state.currentSemester);
   }
 
   addCourseToSchedule(slotId: string, course: Course) {
@@ -42,4 +42,10 @@ export class ScheduleService {
       });
     });
   }
+
+  public readonly totalECTS: Signal<number> = computed(() => {
+    return this.schedule().reduce((sum, slot) => {
+      return slot.course ? sum + slot.course.ects : sum;
+    }, 0);
+  });
 }
