@@ -35,13 +35,3 @@ export interface ScheduleSlot {
   durationHours: number;
   course: Course | null;
 }
-
-export interface Rule {
-  id: string;
-  description: string;
-  semestr: number | null;
-  category: 'Cumulative' | 'Additional' | 'Goal';
-  validator: (schedule: ScheduleSlot[], currentSemestr: number) => boolean;
-  // For handling conflicts (e.g R10 controlls R2)
-  controlledByRules?: string[];
-}
