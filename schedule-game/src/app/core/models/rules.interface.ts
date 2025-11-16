@@ -6,6 +6,7 @@ export type ValidationFunction = (context: ValidationContext) => ValidationResul
 /**Immutable snapshot of the current game state */
 export type ValidationContext = Omit<GameStateDTO, 'schedule'> & {
   readonly schedule: ReadonlyArray<ScheduleSlot>;
+  readonly level: number | null;
   metadata: GameStateMetadata;
 };
 
@@ -25,7 +26,7 @@ export interface Rule {
   id: string;
   description: string;
   category: 'Cumulative' | 'Goal' | 'Additional';
-  semester: number | null; // null means that the rule is applied to any semester
+  level: number | null; // null means that the rule is applied to any level
   priority: number;
   controlledBy?: string[];
   overrides?: string[];
@@ -34,6 +35,6 @@ export interface Rule {
 }
 
 export interface ValidationResultMap {
-    satisfied: Array<Rule>;
-    violated: Array<Rule>;
+  satisfied: Array<Rule>;
+  violated: Array<Rule>;
 }

@@ -26,7 +26,9 @@ export interface Course {
   hasExam: boolean;
   isFirstYearRecommended?: boolean;
   language: 'PL' | 'EN';
+  isProseminar: boolean;
 }
+
 export type Day = 'Mon' | 'Tue' | 'Wed' | 'Thu' | 'Fri';
 export interface ScheduleSlot {
   id: string;

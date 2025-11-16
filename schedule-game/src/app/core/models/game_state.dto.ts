@@ -7,23 +7,21 @@ export interface SimpleGameMetadata {
   hasExamCount: number;
   uniqueCoursesCount: number;
 
-  hasIndividualProject: boolean;
-  hasTeamProject: boolean;
-  projectCount: number;
+  // hasTeamProject: boolean;
+  // projectCount: number;
 
   proseminarCount: number;
-  languageECTS: number;
-  hasB2English: boolean;
+  // hasB2English: boolean;
 
-  specializationTags: {
-    RPiS: number;
-    IO: number;
-    PiPO: number;
-    ASK: number;
-    SO: number;
-    SK: number;
-    BD: number;
-  };
+  // specializationTags: {
+  //   RPiS: number;
+  //   IO: number;
+  //   PiPO: number;
+  //   ASK: number;
+  //   SO: number;
+  //   SK: number;
+  //   BD: number;
+  // };
 
   mandatoryCoursesCompleted: string[];
 }
