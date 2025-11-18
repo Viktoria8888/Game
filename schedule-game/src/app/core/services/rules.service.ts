@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { RULES_LEVEL_1 } from '../../data/rules/level1.rules';
+import * as RULES_LEVEL_1 from '../../data/rules/level1.rules';
 import { Rule, ValidationContext, ValidationResult, ValidationResultMap } from '../models/rules.interface';
 import { ValidationService } from './validation.service';
 
@@ -8,7 +8,7 @@ export class RulesService {
   private readonly validationService = inject(ValidationService);
 
   private readonly allRules: ReadonlyArray<Rule> = [
-    ...RULES_LEVEL_1,
+    // ...RULES_LEVEL_1,
   ];
 
   getActiveRules(context: ValidationContext): ReadonlyArray<Rule> {
