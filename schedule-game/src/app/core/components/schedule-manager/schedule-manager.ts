@@ -3,7 +3,6 @@ import { CourseSelectionService } from '../../services/course.interface';
 import { ScheduleService } from '../../services/schedule.service';
 import { LEVEL1_COURSES } from '../../../data/rules/courses';
 import { Course } from '../../models/course.interface';
-import { StatisticsPanel } from '../statistics-panel/statistics-panel';
 import { ScheduleGrid } from '../schedule-grid/schedule-grid';
 import { HeaderComponent } from '../header/header';
 import { AuthService } from '../../services/auth.service';
