@@ -1,0 +1,8 @@
+<app-header
+  [currentLevel]="currentLevel()"
+  [stressLevel]="metadata().stressLevel"
+  [totalScore]="metadata().score"
+  [userName]="authService.username()"
+/>
+
+<app-schedule-grid [schedule]="scheduleSlots()" [conflictingCourseIds]="conflictingCourseIds()" />

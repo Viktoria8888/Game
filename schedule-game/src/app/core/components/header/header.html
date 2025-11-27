@@ -1,0 +1,57 @@
+<header class="game-header">
+  <div class="game-title">
+    <div class="title-icon">🎮</div>
+    <h1>Courses Game</h1>
+  </div>
+
+  <div class="stats-bar">
+    <div class="stat-item level" [class]="levelBadgeClass()">
+      <div class="stat-icon">🎯</div>
+      <div class="stat-content">
+        <div class="stat-label">Level</div>
+        <div class="stat-value">{{ currentLevel() }}</div>
+      </div>
+    </div>
+
+    <div class="stat-item stress" [class]="stressColorClass()">
+      <div class="stat-icon">{{ stressEmoji() }}</div>
+      <div class="stat-content">
+        <div class="stat-label">Stress</div>
+        <div class="stat-value">{{ stressLevel() }}%</div>
+      </div>
+      <div class="stress-bar-mini">
+        <div
+          class="stress-fill-mini"
+          [style.width.%]="stressLevel()"
+          [class]="stressColorClass()"
+        ></div>
+      </div>
+    </div>
+
+    <div class="stat-item score">
+      <div class="stat-icon">⭐</div>
+      <div class="stat-content">
+        <div class="stat-label">Score</div>
+        <div class="stat-value">{{ formattedScore() }}</div>
+      </div>
+    </div>
+
+    <div class="stat-item user-account">
+      @if (userAvatar()) {
+      <div class="user-avatar">
+        <img [src]="userAvatar()" [alt]="userName()" />
+      </div>
+      } @else {
+      <div class="user-avatar initials">
+        {{ userInitials() }}
+      </div>
+      }
+
+      <div class="stat-content">
+        <div class="stat-label">Player</div>
+        <div class="stat-value">{{ userName() }}</div>
+      </div>
+      <div class="dropdown-icon">▼</div>
+    </div>
+  </div>
+</header>

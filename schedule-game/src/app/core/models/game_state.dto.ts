@@ -1,53 +1,40 @@
-import { ScheduleSlot } from './course.interface';
+  import { ScheduleSlot } from './course.interface';
 
-export interface SimpleGameMetadata {
-  totalEctsAccumulated: number;
-  ectsByTag: Record<string, number>;
-  ectsByType: Record<string, number>;
-  hasExamCount: number;
-  uniqueCoursesCount: number;
+  export interface SimpleGameMetadata {
+    stressLevel: number;
+    score: number; // the percentage of constaints that are satisfied
 
-  // hasTeamProject: boolean;
-  // projectCount: number;
+    totalEctsAccumulated: number;
+    ectsByTag: Record<string, number>;
+    ectsByType: Record<string, number>;
+    hasExamCount: number;
+    uniqueCoursesCount: number;
+    proseminarCount: number;
+    mandatoryCoursesCompleted: string[];
+  }
 
-  proseminarCount: number;
-  // hasB2English: boolean;
+  /** Metadata that requires full recalculation (O(n)) */
+  export interface ComplexGameMetadata {
+    // Time-dependent (need to scan all slots)
+    totalContactHours: number;
+    averageStartTime: number;
+    averageEndTime: number;
+    morningToAfternoonRatio: number;
 
-  // specializationTags: {
-  //   RPiS: number;
-  //   IO: number;
-  //   PiPO: number;
-  //   ASK: number;
-  //   SO: number;
-  //   SK: number;
-  //   BD: number;
-  // };
+    maxGapInAnyDay: number;
+    totalGapTime: number;
 
-  mandatoryCoursesCompleted: string[];
-}
+    freeDaysCount: number;
+    consecutiveFreeDays: number;
 
-/** Metadata that requires full recalculation (O(n)) */
-export interface ComplexGameMetadata {
-  // Time-dependent (need to scan all slots)
-  totalContactHours: number;
-  averageStartTime: number;
-  averageEndTime: number;
-  morningToAfternoonRatio: number;
+    //Achievements
+    currentStreak: number;
+    bestStreak: number;
+    achievementsUnlocked: string[];
+  }
 
-  maxGapInAnyDay: number;
-  totalGapTime: number;
-
-  freeDaysCount: number;
-  consecutiveFreeDays: number;
-
-  //Achivements
-  currentStreak: number;
-  bestStreak: number;
-  achievementsUnlocked: string[];
-}
-
-export type GameStateMetadata = SimpleGameMetadata & ComplexGameMetadata;
-export interface GameStateDTO {
-  currentSemester: number;
-  schedule: ScheduleSlot[];
-}
+  export type GameStateMetadata = SimpleGameMetadata & ComplexGameMetadata;
+  export interface GameStateDTO {
+    currentSemester: number;
+    schedule: ScheduleSlot[];
+  }

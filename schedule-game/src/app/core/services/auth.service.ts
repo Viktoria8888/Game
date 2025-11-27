@@ -1,4 +1,4 @@
-import { Injectable, inject, signal } from '@angular/core';
+import { Injectable, computed, inject, signal } from '@angular/core';
 import {
   Auth,
   signInWithEmailAndPassword,
@@ -14,6 +14,22 @@ export class AuthService {
   private readonly auth = inject(Auth);
 
   readonly user = signal<User | null>(null);
+
+  readonly username = computed(() => {
+    const currentUser = this.user();
+    if (!currentUser) return 'Guest';
+
+    if (currentUser.displayName) {
+      return currentUser.displayName;
+    }
+    if (currentUser.email) {
+      return currentUser.email.split('@')[0];
+    }
+    if (currentUser.isAnonymous) {
+      return `Player${currentUser.uid.slice(0, 4)}`;
+    }
+    return 'Player';
+  });
 
   constructor() {
     onAuthStateChanged(this.auth, (firebaseUser) => {

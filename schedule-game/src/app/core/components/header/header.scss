@@ -1,0 +1,320 @@
+.game-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 14px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+
+  @media (max-width: 768px) {
+    padding: 12px 20px;
+    gap: 10px;
+  }
+}
+
+.game-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  .title-icon {
+    font-size: 32px;
+    animation: float 3s ease-in-out infinite;
+  }
+
+  h1 {
+    margin: 0;
+    color: white;
+    font-size: 28px;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    letter-spacing: 0.5px;
+
+    @media (max-width: 768px) {
+      font-size: 20px;
+    }
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+// Stats Bar (Below Title)
+.stats-bar {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  width: 100%;
+  max-width: 1000px;
+
+  @media (max-width: 768px) {
+    gap: 12px;
+  }
+
+  @media (max-width: 480px) {
+    gap: 8px;
+  }
+}
+
+// Individual Stat Item
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  padding: 10px 16px;
+  border-radius: 12px;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+  min-width: 140px;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  @media (max-width: 768px) {
+    min-width: 120px;
+    padding: 8px 12px;
+    gap: 8px;
+  }
+}
+
+.stat-icon {
+  font-size: 28px;
+  line-height: 1;
+
+  @media (max-width: 768px) {
+    font-size: 24px;
+  }
+}
+
+.stat-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.stat-label {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.8);
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.stat-value {
+  font-size: 18px;
+  color: white;
+  font-weight: bold;
+  line-height: 1;
+
+  @media (max-width: 768px) {
+    font-size: 16px;
+  }
+}
+
+// Level Badge Colors
+.stat-item.level {
+  &.beginner {
+    border-color: #4caf50;
+    .stat-value {
+      color: #a5d6a7;
+    }
+  }
+
+  &.intermediate {
+    border-color: #2196f3;
+    .stat-value {
+      color: #90caf9;
+    }
+  }
+
+  &.advanced {
+    border-color: #ff9800;
+    .stat-value {
+      color: #ffcc80;
+    }
+  }
+
+  &.master {
+    border-color: #f44336;
+    .stat-value {
+      color: #ef9a9a;
+    }
+    animation: glow 2s ease-in-out infinite;
+  }
+}
+
+@keyframes glow {
+  0%,
+  100% {
+    box-shadow: 0 0 5px rgba(244, 67, 54, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(244, 67, 54, 0.8);
+  }
+}
+
+// Stress Level Colors
+.stat-item.stress {
+  position: relative;
+  min-width: 160px;
+
+  &.low {
+    border-color: #4caf50;
+  }
+
+  &.medium {
+    border-color: #ff9800;
+  }
+
+  &.high {
+    border-color: #f44336;
+  }
+
+  &.extreme {
+    border-color: #b71c1c;
+    animation: pulse-stress 1s ease-in-out infinite;
+  }
+}
+
+@keyframes pulse-stress {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+// Mini Stress Bar
+.stress-bar-mini {
+  position: absolute;
+  bottom: 4px;
+  left: 10px;
+  right: 10px;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.stress-fill-mini {
+  height: 100%;
+  transition: width 0.5s ease;
+  border-radius: 2px;
+
+  &.low {
+    background: #4caf50;
+  }
+
+  &.medium {
+    background: #ff9800;
+  }
+
+  &.high {
+    background: #f44336;
+  }
+
+  &.extreme {
+    background: #b71c1c;
+  }
+}
+
+// Score Item
+.stat-item.score {
+  .stat-icon {
+    animation: rotate 4s linear infinite;
+  }
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// User Account
+.stat-item.user-account {
+  cursor: pointer;
+  min-width: 180px;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.3);
+  }
+}
+
+.user-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.2);
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  &.initials {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    font-weight: bold;
+    font-size: 14px;
+  }
+
+  @media (max-width: 768px) {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+.dropdown-icon {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.7);
+  transition: transform 0.3s ease;
+
+  .stat-item.user-account:hover & {
+    transform: translateY(2px);
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 480px) {
+  .stat-item {
+    min-width: 100px;
+
+    .stat-label {
+      font-size: 10px;
+    }
+
+    .stat-value {
+      font-size: 14px;
+    }
+  }
+}

@@ -1,3 +1,11 @@
+export type Day = 'Mon' | 'Tue' | 'Wed' | 'Thu' | 'Fri';
+
+export interface CourseSlot {
+  day: Day;
+  startTime: number;
+  durationHours: number;
+}
+
 export interface Course {
   id: string;
   name: string;
@@ -27,13 +35,12 @@ export interface Course {
   isFirstYearRecommended?: boolean;
   language: 'PL' | 'EN';
   isProseminar: boolean;
+  schedule: CourseSlot[];
 }
 
-export type Day = 'Mon' | 'Tue' | 'Wed' | 'Thu' | 'Fri';
 export interface ScheduleSlot {
   id: string;
   day: Day;
   startTime: number;
-  durationHours: number;
   course: Course | null;
 }
