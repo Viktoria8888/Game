@@ -10,7 +10,7 @@ import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-schedule-manager',
-  imports: [StatisticsPanel, ScheduleGrid, HeaderComponent],
+  imports: [ScheduleGrid, HeaderComponent],
   templateUrl: './schedule-manager.html',
   styleUrl: './schedule-manager.scss',
 })
