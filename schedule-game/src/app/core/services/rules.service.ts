@@ -36,19 +36,6 @@ export class RulesService {
     return activeRules.filter((rule) => rule.category === category);
   }
 
-  getValidatedRulesByCategory(
-    context: ValidationContext,
-    category: 'Cumulative' | 'Goal' | 'Additional'
-  ): ValidationResultMap {
-    const categoryRules = this.getRulesByCategory(context, category);
-
-    return this.validationService.validateAll(categoryRules, context);
-  }
-
-  getById(id: string): Rule | undefined {
-    return this.allRules.find((r) => r.id === id);
-  }
-
   getRuleCounts(context: ValidationContext): RulesCount {
     const activeRules = this.getActiveRules(context);
     const counts = activeRules.reduce(
@@ -69,29 +56,7 @@ export class RulesService {
     return counts;
   }
 
-  getSatisfiedCount(context: ValidationContext): RulesCount {
-    const results = this.validate(context);
-
-    const counts = results.satisfied.reduce(
-      (acc, rule) => {
-        if (rule.category === 'Cumulative') {
-          acc.cumulative++;
-        } else if (rule.category === 'Goal') {
-          acc.goal++;
-        } else if (rule.category === 'Additional') {
-          acc.additional++;
-        }
-        acc.total++;
-        return acc;
-      },
-      { cumulative: 0, goal: 0, additional: 0, total: 0 } as RulesCount
-    );
-
-    return counts;
-  }
-
-  areRequiredRulesSatisfied(context: ValidationContext): boolean {
-    const results = this.validate(context);
+  areRequiredRulesSatisfied(results: ValidationResultMap): boolean {
     return results.violated.every((r) => r.category == 'Additional');
   }
 
@@ -108,12 +73,5 @@ export class RulesService {
     const categoryRules = this.getRulesByCategory(context, category);
     const results = this.validationService.validateAll(categoryRules, context);
     return results;
-  }
-
-  validateRuleById(ruleId: string, context: ValidationContext): ValidationResult | null {
-    const rule = this.getById(ruleId);
-    if (!rule) return null;
-
-    return this.validationService.validateRule(rule, context);
   }
 }

@@ -6,10 +6,11 @@ import { ScheduleGrid } from '../schedule-grid/schedule-grid';
 import { HeaderComponent } from '../header/header';
 import { AuthService } from '../../services/auth.service';
 import { Contraints } from '../contraints/contraints';
-import { ValidationContext } from '../../models/rules.interface';
+import { ValidationContext, ValidationResultMap } from '../../models/rules.interface';
 import { GameStateDTO, GameStateMetadata } from '../../models/game_state.dto';
 import { Courses } from '../courses-list/courses-list';
 import { COURSES } from '../../../data/rules/courses';
+import { RulesService } from '../../services/rules.service';
 
 @Component({
   selector: 'app-schedule-manager',
@@ -20,32 +21,32 @@ import { COURSES } from '../../../data/rules/courses';
 export class ScheduleManagerComponent {
   private readonly courseSelection = inject(CourseSelectionService);
   private readonly schedule = inject(ScheduleService);
-  readonly authService = inject(AuthService);
+  private readonly rulesService = inject(RulesService);
+  protected readonly authService = inject(AuthService);
 
-  readonly selectedCourses = this.courseSelection.selectedCourses;
-  readonly collisions = this.courseSelection.collisions;
-  readonly isValid = this.courseSelection.isValid;
-
-  readonly scheduleSlots = this.schedule.scheduleSlots;
-  readonly metadata = this.schedule.simpleMetadata;
+  protected readonly selectedCourses = this.courseSelection.selectedCourses;
+  protected readonly collisions = this.courseSelection.collisions;
+  protected readonly scheduleSlots = this.schedule.scheduleSlots;
+  protected readonly metadata = this.schedule.simpleMetadata;
   protected readonly currentLevel = this.schedule.currentLevel;
 
-  private readonly fullMetadata: GameStateMetadata = {
-    ...this.metadata(),
-    ...this.schedule.complexMetadata(),
-  };
-
-  protected readonly validationContext: ValidationContext = {
+  protected readonly validationContext = computed<ValidationContext>(() => ({
     schedule: this.scheduleSlots(),
     level: this.currentLevel(),
-    metadata: this.fullMetadata,
-  };
+    metadata: {
+      ...this.schedule.simpleMetadata(),
+      ...this.schedule.complexMetadata(),
+    },
+  }));
 
   private courses: ReadonlyArray<Course> = COURSES;
-
-  readonly availableCourses = computed(() => {
+  protected readonly availableCourses = computed(() => {
     const selected = this.selectedCourses();
     return this.courses.filter((course) => !selected.some((sc) => sc.id === course.id));
+  });
+
+  protected readonly validationResults = computed<ValidationResultMap>(() => {
+    return this.rulesService.validate(this.validationContext());
   });
 
   readonly conflictingCourseIds = computed(() => {
@@ -59,13 +60,22 @@ export class ScheduleManagerComponent {
   });
 
   constructor() {
-    effect(() => {
-      this.selectedCourses();
-      this.schedule.recalculateMetadata();
-    });
+    effect(
+      () => {
+        const courses = this.selectedCourses();
+
+        this.schedule.recalculateMetadata();
+
+        const result = this.validationResults();
+        console.log('Validation results:', result);
+        console.log('Metadata:', this.schedule.simpleMetadata());
+        console.log('Rules validated for:', courses.length, 'courses');
+      },
+      { allowSignalWrites: true }
+    );
   }
 
-  canAddCourse(course: Course): { canAdd: boolean; conflicts: Course[] } {
-    return this.courseSelection.canAddCourse(course);
+  handleNextLevel() {
+    console.log('next level');
   }
 }

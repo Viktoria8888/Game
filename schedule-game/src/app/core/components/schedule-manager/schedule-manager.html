@@ -4,7 +4,11 @@
   [totalScore]="metadata().score"
   [userName]="authService.username()"
 />
-<app-contraints [validationContext]="validationContext" />
+<app-contraints
+  [validationContext]="validationContext()"
+  [validationResults]="validationResults()"
+  (onClickNextLevel)="handleNextLevel()"
+/>
 
 <div class="grid-courses">
   <app-schedule-grid [schedule]="scheduleSlots()" [conflictingCourseIds]="conflictingCourseIds()" />

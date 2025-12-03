@@ -39,8 +39,8 @@
   }
 </div>
 
-<!-- @if (canPassLevel()) {
-  <button class="action-btn">
-    🎉 All Requirements Met - View Schedule →
-  </button>
-} -->
+@if (canPassLevel()) {
+<button class="action-btn" (click)="goNextLevel()">
+  All Requirements Met - Go to the next level →
+</button>
+}

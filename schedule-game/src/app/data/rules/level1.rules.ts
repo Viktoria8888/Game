@@ -31,7 +31,7 @@ const createMinEctsRule = (id: string, minEcts: number, level: number | null = n
 const createMaxEctsRule = (id: string, maxEcts: number, level: number | null = null): Rule => {
   return {
     id,
-    title: 'Minimum Ects',
+    title: 'Maximum Ects',
     description: `Maximum ${maxEcts} ECTS required per semester`,
     category: 'Cumulative',
     level,
@@ -57,4 +57,4 @@ const createMaxEctsRule = (id: string, maxEcts: number, level: number | null = n
 };
 export const R1 = createMinEctsRule('r1', 18);
 export const R2 = createMaxEctsRule('r2', 35);
-export const RULES_LEVEL_1: ReadonlyArray<Rule> = [R1, R2, R2, R2, R2, R2, R2, R2];
+export const RULES_LEVEL_1: ReadonlyArray<Rule> = [R1, R2];

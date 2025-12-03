@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, Signal, signal } from '@angular/core';
+import { Component, computed, inject, input, output, Signal, signal } from '@angular/core';
 import { RulesCount, RulesService } from '../../services/rules.service';
 import { Rule, ValidationContext, ValidationResultMap } from '../../models/rules.interface';
 
@@ -19,66 +19,84 @@ export class Contraints {
   private readonly rulesService = inject(RulesService);
 
   readonly validationContext = input.required<ValidationContext>();
+  readonly validationResults = input.required<ValidationResultMap>();
 
-  readonly activeTab = signal<'Cumulative' | 'Goal' | 'Additional'>('Cumulative');
+  readonly onClickNextLevel = output();
 
-  readonly activeConstraints = computed(() => {
-    const context = this.validationContext();
+  protected readonly activeTab = signal<'Cumulative' | 'Goal' | 'Additional'>('Cumulative');
+
+  protected readonly activeConstraints = computed(() => {
     const category = this.activeTab();
-    const results = this.rulesService.validateByCategory(context, category);
-
+    const results = this.validationResults();
     const allRules: ConstraintDisplay[] = [
-      ...results.satisfied.map((rule) => ({
-        ...rule,
-        isSatisfied: true,
-        currentValue: undefined,
-        targetValue: undefined,
-        hint: undefined,
-      })),
-      ...results.violated.map((rule) => ({
-        ...rule,
-        isSatisfied: false,
-        currentValue: undefined,
-        targetValue: undefined,
-        hint: undefined,
-      })),
+      ...results.satisfied
+        .filter((rule) => rule.category === category)
+        .map((rule) => ({
+          ...rule,
+          isSatisfied: true,
+          currentValue: undefined,
+          targetValue: undefined,
+          hint: undefined,
+        })),
+      ...results.violated
+        .filter((rule) => rule.category === category)
+        .map((rule) => ({
+          ...rule,
+          isSatisfied: false,
+          currentValue: undefined,
+          targetValue: undefined,
+          hint: undefined,
+        })),
     ];
-
     return allRules;
   });
 
-  readonly tabInfo = computed(() => {
-    const counts: RulesCount = this.rulesService.getRuleCounts(this.validationContext());
-    const satisfiedCount: RulesCount = this.rulesService.getSatisfiedCount(
-      this.validationContext()
+  protected readonly tabInfo = computed(() => {
+    const results = this.validationResults();
+    const context = this.validationContext();
+
+    const totalCounts = this.rulesService.getRuleCounts(context);
+    const satisfiedCounts = results.satisfied.reduce(
+      (acc, rule) => {
+        if (rule.category === 'Cumulative') acc.cumulative++;
+        else if (rule.category === 'Goal') acc.goal++;
+        else if (rule.category === 'Additional') acc.additional++;
+        acc.total++;
+        return acc;
+      },
+      { cumulative: 0, goal: 0, additional: 0, total: 0 } as RulesCount
     );
 
     return [
       {
         category: 'Cumulative' as const,
         label: 'CUMULATIVE',
-        count: counts.cumulative,
-        satisfied: satisfiedCount.cumulative,
+        count: totalCounts.cumulative,
+        satisfied: satisfiedCounts.cumulative,
       },
       {
         category: 'Goal' as const,
         label: 'GOAL',
-        count: counts.goal,
-        satisfied: satisfiedCount.goal,
+        count: totalCounts.goal,
+        satisfied: satisfiedCounts.goal,
       },
       {
         category: 'Additional' as const,
         label: 'ADDITIONAL',
-        count: counts.additional,
-        satisfied: satisfiedCount.additional,
+        count: totalCounts.additional,
+        satisfied: satisfiedCounts.additional,
       },
     ];
   });
 
-  readonly canPassLevel = computed(() => {
-    const context = this.validationContext();
-    return this.rulesService.areRequiredRulesSatisfied(context);
+  protected readonly canPassLevel = computed(() => {
+    const results = this.validationResults();
+    return this.rulesService.areRequiredRulesSatisfied(results);
   });
+
+  goNextLevel() {
+    this.onClickNextLevel.emit();
+  }
 
   switchTab(category: 'Cumulative' | 'Additional' | 'Goal') {
     this.activeTab.set(category);
