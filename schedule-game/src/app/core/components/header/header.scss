@@ -29,7 +29,7 @@ $c-danger-dark: #b71c1c;
 
   h1 {
     margin: 0;
-    @include text(24px, 700, white);
+    @include text(30px, 700, white);
     letter-spacing: 0.5px;
 
     @include mobile {

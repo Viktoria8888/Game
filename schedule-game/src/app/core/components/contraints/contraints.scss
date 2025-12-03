@@ -1,0 +1,226 @@
+@import 'shared';
+
+:host {
+  @include card-base;
+  margin-bottom: 10px;
+}
+
+.tabs {
+  @include flex($gap: 8px);
+  margin-bottom: 16px;
+
+  button {
+    @include flex($justify: space-between, $gap: 8px);
+    flex: 1;
+    padding: 12px 16px;
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    font-size: 13px;
+    font-weight: 600;
+    color: $c-text-light;
+    text-transform: uppercase;
+    cursor: pointer;
+    position: relative;
+    transition: $trans-fast;
+
+    &:hover {
+      background: $c-bg-hover;
+    }
+
+    &.active {
+      border-bottom-color: $c-primary;
+      color: $c-primary;
+      background: #fafafa;
+
+      .count {
+        background: $c-primary;
+        color: white;
+      }
+    }
+
+    .count {
+      padding: 2px 8px;
+      font-size: 12px;
+      background: $c-border;
+      color: $c-text-light;
+      border-radius: 10px;
+      transition: $trans-fast;
+    }
+  }
+
+  @include mobile {
+    flex-direction: column;
+    border-bottom: none;
+
+    button {
+      border-bottom: none;
+      border-left: 3px solid transparent;
+      bottom: 0;
+
+      &.active {
+        border-bottom-color: transparent;
+        border-left-color: $c-primary;
+      }
+    }
+  }
+}
+
+.constraints {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  @include custom-scrollbar();
+
+  @include mobile {
+    gap: 10px;
+  }
+}
+
+.constraint {
+  @include flex($align: flex-start, $gap: 12px);
+  min-width: 300px;
+  flex-shrink: 0;
+  padding: 10px;
+  border: 2px solid $c-border;
+  border-radius: 6px;
+  background: #fafafa;
+  cursor: pointer;
+  transition: $trans-fast;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  &.satisfied {
+    background: #f1f8f4;
+    border-color: $c-success;
+    color: $c-success;
+
+    .icon {
+      color: $c-success;
+      background: lighten($c-success, 45%);
+      border-color: $c-success;
+    }
+
+    .value span:first-child {
+      color: $c-success;
+    }
+  }
+
+  &.required:not(.satisfied) {
+    border-color: $c-error;
+    background: $c-error-bg;
+    color: $c-error;
+
+    .icon {
+      color: $c-error;
+      background: lighten($c-error, 45%);
+      border-color: $c-error;
+    }
+
+    .value span:first-child {
+      color: $c-error;
+    }
+  }
+
+  &:not(.required):not(.satisfied) .icon {
+    color: $c-text-muted;
+    background: $c-bg-hover;
+    border-color: #ddd;
+  }
+
+  .icon {
+    @include flex($justify: center);
+    width: 32px;
+    height: 32px;
+    font-size: 16px;
+    font-weight: bold;
+    border: 2px solid;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .title-row {
+    @include flex($justify: space-between, $align: flex-start, $gap: 12px);
+    margin-bottom: 6px;
+
+    h4 {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 600;
+      color: $c-text-main;
+    }
+
+    .value {
+      @include flex($gap: 4px);
+      font-weight: 600;
+      white-space: nowrap;
+
+      span:first-child {
+        font-size: 16px;
+        color: $c-primary;
+      }
+
+      span:last-child {
+        font-size: 13px;
+        color: $c-text-muted;
+      }
+    }
+  }
+
+  p {
+    margin: 0 0 8px 0;
+    font-size: 14px;
+    color: $c-text-light;
+    line-height: 1.4;
+  }
+
+  .hint {
+    padding: 8px 12px;
+    font-size: 13px;
+    color: #e65100;
+    background: rgba(255, 152, 0, 0.1);
+    border-left: 3px solid #ff9800;
+    border-radius: $radius-sm;
+  }
+
+  @include mobile {
+    min-width: 280px;
+
+    .title-row {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+}
+
+.action-btn {
+  width: 100%;
+  margin-top: 16px;
+  padding: 14px 24px;
+  font-weight: 600;
+  color: white;
+  background: linear-gradient(135deg, $c-success 0%, #66bb6a 100%);
+  border: none;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+  cursor: pointer;
+  transition: $trans-fast;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(76, 175, 80, 0.4);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}

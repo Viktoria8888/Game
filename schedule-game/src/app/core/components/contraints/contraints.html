@@ -1,0 +1,46 @@
+<div class="tabs">
+  @for (tab of tabInfo(); track tab.category) {
+  <button [class.active]="activeTab() === tab.category" (click)="switchTab(tab.category)">
+    <span>{{ tab.label }}</span>
+    <span class="count">{{ tab.satisfied }}/{{ tab.count }}</span>
+  </button>
+  }
+</div>
+
+<div class="constraints">
+  @for (constraint of activeConstraints(); track constraint.title) {
+  <div
+    class="constraint"
+    [class.satisfied]="constraint.isSatisfied"
+    [class.required]="constraint.category !== 'Additional'"
+  >
+    <span class="icon">{{ getConstraintIcon(constraint) }}</span>
+
+    <div class="content">
+      <div class="title-row">
+        <h4>{{ constraint.title }}</h4>
+
+        @if (constraint.currentValue !== undefined) {
+        <div class="value">
+          <span>{{ constraint.currentValue }}</span>
+          <span>/</span>
+          <span>{{ constraint.targetValue }}</span>
+        </div>
+        }
+      </div>
+
+      <p>{{ constraint.description }}</p>
+
+      @if (!constraint.isSatisfied && constraint.hint) {
+      <div class="hint">💡 {{ constraint.hint }}</div>
+      }
+    </div>
+  </div>
+  }
+</div>
+
+<!-- @if (canPassLevel()) {
+  <button class="action-btn">
+    🎉 All Requirements Met - View Schedule →
+  </button>
+} -->
