@@ -1,15 +1,19 @@
 import { Component, computed, effect, inject } from '@angular/core';
-import { CourseSelectionService } from '../../services/course.interface';
+import { CourseSelectionService } from '../../services/courses';
 import { ScheduleService } from '../../services/schedule.service';
-import { LEVEL1_COURSES } from '../../../data/rules/courses';
 import { Course } from '../../models/course.interface';
 import { ScheduleGrid } from '../schedule-grid/schedule-grid';
 import { HeaderComponent } from '../header/header';
 import { AuthService } from '../../services/auth.service';
+import { Contraints } from '../contraints/contraints';
+import { ValidationContext } from '../../models/rules.interface';
+import { GameStateDTO, GameStateMetadata } from '../../models/game_state.dto';
+import { Courses } from '../courses-list/courses-list';
+import { COURSES } from '../../../data/rules/courses';
 
 @Component({
   selector: 'app-schedule-manager',
-  imports: [ScheduleGrid, HeaderComponent],
+  imports: [ScheduleGrid, HeaderComponent, Contraints, Courses],
   templateUrl: './schedule-manager.html',
   styleUrl: './schedule-manager.scss',
 })
@@ -22,11 +26,22 @@ export class ScheduleManagerComponent {
   readonly collisions = this.courseSelection.collisions;
   readonly isValid = this.courseSelection.isValid;
 
-  readonly scheduleSlots = this.schedule.schedule;
+  readonly scheduleSlots = this.schedule.scheduleSlots;
   readonly metadata = this.schedule.simpleMetadata;
-  readonly currentLevel = this.schedule.currentLevel;
+  protected readonly currentLevel = this.schedule.currentLevel;
 
-  private courses: Course[] = LEVEL1_COURSES;
+  private readonly fullMetadata: GameStateMetadata = {
+    ...this.metadata(),
+    ...this.schedule.complexMetadata(),
+  };
+
+  protected readonly validationContext: ValidationContext = {
+    schedule: this.scheduleSlots(),
+    level: this.currentLevel(),
+    metadata: this.fullMetadata,
+  };
+
+  private courses: ReadonlyArray<Course> = COURSES;
 
   readonly availableCourses = computed(() => {
     const selected = this.selectedCourses();
@@ -48,19 +63,6 @@ export class ScheduleManagerComponent {
       this.selectedCourses();
       this.schedule.recalculateMetadata();
     });
-  }
-
-  onAddCourse(course: Course): void {
-    try {
-      this.courseSelection.addCourse(course);
-      console.log(`✅ Added: ${course.name}`);
-    } catch (error: any) {
-      alert(error.message); // TODO: Replace with notification service
-    }
-  }
-
-  onRemoveCourse(courseId: string): void {
-    this.courseSelection.removeCourse(courseId);
   }
 
   canAddCourse(course: Course): { canAdd: boolean; conflicts: Course[] } {

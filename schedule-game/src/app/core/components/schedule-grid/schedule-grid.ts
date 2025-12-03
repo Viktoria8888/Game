@@ -1,5 +1,6 @@
-import { Component, computed, input, signal } from '@angular/core';
+import { Component, computed, inject, input, signal } from '@angular/core';
 import { ScheduleSlot } from '../../models/course.interface';
+import { CourseSelectionService } from '../../services/courses';
 
 @Component({
   selector: 'app-schedule-grid',
@@ -9,7 +10,9 @@ import { ScheduleSlot } from '../../models/course.interface';
   standalone: true,
 })
 export class ScheduleGrid {
+  private courseSelection = inject(CourseSelectionService);
   readonly schedule = input.required<ScheduleSlot[]>();
+
   readonly conflictingCourseIds = input.required<Set<string>>();
 
   readonly viewMode = signal<'grid' | 'compact'>('grid');
@@ -17,7 +20,6 @@ export class ScheduleGrid {
   readonly days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
   readonly hours = [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
 
-  // Build slot lookup map for O(1) access
   private slotMap = computed(() => {
     const map = new Map<string, ScheduleSlot>();
     this.schedule().forEach((slot) => {
@@ -43,7 +45,6 @@ export class ScheduleGrid {
     const slot = this.getSlot(day, hour);
     if (!slot?.course) return false;
 
-    // Check if this is the first slot of this course on this day
     const courseSchedule = slot.course.schedule;
     for (const timeBlock of courseSchedule) {
       if (timeBlock.day === day && timeBlock.startTime === hour) {
@@ -71,5 +72,13 @@ export class ScheduleGrid {
 
   formatHour(hour: number): string {
     return `${hour}:00`;
+  }
+
+  onSlotDoubleClick(day: string, hour: number) {
+    const slot = this.getSlot(day, hour);
+
+    if (slot?.course) {
+      this.courseSelection.removeCourse(slot.course.id);
+    }
   }
 }

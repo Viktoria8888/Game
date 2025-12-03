@@ -1,7 +1,7 @@
 import { Injectable, Signal, computed, WritableSignal, signal, inject } from '@angular/core';
 import { ScheduleSlot, Course } from '../models/course.interface';
 import { ComplexGameMetadata, GameStateDTO, SimpleGameMetadata } from '../models/game_state.dto';
-import { CourseSelectionService } from './course.interface';
+import { CourseSelectionService } from './courses';
 
 /**Single source of truth for the SCHEDULE
  */
@@ -15,21 +15,21 @@ export class ScheduleService {
     this.createEmptySimpleMetadata()
   );
 
-  public readonly schedule: Signal<ScheduleSlot[]> = computed(() => {
+  public readonly scheduleSlots: Signal<ScheduleSlot[]> = computed(() => {
     const selectedCourses = this.courseSelectionService.selectedCourses();
     return this.coursesToScheduleSlots(selectedCourses);
   });
 
   public readonly complexMetadata = computed<ComplexGameMetadata>(() => {
-    const schedule = this.schedule();
+    const schedule = this.scheduleSlots();
     return this.calculateComplexMetadata(schedule);
   });
 
   public readonly simpleMetadata = this.simpleMetadataSignal.asReadonly();
 
   public readonly gameState: Signal<GameStateDTO> = computed(() => ({
-    currentSemester: this.currentLevel(),
-    schedule: this.schedule(),
+    level: this.currentLevel(),
+    schedule: this.scheduleSlots(),
   }));
 
   recalculateMetadata(): void {
@@ -67,7 +67,7 @@ export class ScheduleService {
 
     this.courseSelectionService.setSelectedCourses(Array.from(uniqueCourses.values()));
 
-    this.currentLevel.set(state.currentSemester);
+    this.currentLevel.set(state.level);
 
     this.recalculateMetadata();
   }
@@ -96,8 +96,8 @@ export class ScheduleService {
 
   private createEmptySimpleMetadata(): SimpleGameMetadata {
     return {
-      score: 0,
-      stressLevel: 0,
+      score: 200,
+      stressLevel: 100,
       totalEctsAccumulated: 0,
       ectsByTag: {},
       ectsByType: {},

@@ -1,0 +1,38 @@
+<div class="header">
+  <h3>Available Courses</h3>
+  <span class="count">{{ availableCourses().length }} found</span>
+</div>
+
+<div class="list-scroll-area">
+  @for (course of availableCourses(); track course.id) {
+  <div class="course-card" (click)="handleCourse(course)">
+    <div class="status-strip"></div>
+
+    <div class="card-content">
+      <div class="card-top">
+        <span class="course-name">{{ course.name }}</span>
+      </div>
+
+      <div class="card-details">
+        <span class="badge ects">{{ course.ects }} ECTS</span>
+        <span class="badge type">
+          {{ course.type }}
+        </span>
+        @if (course.isMandatory) {
+        <span class="badge mandatory">Mandatory</span>
+        }
+      </div>
+
+      @if (course.tags && course.tags.length > 0) {
+      <div class="tags">
+        @for (tag of course.tags; track tag) {
+        <span class="tag">{{ tag }}</span>
+        }
+      </div>
+      }
+    </div>
+  </div>
+  } @empty {
+  <div class="empty-state">No courses available to select.</div>
+  }
+</div>

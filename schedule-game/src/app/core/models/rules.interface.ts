@@ -6,7 +6,6 @@ export type ValidationFunction = (context: ValidationContext) => ValidationResul
 /**Immutable snapshot of the current game state */
 export type ValidationContext = Omit<GameStateDTO, 'schedule'> & {
   readonly schedule: ReadonlyArray<ScheduleSlot>;
-  readonly level: number | null;
   metadata: GameStateMetadata;
 };
 
@@ -24,6 +23,7 @@ export interface ValidationResult {
 
 export interface Rule {
   id: string;
+  title: string;
   description: string;
   category: 'Cumulative' | 'Goal' | 'Additional';
   level: number | null; // null means that the rule is applied to any level

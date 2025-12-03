@@ -9,11 +9,11 @@ import { CommonModule } from '@angular/common';
 })
 export class HeaderComponent {
   readonly currentLevel = input.required<number>();
-  readonly stressLevel = input.required<number>(); // 0-100
+  readonly stressLevel = input.required<number>();
   readonly totalScore = input.required<number>();
 
   readonly userName = input('Player');
-  readonly userAvatar = input<string | undefined>(undefined); // Optional avatar URL
+  readonly userAvatar = input<string | undefined>(undefined);
 
   readonly stressColorClass = computed((): string => {
     const stress = this.stressLevel();

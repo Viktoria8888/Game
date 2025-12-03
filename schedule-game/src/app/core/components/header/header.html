@@ -19,13 +19,6 @@
         <div class="stat-label">Stress</div>
         <div class="stat-value">{{ stressLevel() }}%</div>
       </div>
-      <div class="stress-bar-mini">
-        <div
-          class="stress-fill-mini"
-          [style.width.%]="stressLevel()"
-          [class]="stressColorClass()"
-        ></div>
-      </div>
     </div>
 
     <div class="stat-item score">

@@ -3,6 +3,7 @@ import { Rule, ValidationContext } from '../../core/models/rules.interface';
 const createMinEctsRule = (id: string, minEcts: number, level: number | null = null): Rule => {
   return {
     id,
+    title: 'Minimum Ects',
     description: `Minimum ${minEcts} ECTS required per semester`,
     category: 'Cumulative',
     level,
@@ -30,6 +31,7 @@ const createMinEctsRule = (id: string, minEcts: number, level: number | null = n
 const createMaxEctsRule = (id: string, maxEcts: number, level: number | null = null): Rule => {
   return {
     id,
+    title: 'Minimum Ects',
     description: `Maximum ${maxEcts} ECTS required per semester`,
     category: 'Cumulative',
     level,
@@ -53,6 +55,6 @@ const createMaxEctsRule = (id: string, maxEcts: number, level: number | null = n
     },
   };
 };
-export const R1 = createMinEctsRule('r1',18);
-export const R2 = createMaxEctsRule('r2', 35)
-// export const R3 = 
+export const R1 = createMinEctsRule('r1', 18);
+export const R2 = createMaxEctsRule('r2', 35);
+export const RULES_LEVEL_1: ReadonlyArray<Rule> = [R1, R2, R2, R2, R2, R2, R2, R2];

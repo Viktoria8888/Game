@@ -1,0 +1,14 @@
+@import 'shared';
+:host {
+  display: flex;
+  flex-direction: column;
+}
+
+.grid-courses {
+  display: grid;
+  grid-template-columns: 3fr 1fr;
+  gap: 10px;
+  @include mobile {
+    grid-template-columns: 1fr;
+  }
+}

@@ -20,9 +20,7 @@ export class CourseSelectionService {
     return this.collisions().length === 0;
   });
 
-  /**
-   * Check if a course can be added without creating collisions
-   */
+ 
   canAddCourse(course: Course): { canAdd: boolean; conflicts: Course[] } {
     const conflicts: Course[] = [];
     const selected = this.selectedCoursesSignal();

@@ -35,6 +35,6 @@
 
   export type GameStateMetadata = SimpleGameMetadata & ComplexGameMetadata;
   export interface GameStateDTO {
-    currentSemester: number;
+    level: number;
     schedule: ScheduleSlot[];
   }
