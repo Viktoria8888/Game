@@ -11,6 +11,7 @@ import { GameStateDTO, GameStateMetadata } from '../../models/game_state.dto';
 import { Courses } from '../courses-list/courses-list';
 import { COURSES } from '../../../data/rules/courses';
 import { RulesService } from '../../services/rules.service';
+import { GameService } from '../../services/game.service';
 
 @Component({
   selector: 'app-schedule-manager',
@@ -19,6 +20,7 @@ import { RulesService } from '../../services/rules.service';
   styleUrl: './schedule-manager.scss',
 })
 export class ScheduleManagerComponent {
+  private readonly gameService = inject(GameService);
   private readonly courseSelection = inject(CourseSelectionService);
   private readonly schedule = inject(ScheduleService);
   private readonly rulesService = inject(RulesService);
@@ -28,7 +30,7 @@ export class ScheduleManagerComponent {
   protected readonly collisions = this.courseSelection.collisions;
   protected readonly scheduleSlots = this.schedule.scheduleSlots;
   protected readonly metadata = this.schedule.simpleMetadata;
-  protected readonly currentLevel = this.schedule.currentLevel;
+  protected readonly currentLevel = this.gameService.currentLevel;
 
   protected readonly validationContext = computed<ValidationContext>(() => ({
     schedule: this.scheduleSlots(),
@@ -76,6 +78,6 @@ export class ScheduleManagerComponent {
   }
 
   handleNextLevel() {
-    console.log('next level');
+    this.gameService.completeLevel()
   }
 }

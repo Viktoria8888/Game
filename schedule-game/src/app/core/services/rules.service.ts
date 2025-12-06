@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { RULES_LEVEL_1 } from '../../data/rules/level1.rules';
+import { RULES } from '../../data/rules/level1.rules';
 import {
   Rule,
   ValidationContext,
@@ -19,9 +19,10 @@ export type RulesCount = {
 export class RulesService {
   private readonly validationService = inject(ValidationService);
 
-  private readonly allRules: ReadonlyArray<Rule> = RULES_LEVEL_1;
+  // Map the rules to the level there are available in.
+  private readonly allRules: ReadonlyArray<Rule> = RULES;
 
-  getActiveRules(context: ValidationContext): ReadonlyArray<Rule> {
+  private getActiveRules(context: ValidationContext): ReadonlyArray<Rule> {
     return this.allRules.filter(
       (rule) =>
         rule.level === null || rule.level === context.level || rule.isActive?.(context) === true

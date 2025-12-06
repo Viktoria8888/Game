@@ -4,7 +4,7 @@ import { GameStateDTO, GameStateMetadata } from './game_state.dto';
 export type ValidationFunction = (context: ValidationContext) => ValidationResult;
 
 /**Immutable snapshot of the current game state */
-export type ValidationContext = Omit<GameStateDTO, 'schedule'> & {
+export type ValidationContext = Omit<GameStateDTO, 'schedule' | 'history'> & {
   readonly schedule: ReadonlyArray<ScheduleSlot>;
   metadata: GameStateMetadata;
 };

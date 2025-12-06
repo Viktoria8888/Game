@@ -36,6 +36,7 @@ export interface Course {
   language: 'PL' | 'EN';
   isProseminar: boolean;
   schedule: CourseSlot[];
+  prerequisites?: string[];
 }
 
 export interface ScheduleSlot {

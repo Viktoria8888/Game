@@ -4,12 +4,11 @@ import { ComplexGameMetadata, GameStateDTO, SimpleGameMetadata } from '../models
 import { CourseSelectionService } from './courses';
 
 /**Single source of truth for the SCHEDULE
+ * Takes care of metadata
  */
 @Injectable({ providedIn: 'root' })
 export class ScheduleService {
   private readonly courseSelectionService = inject(CourseSelectionService);
-
-  public readonly currentLevel: WritableSignal<number> = signal(1);
 
   private readonly simpleMetadataSignal = signal<SimpleGameMetadata>(
     this.createEmptySimpleMetadata()
@@ -27,17 +26,12 @@ export class ScheduleService {
 
   public readonly simpleMetadata = this.simpleMetadataSignal.asReadonly();
 
-  public readonly gameState: Signal<GameStateDTO> = computed(() => ({
-    level: this.currentLevel(),
-    schedule: this.scheduleSlots(),
-  }));
-
   recalculateMetadata(): void {
     const courses = this.courseSelectionService.selectedCourses();
     const meta = this.createEmptySimpleMetadata();
 
     for (const course of courses) {
-      meta.totalEctsAccumulated += course.ects;
+      meta.currentSemesterEcts += course.ects;
       meta.uniqueCoursesCount += 1;
 
       if (course.tags) {
@@ -56,18 +50,17 @@ export class ScheduleService {
     this.simpleMetadataSignal.set(meta);
   }
 
-  setState(state: GameStateDTO): void {
+  setScheduleFromSlots(schedule: ScheduleSlot[]): void {
     const uniqueCourses = new Map<string, Course>();
 
-    state.schedule.forEach((slot) => {
+    schedule.forEach((slot) => {
       if (slot.course) {
         uniqueCourses.set(slot.course.id, slot.course);
       }
     });
 
+    this.courseSelectionService.clearAll();
     this.courseSelectionService.setSelectedCourses(Array.from(uniqueCourses.values()));
-
-    this.currentLevel.set(state.level);
 
     this.recalculateMetadata();
   }
@@ -98,7 +91,7 @@ export class ScheduleService {
     return {
       score: 200,
       stressLevel: 100,
-      totalEctsAccumulated: 0,
+      currentSemesterEcts: 0,
       ectsByTag: {},
       ectsByType: {},
       hasExamCount: 0,

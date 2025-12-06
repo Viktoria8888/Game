@@ -1,40 +1,46 @@
-  import { ScheduleSlot } from './course.interface';
+import { ScheduleSlot } from './course.interface';
 
-  export interface SimpleGameMetadata {
-    stressLevel: number;
-    score: number; // the percentage of constaints that are satisfied
+export interface SimpleGameMetadata {
+  stressLevel: number;
+  score: number;
+  currentSemesterEcts: number;
+  ectsByTag: Record<string, number>;
+  ectsByType: Record<string, number>;
+  hasExamCount: number;
+  uniqueCoursesCount: number;
+  proseminarCount: number;
+  mandatoryCoursesCompleted: string[];
+}
 
-    totalEctsAccumulated: number;
-    ectsByTag: Record<string, number>;
-    ectsByType: Record<string, number>;
-    hasExamCount: number;
-    uniqueCoursesCount: number;
-    proseminarCount: number;
-    mandatoryCoursesCompleted: string[];
-  }
+/** Metadata that requires full recalculation (O(n)) */
+export interface ComplexGameMetadata {
+  // Time-dependent (need to scan all slots)
+  totalContactHours: number;
+  averageStartTime: number;
+  averageEndTime: number;
+  morningToAfternoonRatio: number;
 
-  /** Metadata that requires full recalculation (O(n)) */
-  export interface ComplexGameMetadata {
-    // Time-dependent (need to scan all slots)
-    totalContactHours: number;
-    averageStartTime: number;
-    averageEndTime: number;
-    morningToAfternoonRatio: number;
+  maxGapInAnyDay: number;
+  totalGapTime: number;
 
-    maxGapInAnyDay: number;
-    totalGapTime: number;
+  freeDaysCount: number;
+  consecutiveFreeDays: number;
 
-    freeDaysCount: number;
-    consecutiveFreeDays: number;
+  currentStreak: number;
+  bestStreak: number;
+  achievementsUnlocked: string[];
+}
 
-    //Achievements
-    currentStreak: number;
-    bestStreak: number;
-    achievementsUnlocked: string[];
-  }
+export interface SemesterHistory {
+  level: number;
+  coursesTaken: string[];
+  ectsEarned: number;
+  scoreEarned: number;
+}
+export type GameStateMetadata = SimpleGameMetadata & ComplexGameMetadata;
 
-  export type GameStateMetadata = SimpleGameMetadata & ComplexGameMetadata;
-  export interface GameStateDTO {
-    level: number;
-    schedule: ScheduleSlot[];
-  }
+export interface GameStateDTO {
+  level: number;
+  schedule: ScheduleSlot[];
+  history: SemesterHistory[];
+}

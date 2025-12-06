@@ -10,7 +10,7 @@ const createMinEctsRule = (id: string, minEcts: number, level: number | null = n
     priority: 1,
 
     validate: (context: ValidationContext) => {
-      const current = context.metadata.totalEctsAccumulated;
+      const current = context.metadata.currentSemesterEcts;
       const satisfied = current >= minEcts;
 
       return {
@@ -34,11 +34,11 @@ const createMaxEctsRule = (id: string, maxEcts: number, level: number | null = n
     title: 'Maximum Ects',
     description: `Maximum ${maxEcts} ECTS required per semester`,
     category: 'Cumulative',
-    level,
+    level: 2,
     priority: 1,
 
     validate: (context: ValidationContext) => {
-      const current = context.metadata.totalEctsAccumulated;
+      const current = context.metadata.currentSemesterEcts;
       const satisfied = current <= maxEcts;
 
       return {
@@ -57,4 +57,4 @@ const createMaxEctsRule = (id: string, maxEcts: number, level: number | null = n
 };
 export const R1 = createMinEctsRule('r1', 18);
 export const R2 = createMaxEctsRule('r2', 35);
-export const RULES_LEVEL_1: ReadonlyArray<Rule> = [R1, R2];
+export const RULES: ReadonlyArray<Rule> = [R1, R2];

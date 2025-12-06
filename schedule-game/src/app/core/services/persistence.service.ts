@@ -1,57 +1,79 @@
 import { inject, Injectable, effect } from '@angular/core';
-import { ScheduleService } from './schedule.service';
 import { FirestoreService } from './firestore.service';
 import { GameStateDTO } from '../models/game_state.dto';
 import { AuthService } from './auth.service';
 import { toObservable } from '@angular/core/rxjs-interop';
-import { debounceTime } from 'rxjs';
+import { debounceTime, filter, distinctUntilChanged } from 'rxjs';
 import { Unsubscribe } from 'firebase/auth';
+import { GameService } from './game.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class PersistenceService {
-  private readonly scheduleService = inject(ScheduleService);
+  private readonly gameService = inject(GameService);
   private readonly firestoreService = inject(FirestoreService<GameStateDTO>);
   private readonly authService = inject(AuthService);
-  private unsubscribe?: Unsubscribe;
+
+  private firestoreUnsub?: Unsubscribe;
+
+  private isRestoring = false;
+
   constructor() {
-    effect(async () => {
+    effect((onCleanup) => {
       const userId = this.authService.userId;
+
       if (!userId) {
-        await this.authService.signInAnonymously();
+        this.authService.signInAnonymously();
         return;
       }
 
-      // load the saved state from the firestore
-      await this.loadState(userId);
+      this.loadState(userId);
 
-      // multi-device sync
       this.subscribeToRemoteChanges(userId);
 
-      toObservable(this.scheduleService.gameState)
-        .pipe(debounceTime(2000))
+      const saveSubscription = toObservable(this.gameService.gameStateSnapshot)
+        .pipe(
+          filter(() => !this.isRestoring),
+          debounceTime(2000),
+          distinctUntilChanged((prev, curr) => JSON.stringify(prev) === JSON.stringify(curr))
+        )
         .subscribe(async (state) => {
           if (this.authService.userId) {
-            this.firestoreService.set(userId, state);
+            console.log('Saving to Firestore...');
+            await this.firestoreService.set(userId, state);
           }
         });
+
+      onCleanup(() => {
+        saveSubscription.unsubscribe();
+        this.firestoreUnsub?.();
+      });
     });
   }
+
   private async loadState(userId: string): Promise<void> {
     const savedState = await this.firestoreService.get(userId);
     if (savedState) {
-      this.scheduleService.setState(savedState);
+      this.updateLocalState(savedState);
     }
   }
 
   private subscribeToRemoteChanges(userId: string): void {
-    this.unsubscribe?.(); // clean up the previous
-
-    this.unsubscribe = this.firestoreService.subscribeToUser(userId, (state: GameStateDTO) => {
+    this.firestoreUnsub?.();
+    this.firestoreUnsub = this.firestoreService.subscribeToUser(userId, (state) => {
       if (state) {
-        this.scheduleService.setState(state);
+        this.updateLocalState(state);
       }
     });
+  }
+
+  private updateLocalState(state: GameStateDTO) {
+    this.isRestoring = true;
+
+    this.gameService.restoreState(state);
+    setTimeout(() => {
+      this.isRestoring = false;
+    }, 100);
   }
 }
