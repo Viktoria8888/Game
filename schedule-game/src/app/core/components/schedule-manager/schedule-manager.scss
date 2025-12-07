@@ -1,4 +1,4 @@
-@import 'shared';
+@use 'shared' as *;
 :host {
   display: flex;
   flex-direction: column;

@@ -1,5 +1,5 @@
 import { Component, computed, effect, inject } from '@angular/core';
-import { CourseSelectionService } from '../../services/courses';
+import { CourseSelectionService } from '../../services/courses-selection';
 import { ScheduleService } from '../../services/schedule.service';
 import { Course } from '../../models/course.interface';
 import { ScheduleGrid } from '../schedule-grid/schedule-grid';

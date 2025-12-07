@@ -1,4 +1,4 @@
-@import 'shared';
+@use 'shared' as *;
 
 :host {
   @include card-base;
@@ -48,7 +48,7 @@
   flex-direction: column;
   gap: 10px;
   min-height: 0;
-  @include custom-scrollbar(); 
+  @include custom-scrollbar();
 }
 
 .course-card {

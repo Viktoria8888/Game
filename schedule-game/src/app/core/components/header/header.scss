@@ -1,4 +1,4 @@
-@import 'shared';
+@use 'shared' as *;
 
 $c-warning: #ff9800;
 $c-danger-dark: #b71c1c;

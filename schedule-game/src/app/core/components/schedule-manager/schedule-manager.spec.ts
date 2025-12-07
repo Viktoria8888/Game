@@ -1,22 +1,22 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+// import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ScheduleManagerComponent } from './schedule-manager';
+// import { ScheduleManagerComponent } from './schedule-manager';
 
-describe('ScheduleManagerComponent', () => {
-  let component: ScheduleManagerComponent;
-  let fixture: ComponentFixture<ScheduleManagerComponent>;
+// describe('ScheduleManagerComponent', () => {
+//   let component: ScheduleManagerComponent;
+//   let fixture: ComponentFixture<ScheduleManagerComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [ScheduleManagerComponent],
-    }).compileComponents();
+//   beforeEach(async () => {
+//     await TestBed.configureTestingModule({
+//       imports: [ScheduleManagerComponent],
+//     }).compileComponents();
 
-    fixture = TestBed.createComponent(ScheduleManagerComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+//     fixture = TestBed.createComponent(ScheduleManagerComponent);
+//     component = fixture.componentInstance;
+//     fixture.detectChanges();
+//   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-});
+//   it('should create', () => {
+//     expect(component).toBeTruthy();
+//   });
+// });

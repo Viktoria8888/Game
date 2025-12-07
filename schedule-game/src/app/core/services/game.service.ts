@@ -1,7 +1,7 @@
 import { Injectable, inject, signal, computed } from '@angular/core';
 import { ScheduleService } from './schedule.service';
 import { HistoryService } from './history.service';
-import { CourseSelectionService } from './courses';
+import { CourseSelectionService } from './courses-selection';
 import { GameStateDTO } from '../models/game_state.dto';
 
 @Injectable({ providedIn: 'root' })

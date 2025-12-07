@@ -1,7 +1,7 @@
 import { Injectable, Signal, computed, WritableSignal, signal, inject } from '@angular/core';
 import { ScheduleSlot, Course } from '../models/course.interface';
 import { ComplexGameMetadata, GameStateDTO, SimpleGameMetadata } from '../models/game_state.dto';
-import { CourseSelectionService } from './courses';
+import { CourseSelectionService } from './courses-selection';
 
 /**Single source of truth for the SCHEDULE
  * Takes care of metadata

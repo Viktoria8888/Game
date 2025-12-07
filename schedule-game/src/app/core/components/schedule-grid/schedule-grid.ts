@@ -1,6 +1,6 @@
 import { Component, computed, inject, input, signal } from '@angular/core';
 import { ScheduleSlot } from '../../models/course.interface';
-import { CourseSelectionService } from '../../services/courses';
+import { CourseSelectionService } from '../../services/courses-selection';
 
 @Component({
   selector: 'app-schedule-grid',

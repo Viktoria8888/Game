@@ -34,7 +34,7 @@ export interface Course {
   hasExam: boolean;
   isFirstYearRecommended?: boolean;
   language: 'PL' | 'EN';
-  isProseminar: boolean;
+  isProseminar?: boolean;
   schedule: CourseSlot[];
   prerequisites?: string[];
 }

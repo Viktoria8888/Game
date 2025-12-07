@@ -1,6 +1,5 @@
-@import 'shared';
-
-:host {
+@use 'shared' as *;
+:host  {
   @include card-base;
   margin-bottom: 10px;
 }

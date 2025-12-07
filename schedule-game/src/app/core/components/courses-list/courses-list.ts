@@ -1,6 +1,6 @@
 import { Component, inject, input } from '@angular/core';
 import { Course } from '../../models/course.interface';
-import { CourseSelectionService } from '../../services/courses';
+import { CourseSelectionService } from '../../services/courses-selection';
 
 @Component({
   selector: 'app-courses',
