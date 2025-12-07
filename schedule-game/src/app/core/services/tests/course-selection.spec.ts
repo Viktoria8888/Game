@@ -2,7 +2,6 @@ import { TestBed } from '@angular/core/testing';
 import { CourseSelectionService } from '../courses-selection';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { Course } from '../../models/course.interface';
-import { COURSES } from '../../../data/rules/courses';
 
 const MOCK_COURSE_A: Course = {
   id: '1001-L',
@@ -64,14 +63,14 @@ describe('CourseSelectionService', () => {
   });
 
   describe('Adding and Removing Courses', () => {
-    it('should add a course successfully', () => {
+    it('adds a course successfully', () => {
       service.addCourse(MOCK_COURSE_A);
 
       expect(service.selectedCourses().length).toBe(1);
       expect(service.selectedCourses()[0]).toBe(MOCK_COURSE_A);
     });
 
-    it('should remove a course by ID', () => {
+    it('removes a course by ID', () => {
       service.addCourse(MOCK_COURSE_A);
       service.addCourse(MOCK_COURSE_B);
 
@@ -82,7 +81,7 @@ describe('CourseSelectionService', () => {
       expect(current[0].id).toBe(MOCK_COURSE_B.id);
     });
 
-    it('should clear all courses', () => {
+    it('clears all courses', () => {
       service.addCourse(MOCK_COURSE_A);
 
       service.clearAll();
@@ -92,7 +91,7 @@ describe('CourseSelectionService', () => {
   });
 
   describe('Collision Detection', () => {
-    it('should allow adding non-conflicting courses', () => {
+    it('allows adding non-conflicting courses', () => {
       service.addCourse(MOCK_COURSE_A);
 
       const check = service.canAddCourse(MOCK_COURSE_B);
@@ -117,7 +116,7 @@ describe('CourseSelectionService', () => {
       expect(() => service.addCourse(MOCK_COURSE_CONFLICTING)).toThrowError();
     });
 
-    it('should correctly identify valid state based on loaded courses', () => {
+    it('correctly identifies valid state based on loaded courses', () => {
       service.setSelectedCourses([MOCK_COURSE_A, MOCK_COURSE_CONFLICTING]);
 
       expect(service.isValid()).toBeFalse();
