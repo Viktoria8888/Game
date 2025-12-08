@@ -42,6 +42,7 @@ export class FirestoreService<T extends GameStateDTO> {
     await deleteDoc(docRef);
   }
 
+  // multi-device sync
   subscribeToUser(userId: string, callback: (data: T | null) => void): () => void {
     const docRef = doc(this.collectionRef, userId);
     return onSnapshot(docRef, (snap) => {

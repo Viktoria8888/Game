@@ -18,7 +18,7 @@ export class PersistenceService {
   private firestoreUnsub?: Unsubscribe;
 
   private isRestoring = false;
-
+  private readonly gameState$ = toObservable(this.gameService.gameStateSnapshot);
   constructor() {
     effect((onCleanup) => {
       const userId = this.authService.userId;
@@ -32,7 +32,7 @@ export class PersistenceService {
 
       this.subscribeToRemoteChanges(userId);
 
-      const saveSubscription = toObservable(this.gameService.gameStateSnapshot)
+      const saveSubscription = this.gameState$
         .pipe(
           filter(() => !this.isRestoring),
           debounceTime(2000),
@@ -74,6 +74,6 @@ export class PersistenceService {
     this.gameService.restoreState(state);
     setTimeout(() => {
       this.isRestoring = false;
-    }, 100);
+    }, 0);
   }
 }
