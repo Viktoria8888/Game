@@ -19,7 +19,6 @@ export type RulesCount = {
 export class RulesService {
   private readonly validationService = inject(ValidationService);
 
-  // Map the rules to the level there are available in.
   private readonly allRules: ReadonlyArray<Rule> = RULES;
 
   private getActiveRules(context: ValidationContext): ReadonlyArray<Rule> {

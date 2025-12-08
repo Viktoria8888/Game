@@ -23,12 +23,12 @@ describe('GameService', () => {
     mockSchedule = {
       simpleMetadata: signal({ currentSemesterEcts: 0, score: 0 }),
       scheduleSlots: signal([]),
-      setScheduleFromSlots: jasmine.createSpy('setScheduleFromSlots'),
     };
 
     mockSelection = {
       selectedCourses: signal([]),
       clearAll: jasmine.createSpy('clearAll'),
+      setSelectedCourses: jasmine.createSpy('setSelectedCourses'),
     };
 
     TestBed.configureTestingModule({
@@ -79,13 +79,13 @@ describe('GameService', () => {
     const mockState = {
       level: 5,
       history: [{ some: 'data' }],
-      schedule: [{ some: 'slot' }],
+      coursesSelected: [{ some: 'slot' }],
     } as any;
 
     service.restoreState(mockState);
 
     expect(service.currentLevel()).toBe(5);
     expect(mockHistory.setHistory).toHaveBeenCalledWith(mockState.history);
-    expect(mockSchedule.setScheduleFromSlots).toHaveBeenCalledWith(mockState.schedule);
+    expect(mockSelection.setSelectedCourses).toHaveBeenCalledWith(mockState.coursesSelected);
   });
 });

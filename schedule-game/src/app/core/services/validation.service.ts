@@ -9,9 +9,7 @@ import {
 @Injectable({ providedIn: 'root' })
 export class ValidationService {
   validateAll(rules: ReadonlyArray<Rule>, context: ValidationContext): ValidationResultMap {
-    const activeRules = rules.filter((rule) => !rule.isActive || rule.isActive(context));
-
-    return activeRules.reduce<ValidationResultMap>(
+    return rules.reduce<ValidationResultMap>(
       (acc, rule) => {
         const result = rule.validate(context);
 
