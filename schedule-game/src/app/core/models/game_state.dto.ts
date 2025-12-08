@@ -1,4 +1,4 @@
-import { ScheduleSlot } from './course.interface';
+import { Course, ScheduleSlot } from './course.interface';
 
 export interface SimpleGameMetadata {
   stressLevel: number;
@@ -41,6 +41,6 @@ export type GameStateMetadata = SimpleGameMetadata & ComplexGameMetadata;
 
 export interface GameStateDTO {
   level: number;
-  schedule: ScheduleSlot[];
+  coursesSelected: Course[];
   history: SemesterHistory[];
 }

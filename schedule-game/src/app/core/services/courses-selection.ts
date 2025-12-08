@@ -1,7 +1,7 @@
-import { Injectable, Signal, computed, WritableSignal, signal } from '@angular/core';
+import { Injectable, Signal, computed, WritableSignal, signal, effect } from '@angular/core';
 import { Course } from '../models/course.interface';
 
-/** 
+/**
  * Manages which courses the user has selected.
  * Handles collision detection and validation.
  */
@@ -11,7 +11,6 @@ export class CourseSelectionService {
 
   public readonly selectedCourses: Signal<Course[]> = this.selectedCoursesSignal.asReadonly();
 
-
   public readonly collisions = computed(() => {
     return this.findAllCollisions(this.selectedCoursesSignal());
   });
@@ -20,7 +19,6 @@ export class CourseSelectionService {
     return this.collisions().length === 0;
   });
 
- 
   canAddCourse(course: Course): { canAdd: boolean; conflicts: Course[] } {
     const conflicts: Course[] = [];
     const selected = this.selectedCoursesSignal();

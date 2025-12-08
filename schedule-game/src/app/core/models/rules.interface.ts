@@ -4,7 +4,7 @@ import { GameStateDTO, GameStateMetadata } from './game_state.dto';
 export type ValidationFunction = (context: ValidationContext) => ValidationResult;
 
 /**Immutable snapshot of the current game state */
-export type ValidationContext = Omit<GameStateDTO, 'schedule' | 'history'> & {
+export type ValidationContext = Omit<GameStateDTO, 'coursesSelected' | 'history'> & {
   readonly schedule: ReadonlyArray<ScheduleSlot>;
   metadata: GameStateMetadata;
 };
@@ -17,7 +17,7 @@ export interface ValidationDetails {
 export interface ValidationResult {
   satisfied: boolean;
   severity?: 'error' | 'warning';
-  message: string;
+  message?: string;
   details?: ValidationDetails;
 }
 

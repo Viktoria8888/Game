@@ -1,4 +1,12 @@
-import { Injectable, Signal, computed, WritableSignal, signal, inject } from '@angular/core';
+import {
+  Injectable,
+  Signal,
+  computed,
+  WritableSignal,
+  signal,
+  inject,
+  effect,
+} from '@angular/core';
 import { ScheduleSlot, Course } from '../models/course.interface';
 import { ComplexGameMetadata, GameStateDTO, SimpleGameMetadata } from '../models/game_state.dto';
 import { CourseSelectionService } from './courses-selection';
@@ -10,10 +18,6 @@ import { CourseSelectionService } from './courses-selection';
 export class ScheduleService {
   private readonly courseSelectionService = inject(CourseSelectionService);
 
-  private readonly simpleMetadataSignal = signal<SimpleGameMetadata>(
-    this.createEmptySimpleMetadata()
-  );
-
   public readonly scheduleSlots: Signal<ScheduleSlot[]> = computed(() => {
     const selectedCourses = this.courseSelectionService.selectedCourses();
     return this.coursesToScheduleSlots(selectedCourses);
@@ -24,12 +28,11 @@ export class ScheduleService {
     return this.calculateComplexMetadata(schedule);
   });
 
-  public readonly simpleMetadata = this.simpleMetadataSignal.asReadonly();
-
-  recalculateMetadata(): void {
+  public readonly simpleMetadata = computed<SimpleGameMetadata>(() => {
     const courses = this.courseSelectionService.selectedCourses();
     const meta = this.createEmptySimpleMetadata();
 
+    // recalculateMetaData
     for (const course of courses) {
       meta.currentSemesterEcts += course.ects;
       meta.uniqueCoursesCount += 1;
@@ -47,24 +50,32 @@ export class ScheduleService {
       if (course.isMandatory) meta.mandatoryCoursesCompleted.push(course.id);
     }
 
-    this.simpleMetadataSignal.set(meta);
+    return meta;
+  });
+
+  calculateComplexMetadata(schedule: ScheduleSlot[]): ComplexGameMetadata {
+    // TODO: Implement based on your game rules
+    // Calculate things like:
+    // - Total contact hours per week
+    // - Average start/end times
+    // - Gaps between classes
+    // - Free days
+    // - Achievements
+
+    return {
+      totalContactHours: 0,
+      averageStartTime: 0,
+      averageEndTime: 0,
+      morningToAfternoonRatio: 0,
+      maxGapInAnyDay: 0,
+      totalGapTime: 0,
+      freeDaysCount: 0,
+      consecutiveFreeDays: 0,
+      currentStreak: 0,
+      bestStreak: 0,
+      achievementsUnlocked: [],
+    };
   }
-
-  setScheduleFromSlots(schedule: ScheduleSlot[]): void {
-    const uniqueCourses = new Map<string, Course>();
-
-    schedule.forEach((slot) => {
-      if (slot.course) {
-        uniqueCourses.set(slot.course.id, slot.course);
-      }
-    });
-
-    this.courseSelectionService.clearAll();
-    this.courseSelectionService.setSelectedCourses(Array.from(uniqueCourses.values()));
-
-    this.recalculateMetadata();
-  }
-
   private coursesToScheduleSlots(courses: Course[]): ScheduleSlot[] {
     const slots: ScheduleSlot[] = [];
 
@@ -98,30 +109,6 @@ export class ScheduleService {
       uniqueCoursesCount: 0,
       proseminarCount: 0,
       mandatoryCoursesCompleted: [],
-    };
-  }
-
-  calculateComplexMetadata(schedule: ScheduleSlot[]): ComplexGameMetadata {
-    // TODO: Implement based on your game rules
-    // Calculate things like:
-    // - Total contact hours per week
-    // - Average start/end times
-    // - Gaps between classes
-    // - Free days
-    // - Achievements
-
-    return {
-      totalContactHours: 0,
-      averageStartTime: 0,
-      averageEndTime: 0,
-      morningToAfternoonRatio: 0,
-      maxGapInAnyDay: 0,
-      totalGapTime: 0,
-      freeDaysCount: 0,
-      consecutiveFreeDays: 0,
-      currentStreak: 0,
-      bestStreak: 0,
-      achievementsUnlocked: [],
     };
   }
 }

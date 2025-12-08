@@ -66,8 +66,6 @@ export class ScheduleManagerComponent {
       () => {
         const courses = this.selectedCourses();
 
-        this.schedule.recalculateMetadata();
-
         const result = this.validationResults();
         console.log('Validation results:', result);
         console.log('Metadata:', this.schedule.simpleMetadata());
@@ -78,6 +76,6 @@ export class ScheduleManagerComponent {
   }
 
   handleNextLevel() {
-    this.gameService.completeLevel()
+    this.gameService.completeLevel();
   }
 }
