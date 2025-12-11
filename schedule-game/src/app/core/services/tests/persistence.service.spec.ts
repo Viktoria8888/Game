@@ -19,6 +19,7 @@ describe('PersistenceService', () => {
       gameStateSnapshot: signal({} as GameStateDTO),
       restoreState: jasmine.createSpy('restoreState'),
       markAsInitialized: jasmine.createSpy('markAsInitialized'),
+      isInitialized: signal(false),
     };
 
     mockAuthService = {
@@ -76,7 +77,7 @@ describe('PersistenceService', () => {
       const newState = { level: 2 } as GameStateDTO;
 
       mockGameService.gameStateSnapshot.set(newState);
-      tick(1999);
+      tick(499);
 
       expect(mockFirestoreService.set).not.toHaveBeenCalled();
 

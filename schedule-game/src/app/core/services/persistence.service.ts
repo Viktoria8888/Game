@@ -18,6 +18,7 @@ export class PersistenceService {
   private firestoreUnsub?: Unsubscribe;
 
   private isRestoring = false;
+  private isInitialized = false;
   private readonly gameState$ = toObservable(this.gameService.gameStateSnapshot);
   constructor() {
     effect((onCleanup) => {
@@ -27,15 +28,15 @@ export class PersistenceService {
         this.authService.signInAnonymously();
         return;
       }
-
+      this.isInitialized = false;
       this.loadState(userId);
 
       this.subscribeToRemoteChanges(userId);
 
       const saveSubscription = this.gameState$
         .pipe(
-          filter(() => !this.isRestoring),
-          debounceTime(2000),
+          filter(() => this.isInitialized && !this.isRestoring),
+          debounceTime(500),
           distinctUntilChanged((prev, curr) => JSON.stringify(prev) === JSON.stringify(curr))
         )
         .subscribe(async (state) => {
@@ -69,6 +70,7 @@ export class PersistenceService {
       }
     } finally {
       this.gameService.markAsInitialized();
+      this.isInitialized = true;
     }
   }
 

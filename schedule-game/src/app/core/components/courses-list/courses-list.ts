@@ -19,7 +19,6 @@ export class Courses {
   handleCourse(course: Course) {
     try {
       this.courseSelection.addCourse(course);
-      console.log(`✅ Added: ${course.name}`);
     } catch (error: any) {
       alert(error.message);
     }

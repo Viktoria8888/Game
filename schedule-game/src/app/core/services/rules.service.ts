@@ -1,5 +1,4 @@
 import { Injectable, inject } from '@angular/core';
-import { RULES } from '../../data/rules/level1.rules';
 import {
   Rule,
   ValidationContext,
@@ -7,6 +6,7 @@ import {
   ValidationResultMap,
 } from '../models/rules.interface';
 import { ValidationService } from './validation.service';
+import { ALL_GAME_RULES } from '../../data/rules';
 
 export type RulesCount = {
   cumulative: number;
@@ -19,7 +19,7 @@ export type RulesCount = {
 export class RulesService {
   private readonly validationService = inject(ValidationService);
 
-  private readonly allRules: ReadonlyArray<Rule> = RULES;
+  private readonly allRules: ReadonlyArray<Rule> = ALL_GAME_RULES;
 
   private getActiveRules(context: ValidationContext): ReadonlyArray<Rule> {
     return this.allRules.filter(

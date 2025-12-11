@@ -1,4 +1,4 @@
-import { Course } from '../../core/models/course.interface';
+import { Course } from '../core/models/course.interface';
 
 export const COURSES: Course[] = [
   // --- Mandatory First Year Courses ---

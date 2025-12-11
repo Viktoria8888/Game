@@ -7,12 +7,11 @@ import { HeaderComponent } from '../header/header';
 import { AuthService } from '../../services/auth.service';
 import { Contraints } from '../contraints/contraints';
 import { ValidationContext, ValidationResultMap } from '../../models/rules.interface';
-import { GameStateDTO, GameStateMetadata } from '../../models/game_state.dto';
 import { Courses } from '../courses-list/courses-list';
-import { COURSES } from '../../../data/rules/courses';
 import { RulesService } from '../../services/rules.service';
 import { GameService } from '../../services/game.service';
 import { PersistenceService } from '../../services/persistence.service';
+import { COURSES } from '../../../data/courses';
 
 @Component({
   selector: 'app-schedule-manager',
@@ -52,7 +51,6 @@ export class ScheduleManagerComponent {
   protected readonly validationResults = computed<ValidationResultMap>(() => {
     return this.rulesService.validate(this.validationContext());
   });
-
   readonly conflictingCourseIds = computed(() => {
     const collisions = this.collisions();
     const ids = new Set<string>();
@@ -62,11 +60,8 @@ export class ScheduleManagerComponent {
     });
     return ids;
   });
-  
+
   handleNextLevel() {
-    console.log('History Before: ');
-    console.log(this.gameService.history.history());
-    console.log('History After: ');
     this.gameService.completeLevel();
     this.persistency.saveImmediately();
   }

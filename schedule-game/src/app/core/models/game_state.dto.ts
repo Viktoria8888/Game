@@ -36,11 +36,14 @@ export interface SemesterHistory {
   coursesTaken: string[];
   ectsEarned: number;
   scoreEarned: number;
+  stressLevel: number;
 }
 export type GameStateMetadata = SimpleGameMetadata & ComplexGameMetadata;
 
 export interface GameStateDTO {
   level: number;
+  score: number;
+  stressLevel: number;
   coursesSelected: Course[];
   history: SemesterHistory[];
 }

@@ -3,7 +3,6 @@ import { HistoryService } from './history.service';
 import { CourseSelectionService } from './courses-selection';
 import { GameStateDTO } from '../models/game_state.dto';
 import { ScheduleService } from './schedule.service';
-import { PersistenceService } from './persistence.service';
 
 @Injectable({ providedIn: 'root' })
 export class GameService {
@@ -11,7 +10,7 @@ export class GameService {
   private readonly schedule = inject(ScheduleService);
   readonly history = inject(HistoryService);
 
-  readonly currentLevel = signal(0);
+  readonly currentLevel = signal(1);
 
   readonly isInitialized = signal(false);
 
@@ -26,6 +25,8 @@ export class GameService {
   readonly gameStateSnapshot = computed<GameStateDTO>(() => ({
     level: this.currentLevel(),
     history: this.history.history(),
+    stressLevel: this.schedule.simpleMetadata().stressLevel,
+    score: this.schedule.simpleMetadata().score,
     coursesSelected: this.courseSelection.selectedCourses(),
   }));
 
@@ -43,6 +44,7 @@ export class GameService {
       coursesTaken: selectedCourses.map((c) => c.id),
       ectsEarned: currentMeta.currentSemesterEcts,
       scoreEarned: currentMeta.score,
+      stressLevel: currentMeta.stressLevel,
     });
 
     this.currentLevel.update((l) => l + 1);

@@ -60,7 +60,7 @@ describe('GameService', () => {
   it('completeLevel: add record, increment level, and clear selection', () => {
     service.currentLevel.set(1);
 
-    mockSchedule.simpleMetadata.set({ currentSemesterEcts: 30, score: 90 });
+    mockSchedule.simpleMetadata.set({ currentSemesterEcts: 30, score: 90, stressLevel: 10 });
     mockSelection.selectedCourses.set([{ id: 'math-101' }, { id: 'math-102' }]);
 
     service.completeLevel();
@@ -70,6 +70,7 @@ describe('GameService', () => {
       coursesTaken: ['math-101', 'math-102'],
       ectsEarned: 30,
       scoreEarned: 90,
+      stressLevel: 10,
     });
     expect(service.currentLevel()).toBe(2);
     expect(mockSelection.clearAll).toHaveBeenCalled();

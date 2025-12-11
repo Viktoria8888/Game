@@ -9,12 +9,14 @@ const MOCK_SEMESTER_1: SemesterHistory = {
   coursesTaken: [],
   ectsEarned: 10,
   scoreEarned: 50,
+  stressLevel: 50,
 };
 const MOCK_SEMESTER_2: SemesterHistory = {
   level: 2,
   coursesTaken: [],
   ectsEarned: 30,
   scoreEarned: 50,
+  stressLevel: 33,
 };
 
 describe('HistoryService', () => {
