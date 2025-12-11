@@ -44,7 +44,7 @@ export class ScheduleService {
       }
 
       meta.ectsByType[course.type] = (meta.ectsByType[course.type] ?? 0) + course.ects;
-
+      meta.stressLevel += 10 * courses.length;
       if (course.hasExam) meta.hasExamCount += 1;
       if (course.isProseminar) meta.proseminarCount += 1;
       if (course.isMandatory) meta.mandatoryCoursesCompleted.push(course.id);
@@ -100,8 +100,8 @@ export class ScheduleService {
 
   private createEmptySimpleMetadata(): SimpleGameMetadata {
     return {
-      score: 200,
-      stressLevel: 100,
+      score: 0,
+      stressLevel: 0,
       currentSemesterEcts: 0,
       ectsByTag: {},
       ectsByType: {},

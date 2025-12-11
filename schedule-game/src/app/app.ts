@@ -1,23 +1,16 @@
-import { Component, inject, signal, viewChild } from '@angular/core';
-import { Auth, signInAnonymously } from '@angular/fire/auth';
-import { Firestore, doc, setDoc, getDoc } from '@angular/fire/firestore';
-import { JsonPipe } from '@angular/common';
+// src/app/app.ts
+import { Component, inject } from '@angular/core';
 import { ScheduleManagerComponent } from './core/components/schedule-manager/schedule-manager';
+import { PersistenceService } from './core/services/persistence.service';
+import { GameService } from './core/services/game.service';
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [ScheduleManagerComponent],
-  templateUrl: 'app.html',
+  templateUrl: './app.html',
+  styleUrl: './app.scss',
 })
 export class App {
-  // private readonly auth = inject(Auth);
-  // private readonly db = inject(Firestore);
-  // result = signal<any>(null);
-  // async test() {
-  //   const userCred = await signInAnonymously(this.auth);
-  //   const uid = userCred.user.uid;
-  //   const docRef = doc(this.db, 'users', uid);
-  //   await setDoc(docRef, { test: 'Hello Firestore!', uid: uid });
-  //   const docSnap = await getDoc(docRef);
-  //   this.result.set(docSnap.data());
+  private readonly persistence = inject(PersistenceService);
+  protected readonly gameService = inject(GameService);
 }

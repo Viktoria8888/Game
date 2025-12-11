@@ -40,7 +40,6 @@ export class PersistenceService {
         )
         .subscribe(async (state) => {
           if (this.authService.userId) {
-            console.log('Saving to Firestore...');
             await this.firestoreService.set(userId, state);
           }
         });
@@ -52,10 +51,24 @@ export class PersistenceService {
     });
   }
 
+  async saveImmediately(): Promise<void> {
+    const userId = this.authService.userId;
+    const currentState = this.gameService.gameStateSnapshot();
+
+    if (userId) {
+      console.log('Force saving to Firestore (Instant)...');
+      await this.firestoreService.set(userId, currentState);
+    }
+  }
+
   private async loadState(userId: string): Promise<void> {
-    const savedState = await this.firestoreService.get(userId);
-    if (savedState) {
-      this.updateLocalState(savedState);
+    try {
+      const savedState = await this.firestoreService.get(userId);
+      if (savedState) {
+        this.updateLocalState(savedState);
+      }
+    } finally {
+      this.gameService.markAsInitialized();
     }
   }
 

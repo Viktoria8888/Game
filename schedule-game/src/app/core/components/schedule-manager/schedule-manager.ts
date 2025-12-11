@@ -12,6 +12,7 @@ import { Courses } from '../courses-list/courses-list';
 import { COURSES } from '../../../data/rules/courses';
 import { RulesService } from '../../services/rules.service';
 import { GameService } from '../../services/game.service';
+import { PersistenceService } from '../../services/persistence.service';
 
 @Component({
   selector: 'app-schedule-manager',
@@ -25,6 +26,7 @@ export class ScheduleManagerComponent {
   private readonly schedule = inject(ScheduleService);
   private readonly rulesService = inject(RulesService);
   protected readonly authService = inject(AuthService);
+  private readonly persistency = inject(PersistenceService);
 
   protected readonly selectedCourses = this.courseSelection.selectedCourses;
   protected readonly collisions = this.courseSelection.collisions;
@@ -60,22 +62,12 @@ export class ScheduleManagerComponent {
     });
     return ids;
   });
-
-  constructor() {
-    effect(
-      () => {
-        const courses = this.selectedCourses();
-
-        const result = this.validationResults();
-        console.log('Validation results:', result);
-        console.log('Metadata:', this.schedule.simpleMetadata());
-        console.log('Rules validated for:', courses.length, 'courses');
-      },
-      { allowSignalWrites: true }
-    );
-  }
-
+  
   handleNextLevel() {
+    console.log('History Before: ');
+    console.log(this.gameService.history.history());
+    console.log('History After: ');
     this.gameService.completeLevel();
+    this.persistency.saveImmediately();
   }
 }

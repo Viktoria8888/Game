@@ -2,13 +2,14 @@ import {
   ApplicationConfig,
   provideBrowserGlobalErrorListeners,
   provideZonelessChangeDetection,
+  isDevMode,
 } from '@angular/core';
 import { provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
-import { getAuth, provideAuth } from '@angular/fire/auth';
-import { getFirestore, provideFirestore } from '@angular/fire/firestore';
+import { getAuth, provideAuth, connectAuthEmulator } from '@angular/fire/auth'; // <--- 2. Import emulator connector
+import { getFirestore, provideFirestore, connectFirestoreEmulator } from '@angular/fire/firestore'; // <--- 3. Import emulator connector
 import { COLLECTION_NAME } from './core/services/firestore.service';
 
 export const appConfig: ApplicationConfig = {
@@ -27,8 +28,23 @@ export const appConfig: ApplicationConfig = {
         measurementId: 'G-QZGSLLZFZB',
       })
     ),
-    provideAuth(() => getAuth()),
-    provideFirestore(() => getFirestore()),
+
+    provideAuth(() => {
+      const auth = getAuth();
+      if (isDevMode()) {
+        connectAuthEmulator(auth, 'http://localhost:9099', { disableWarnings: true });
+      }
+      return auth;
+    }),
+
+    provideFirestore(() => {
+      const firestore = getFirestore();
+      if (isDevMode()) {
+        connectFirestoreEmulator(firestore, 'localhost', 8080);
+      }
+      return firestore;
+    }),
+
     { provide: COLLECTION_NAME, useValue: 'users' },
   ],
 };

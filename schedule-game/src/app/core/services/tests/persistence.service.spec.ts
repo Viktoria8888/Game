@@ -18,6 +18,7 @@ describe('PersistenceService', () => {
     mockGameService = {
       gameStateSnapshot: signal({} as GameStateDTO),
       restoreState: jasmine.createSpy('restoreState'),
+      markAsInitialized: jasmine.createSpy('markAsInitialized'),
     };
 
     mockAuthService = {
@@ -86,6 +87,5 @@ describe('PersistenceService', () => {
       );
     }));
     // add test for isRestoring flag
-
   });
 });

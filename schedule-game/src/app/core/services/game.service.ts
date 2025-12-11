@@ -3,14 +3,17 @@ import { HistoryService } from './history.service';
 import { CourseSelectionService } from './courses-selection';
 import { GameStateDTO } from '../models/game_state.dto';
 import { ScheduleService } from './schedule.service';
+import { PersistenceService } from './persistence.service';
 
 @Injectable({ providedIn: 'root' })
 export class GameService {
   private readonly courseSelection = inject(CourseSelectionService);
   private readonly schedule = inject(ScheduleService);
-  private readonly history = inject(HistoryService);
+  readonly history = inject(HistoryService);
 
-  readonly currentLevel = signal(1);
+  readonly currentLevel = signal(0);
+
+  readonly isInitialized = signal(false);
 
   readonly totalEcts = computed(
     () => this.history.totalHistoricalEcts() + this.schedule.simpleMetadata().currentSemesterEcts
@@ -25,6 +28,10 @@ export class GameService {
     history: this.history.history(),
     coursesSelected: this.courseSelection.selectedCourses(),
   }));
+
+  markAsInitialized() {
+    this.isInitialized.set(true);
+  }
 
   completeLevel() {
     const level = this.currentLevel();
@@ -41,6 +48,7 @@ export class GameService {
     this.currentLevel.update((l) => l + 1);
 
     this.courseSelection.clearAll();
+    console.log(this.history.history());
   }
 
   restoreState(state: GameStateDTO) {

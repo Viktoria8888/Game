@@ -86,6 +86,20 @@ describe('ScheduleService', () => {
   });
 
   describe('simpleMetadata signal', () => {
+    it('starts with all values assigned to 0', () => {
+      expect(service.simpleMetadata()).toEqual({
+        score: 0,
+        stressLevel: 0,
+        currentSemesterEcts: 0,
+        ectsByTag: {},
+        ectsByType: {},
+        hasExamCount: 0,
+        uniqueCoursesCount: 0,
+        proseminarCount: 0,
+        mandatoryCoursesCompleted: [],
+      });
+    });
+
     it('correctly sums ECTS and counts from selected courses', () => {
       mockSelectionService.selectedCourses.set([MOCK_COURSE_A, MOCK_COURSE_B]);
 
