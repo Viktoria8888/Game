@@ -1,61 +1,116 @@
 import { Injectable, inject, signal, computed } from '@angular/core';
 import { HistoryService } from './history.service';
 import { CourseSelectionService } from './courses-selection';
-import { GameStateDTO } from '../models/game_state.dto';
+import { GameStateDTO, GameStateMetadata, SimpleGameMetadata } from '../models/game_state.dto';
 import { ScheduleService } from './schedule.service';
+import { RulesService } from './rules.service';
+import { ValidationContext, ValidationResultMap } from '../models/rules.interface';
+
+type SemesterOutcome = {
+  stressChange: number;
+  scoreChange: number;
+  predictedTotalStress: number;
+  predictedTotalScore: number;
+  validation: ValidationResultMap;
+};
 
 @Injectable({ providedIn: 'root' })
 export class GameService {
   private readonly courseSelection = inject(CourseSelectionService);
   private readonly schedule = inject(ScheduleService);
+  private readonly rulesService = inject(RulesService);
   readonly history = inject(HistoryService);
 
   readonly currentLevel = signal(1);
-
   readonly isInitialized = signal(false);
 
-  readonly totalEcts = computed(
-    () => this.history.totalHistoricalEcts() + this.schedule.simpleMetadata().currentSemesterEcts
-  );
+  readonly playerStress = signal(0);
+  readonly totalScore = signal(0);
 
-  readonly totalScore = computed(
-    () => this.history.totalHistoricalScore() + this.schedule.simpleMetadata().score
-  );
+  readonly currentSemesterOutcome = computed<SemesterOutcome>(() => {
+    const baseMeta = this.schedule.simpleMetadata();
 
-  readonly gameStateSnapshot = computed<GameStateDTO>(() => ({
-    level: this.currentLevel(),
-    history: this.history.history(),
-    stressLevel: this.schedule.simpleMetadata().stressLevel,
-    score: this.schedule.simpleMetadata().score,
-    coursesSelected: this.courseSelection.selectedCourses(),
-  }));
+    const combinedMeta: GameStateMetadata = {
+      ...this.schedule.simpleMetadata(),
+      ...this.schedule.complexMetadata(),
+    };
 
-  markAsInitialized() {
-    this.isInitialized.set(true);
-  }
+    const validationContext: ValidationContext = {
+      schedule: this.schedule.scheduleSlots(),
+      metadata: combinedMeta,
+      coursesSelected: this.courseSelection.selectedCourses(),
+      level: this.currentLevel(),
+    };
 
-  completeLevel() {
-    const level = this.currentLevel();
-    const currentMeta = this.schedule.simpleMetadata();
-    const selectedCourses = this.courseSelection.selectedCourses();
+    const validation = this.rulesService.validate(validationContext);
 
-    this.history.addRecord({
-      level: level,
-      coursesTaken: selectedCourses.map((c) => c.id),
-      ectsEarned: currentMeta.currentSemesterEcts,
-      scoreEarned: currentMeta.score,
-      stressLevel: currentMeta.stressLevel,
+    let stressChange = baseMeta.stressLevel;
+    let scoreChange = baseMeta.score;
+
+    validation.satisfied.forEach((rule) => {
+      if (rule.category === 'Goal') {
+        if (rule.stressModifier) stressChange += rule.stressModifier;
+        if (rule.scoreReward) scoreChange += rule.scoreReward;
+      }
     });
 
+    let predictedTotalStress = this.playerStress() + stressChange;
+    if (predictedTotalStress < 0) predictedTotalStress = 0;
+
+    return {
+      stressChange,
+      scoreChange,
+      predictedTotalStress,
+      predictedTotalScore: this.totalScore() + scoreChange,
+      validation,
+    };
+  });
+
+  completeLevel() {
+    const outcome = this.currentSemesterOutcome();
+    if (!this.rulesService.areRequiredRulesSatisfied(outcome.validation)) {
+      console.error('Cannot complete level: Mandatory rules violated');
+      return;
+    }
+
+    this.history.addRecord({
+      level: this.currentLevel(),
+      coursesTaken: this.courseSelection.selectedCourses().map((c) => c.id),
+      ectsEarned: this.schedule.simpleMetadata().currentSemesterEcts,
+      scoreEarned: outcome.scoreChange,
+      stressLevel: outcome.predictedTotalStress,
+    });
+
+    this.playerStress.set(outcome.predictedTotalStress);
+    this.totalScore.set(outcome.predictedTotalScore);
     this.currentLevel.update((l) => l + 1);
 
     this.courseSelection.clearAll();
-    console.log(this.history.history());
+
+    if (this.playerStress() >= 100) {
+      console.log('GAME OVER: Stress Limit Reached');
+    }
+  }
+
+  readonly gameStateSnapshot = computed<GameStateDTO>(() => {
+    return {
+      level: this.currentLevel(),
+      history: this.history.history(),
+      stressLevel: this.playerStress(),
+      score: this.totalScore(),
+      coursesSelected: this.courseSelection.selectedCourses(),
+    };
+  });
+
+  markAsInitialized() {
+    this.isInitialized.set(true);
   }
 
   restoreState(state: GameStateDTO) {
     this.currentLevel.set(state.level);
     this.history.setHistory(state.history || []);
     this.courseSelection.setSelectedCourses(state.coursesSelected);
+    this.playerStress.set(state.stressLevel);
+    this.totalScore.set(state.score);
   }
 }

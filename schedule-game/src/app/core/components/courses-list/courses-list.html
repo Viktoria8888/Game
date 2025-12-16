@@ -20,6 +20,8 @@
         </span>
         @if (course.isMandatory) {
         <span class="badge mandatory">Mandatory</span>
+        } @if (course.isFirstYearRecommended){
+        <span class="badge recommended">First year recommended</span>
         }
       </div>
 

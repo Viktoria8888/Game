@@ -1,7 +1,7 @@
 <app-header
   [currentLevel]="currentLevel()"
-  [stressLevel]="metadata().stressLevel"
-  [totalScore]="metadata().score"
+  [stressLevel]="this.gameService.currentSemesterOutcome().predictedTotalStress"
+  [totalScore]="this.gameService.currentSemesterOutcome().predictedTotalScore"
   [userName]="authService.username()"
 />
 <app-contraints

@@ -20,7 +20,7 @@ import { COURSES } from '../../../data/courses';
   styleUrl: './schedule-manager.scss',
 })
 export class ScheduleManagerComponent {
-  private readonly gameService = inject(GameService);
+  protected readonly gameService = inject(GameService);
   private readonly courseSelection = inject(CourseSelectionService);
   private readonly schedule = inject(ScheduleService);
   private readonly rulesService = inject(RulesService);
@@ -34,7 +34,8 @@ export class ScheduleManagerComponent {
   protected readonly currentLevel = this.gameService.currentLevel;
 
   protected readonly validationContext = computed<ValidationContext>(() => ({
-    schedule: this.scheduleSlots(),
+    schedule: this.schedule.scheduleSlots(),
+    coursesSelected: this.selectedCourses(),
     level: this.currentLevel(),
     metadata: {
       ...this.schedule.simpleMetadata(),
@@ -48,9 +49,10 @@ export class ScheduleManagerComponent {
     return this.courses.filter((course) => !selected.some((sc) => sc.id === course.id));
   });
 
-  protected readonly validationResults = computed<ValidationResultMap>(() => {
-    return this.rulesService.validate(this.validationContext());
+  protected readonly validationResults = computed(() => {
+    return this.gameService.currentSemesterOutcome().validation;
   });
+
   readonly conflictingCourseIds = computed(() => {
     const collisions = this.collisions();
     const ids = new Set<string>();
