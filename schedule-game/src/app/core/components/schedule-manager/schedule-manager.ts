@@ -23,7 +23,6 @@ export class ScheduleManagerComponent {
   protected readonly gameService = inject(GameService);
   private readonly courseSelection = inject(CourseSelectionService);
   private readonly schedule = inject(ScheduleService);
-  private readonly rulesService = inject(RulesService);
   protected readonly authService = inject(AuthService);
   private readonly persistency = inject(PersistenceService);
 
@@ -36,6 +35,7 @@ export class ScheduleManagerComponent {
   protected readonly validationContext = computed<ValidationContext>(() => ({
     schedule: this.schedule.scheduleSlots(),
     coursesSelected: this.selectedCourses(),
+    history: this.gameService.history.history(),
     level: this.currentLevel(),
     metadata: {
       ...this.schedule.simpleMetadata(),

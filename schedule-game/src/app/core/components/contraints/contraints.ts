@@ -1,6 +1,7 @@
 import { Component, computed, inject, input, output, Signal, signal } from '@angular/core';
 import { RulesCount, RulesService } from '../../services/rules.service';
 import { Rule, ValidationContext, ValidationResultMap } from '../../models/rules.interface';
+import { MatTooltip } from '@angular/material/tooltip';
 
 interface ConstraintDisplay extends Rule {
   isSatisfied: boolean;
@@ -11,7 +12,7 @@ interface ConstraintDisplay extends Rule {
 
 @Component({
   selector: 'app-contraints',
-  imports: [],
+  imports: [MatTooltip],
   templateUrl: './contraints.html',
   styleUrl: './contraints.scss',
 })
@@ -28,27 +29,30 @@ export class Contraints {
   protected readonly activeConstraints = computed(() => {
     const category = this.activeTab();
     const results = this.validationResults();
+
     const allRules: ConstraintDisplay[] = [
       ...results.satisfied
-        .filter((rule) => rule.category === category)
-        .map((rule) => ({
-          ...rule,
+        .filter((item) => item.rule.category === category)
+        .map((item) => ({
+          ...item.rule,
           isSatisfied: true,
+          hint: item.result.message,
           currentValue: undefined,
           targetValue: undefined,
-          hint: undefined,
         })),
+
       ...results.violated
-        .filter((rule) => rule.category === category)
-        .map((rule) => ({
-          ...rule,
+        .filter((item) => item.rule.category === category)
+        .map((item) => ({
+          ...item.rule,
           isSatisfied: false,
-          currentValue: undefined,
-          targetValue: undefined,
-          hint: undefined,
+          hint: item.result.message,
+          currentValue: item.result.details?.currentVal,
+          targetValue: item.result.details?.requiredVal,
         })),
     ];
-    return allRules;
+
+    return allRules.sort((a, b) => Number(a.isSatisfied) - Number(b.isSatisfied));
   });
 
   protected readonly tabInfo = computed(() => {
@@ -57,9 +61,9 @@ export class Contraints {
 
     const totalCounts = this.rulesService.getRuleCounts(context);
     const satisfiedCounts = results.satisfied.reduce(
-      (acc, rule) => {
-        if (rule.category === 'Mandatory') acc.mandatory++;
-        else if (rule.category === 'Goal') acc.goal++;
+      (acc, item) => {
+        if (item.rule.category === 'Mandatory') acc.mandatory++;
+        else if (item.rule.category === 'Goal') acc.goal++;
         acc.total++;
         return acc;
       },

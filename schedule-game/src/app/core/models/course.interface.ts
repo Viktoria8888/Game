@@ -6,31 +6,28 @@ export interface CourseSlot {
   durationHours: number;
 }
 
+export type Tag =
+  | 'CORE' // 'O'
+  | 'CS' // 'I'
+  | 'TOOLS' // 'K'
+  | 'HUM' // 'HS'
+  | 'IP' // 'OWI'
+  | 'STATS' // 'RPIS'
+  | 'FOC' // 'PIPO'
+  | 'SE' // 'IO'
+  | 'CSA' // 'ASK'
+  | 'OS' // 'SO'
+  | 'CN' // 'SK'
+  | 'DB' // 'BD'
+  | 'P';
+
 export interface Course {
   id: string;
   subjectId: string;
   name: string;
   ects: number;
   type: 'Lecture' | 'Classes' | 'Laboratory' | 'Project' | 'Seminar';
-  tags:
-    | (
-        | 'O'
-        | 'I'
-        | 'K'
-        | 'HS'
-        | 'E'
-        | 'OWI'
-        | 'RPIS'
-        | 'IO'
-        | 'PIPO'
-        | 'ASK'
-        | 'SO'
-        | 'SK'
-        | 'BD'
-        | 'PS'
-        | 'P'
-      )[]
-    | null;
+  tags: Tag[] | null;
   isMandatory: boolean;
   hasExam: boolean;
   isFirstYearRecommended?: boolean;
@@ -46,3 +43,19 @@ export interface ScheduleSlot {
   startTime: number;
   course: Course | null;
 }
+
+export const TAG_MAP: Record<string, string> = {
+  CORE: 'Mandatory Core', // O
+  CS: 'Computer Science', // I
+  TOOLS: 'IT Tools & Courses', // K
+  P: 'Programming Project', // P
+  OOAD: 'Object-Oriented Analysis and Design', // PIPO
+  IP: 'Intellectual Property Law', // OWI
+  CSA: 'Computer System Architecture', // ASK
+  OS: 'Operating Systems', // SO
+  DB: 'Databases', //BD
+  CN: 'Computer Networks', // SK
+  SE: 'Software Engineering', // IO
+  STATS: 'Probability & Statistics', // RPIS
+  HUM: 'Humanities', // H
+};

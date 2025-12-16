@@ -29,8 +29,7 @@ $c-danger-dark: #b71c1c;
 
   h1 {
     margin: 0;
-    @include text(40px, 700, white);
-    font-family: 'Roboto Mono';
+    @include text(32px, 700, white);
     letter-spacing: 0.5px;
 
     @include mobile {

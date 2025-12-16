@@ -37,6 +37,7 @@ export class GameService {
 
     const validationContext: ValidationContext = {
       schedule: this.schedule.scheduleSlots(),
+      history: this.history.history(),
       metadata: combinedMeta,
       coursesSelected: this.courseSelection.selectedCourses(),
       level: this.currentLevel(),
@@ -47,7 +48,8 @@ export class GameService {
     let stressChange = baseMeta.stressLevel;
     let scoreChange = baseMeta.score;
 
-    validation.satisfied.forEach((rule) => {
+    validation.satisfied.forEach((item) => {
+      const rule = item.rule;
       if (rule.category === 'Goal') {
         if (rule.stressModifier) stressChange += rule.stressModifier;
         if (rule.scoreReward) scoreChange += rule.scoreReward;

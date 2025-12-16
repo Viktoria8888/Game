@@ -54,7 +54,7 @@ export class RulesService {
   }
 
   areRequiredRulesSatisfied(results: ValidationResultMap): boolean {
-    return results.violated.every((r) => r.category == 'Goal');
+    return results.violated.every((item) => item.rule.category == 'Goal');
   }
 
   validate(context: ValidationContext): ValidationResultMap {

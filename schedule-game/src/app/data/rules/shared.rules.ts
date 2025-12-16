@@ -3,7 +3,6 @@ import { COURSES } from '../courses';
 import { createMaxEctsRule, createMinEctsRule } from './common';
 export const MIN_ECTS_RULE = createMinEctsRule('min-ects', 18, null, 'Mandatory');
 
-const MAX_ECTS_RULE = createMaxEctsRule('r2', 35, null, 'Mandatory');
 export const R3_PAIRING: Rule = {
   id: 'generic-pairing',
   title: 'Incomplete Subjects',
@@ -53,4 +52,4 @@ export const R3_PAIRING: Rule = {
     };
   },
 };
-export const GLOBAL_RULES: ReadonlyArray<Rule> = [MIN_ECTS_RULE, MAX_ECTS_RULE, R3_PAIRING];
+export const GLOBAL_RULES: ReadonlyArray<Rule> = [R3_PAIRING];
