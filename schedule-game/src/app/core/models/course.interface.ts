@@ -13,13 +13,14 @@ export type Tag =
   | 'HUM' // 'HS'
   | 'IP' // 'OWI'
   | 'STATS' // 'RPIS'
-  | 'FOC' // 'PIPO'
+  | 'OOAD' // 'PIPO'
   | 'SE' // 'IO'
   | 'CSA' // 'ASK'
   | 'OS' // 'SO'
   | 'CN' // 'SK'
   | 'DB' // 'BD'
-  | 'P';
+  | 'P'
+  | 'AI';
 
 export interface Course {
   id: string;
@@ -58,4 +59,5 @@ export const TAG_MAP: Record<string, string> = {
   SE: 'Software Engineering', // IO
   STATS: 'Probability & Statistics', // RPIS
   HUM: 'Humanities', // H
+  AI: 'Artificial Intelligence',
 };

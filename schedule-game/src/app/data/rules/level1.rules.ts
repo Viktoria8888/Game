@@ -1,8 +1,14 @@
 import { Rule, ValidationContext } from '../../core/models/rules.interface';
 import { COURSES } from '../courses';
-import { createMaxEctsRule, createMinEctsRule, free_friday, no_gaps } from './common';
+import {
+  createMaxEctsRule,
+  createMinEctsRule,
+  free_friday,
+  mandatorySubjectForLevel,
+  no_gaps,
+} from './common';
 
-export const L1_RECCOMENDED: Rule = {
+export const L1_RECOMMENDED: Rule = {
   id: 'first_year_recommended',
   title: 'Recommended Subjects',
   description: 'Select all subjects recommended for the first year.',
@@ -29,14 +35,18 @@ export const L1_RECCOMENDED: Rule = {
     };
   },
 };
-const FREE_FRIDAY = free_friday(1, 'Goal', 200, -10);
-const NO_GAPS = no_gaps(300, 20);
-const L2_MIN_ECTS = createMinEctsRule('l2-min', 18, 1, 'Mandatory');
-const L2_MAX_ECTS = createMaxEctsRule('l2-max', 35, 1, 'Mandatory');
+
+const L1_NO_GAPS = no_gaps(300, 20);
+const L1_MIN_ECTS = createMinEctsRule('l1-min', 18, 1, 'Mandatory');
+const L1_MAX_ECTS = createMaxEctsRule('l1-max', 35, 1, 'Mandatory');
+const L1_MANDATORY_COURSES = mandatorySubjectForLevel('l1-mandatory', 1, 'Mandatory', [
+  '1003',
+  '1001',
+]);
 export const LEVEL_1_RULES: ReadonlyArray<Rule> = [
-  L1_RECCOMENDED,
-  L2_MAX_ECTS,
-  L2_MIN_ECTS,
-  FREE_FRIDAY,
-  NO_GAPS,
+  L1_MANDATORY_COURSES,
+  L1_RECOMMENDED,
+  L1_MAX_ECTS,
+  L1_MIN_ECTS,
+  L1_NO_GAPS,
 ];

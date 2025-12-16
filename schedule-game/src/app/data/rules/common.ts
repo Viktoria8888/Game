@@ -1,5 +1,6 @@
 import { Course, ScheduleSlot } from '../../core/models/course.interface';
 import { Rule, ValidationContext } from '../../core/models/rules.interface';
+import { COURSES } from '../courses';
 
 export const hasCourseWithTag = (ctx: ValidationContext, tag: string) =>
   ctx.coursesSelected.some((c) => c.tags?.includes(tag as any));
@@ -11,6 +12,44 @@ export const getPassedCourseIds = (ctx: ValidationContext): Set<string> => {
   const ids = new Set<string>();
   ctx.history.forEach((sem) => sem.coursesTaken.forEach((id) => ids.add(id)));
   return ids;
+};
+
+export const mandatorySubjectForLevel = (
+  id: string,
+  level: number,
+  category: 'Mandatory' | 'Goal',
+  requiredSubjectIds: string[]
+): Rule => {
+  const requiredNames = COURSES.filter(
+    (course) => requiredSubjectIds.includes(course.subjectId) && course.type != 'Classes'
+  )
+    .map((c) => c.name)
+    .join(', ');
+
+  return {
+    id,
+    title: 'Mandatory Subjects',
+    description: `Required subjects: ${requiredNames}.`,
+    category,
+    level,
+
+    validate: (context: ValidationContext) => {
+      const selectedIds = new Set(context.coursesSelected.map((c) => c.subjectId));
+
+      const missingIds = requiredSubjectIds.filter((reqId) => !selectedIds.has(reqId));
+
+      const missingNames = COURSES.filter((c) => missingIds.includes(c.id)).map((c) => c.name);
+
+      return {
+        satisfied: missingIds.length === 0,
+        severity: 'error',
+        message:
+          missingIds.length === 0
+            ? 'All mandatory subjects selected.'
+            : `Missing: ${missingNames.join(', ')}`,
+      };
+    },
+  };
 };
 
 export const createMinEctsRule = (
