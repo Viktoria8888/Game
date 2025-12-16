@@ -9,9 +9,8 @@ import { ValidationService } from './validation.service';
 import { ALL_GAME_RULES } from '../../data/rules';
 
 export type RulesCount = {
-  cumulative: number;
+  mandatory: number;
   goal: number;
-  additional: number;
   total: number;
 };
 
@@ -30,7 +29,7 @@ export class RulesService {
 
   getRulesByCategory(
     context: ValidationContext,
-    category: 'Cumulative' | 'Goal' | 'Additional'
+    category: 'Mandatory' | 'Goal'
   ): ReadonlyArray<Rule> {
     const activeRules = this.getActiveRules(context);
     return activeRules.filter((rule) => rule.category === category);
@@ -40,24 +39,22 @@ export class RulesService {
     const activeRules = this.getActiveRules(context);
     const counts = activeRules.reduce(
       (acc, rule) => {
-        if (rule.category === 'Cumulative') {
-          acc.cumulative++;
+        if (rule.category === 'Mandatory') {
+          acc.mandatory++;
         } else if (rule.category === 'Goal') {
           acc.goal++;
-        } else if (rule.category === 'Additional') {
-          acc.additional++;
         }
         acc.total++;
         return acc;
       },
-      { cumulative: 0, goal: 0, additional: 0, total: 0 } as RulesCount
+      { mandatory: 0, goal: 0, total: 0 } as RulesCount
     );
 
     return counts;
   }
 
   areRequiredRulesSatisfied(results: ValidationResultMap): boolean {
-    return results.violated.every((r) => r.category == 'Additional');
+    return results.violated.every((r) => r.category == 'Goal');
   }
 
   validate(context: ValidationContext): ValidationResultMap {
@@ -68,7 +65,7 @@ export class RulesService {
 
   validateByCategory(
     context: ValidationContext,
-    category: 'Cumulative' | 'Goal' | 'Additional'
+    category: 'Mandatory' | 'Goal'
   ): ValidationResultMap {
     const categoryRules = this.getRulesByCategory(context, category);
     const results = this.validationService.validateAll(categoryRules, context);

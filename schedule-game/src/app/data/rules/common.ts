@@ -1,16 +1,18 @@
+import { Course, ScheduleSlot } from '../../core/models/course.interface';
 import { Rule, ValidationContext } from '../../core/models/rules.interface';
 
 export const createMinEctsRule = (
   id: string,
   minEcts: number,
-  level: number | null = null
+  level: number | null = null,
+  category: 'Mandatory' | 'Goal'
 ): Rule => {
   return {
     id,
     title: 'Minimum Ects',
     description: `Minimum ${minEcts} ECTS required per semester`,
-    category: 'Cumulative',
-    level,
+    category,
+    level: level,
     priority: 1,
 
     validate: (context: ValidationContext) => {
@@ -35,14 +37,15 @@ export const createMinEctsRule = (
 export const createMaxEctsRule = (
   id: string,
   maxEcts: number,
-  level: number | null = null
+  level: number | null = null,
+  category: 'Mandatory' | 'Goal'
 ): Rule => {
   return {
     id,
     title: 'Maximum Ects',
     description: `Maximum ${maxEcts} ECTS required per semester`,
-    category: 'Cumulative',
-    level,
+    category,
+    level: level,
     priority: 1,
 
     validate: (context: ValidationContext) => {
@@ -62,4 +65,99 @@ export const createMaxEctsRule = (
       };
     },
   };
+};
+
+export const free_friday = (
+  level: number,
+  category: 'Mandatory' | 'Goal',
+  scoreReward: number,
+  stressModifier: number
+) => {
+  return {
+    id: 'l1-free-friday',
+    title: 'Long Weekend',
+    description: 'Keep Friday completely free of classes.',
+    scoreReward,
+    stressModifier,
+    category,
+    level,
+    validate: (context: ValidationContext) => {
+      const fridaySlots = context.schedule.filter((s) => s.day === 'Fri' && s.course !== null);
+      const isSatisfied = fridaySlots.length === 0;
+
+      return {
+        satisfied: isSatisfied && context.coursesSelected.length > 0,
+        message: isSatisfied
+          ? 'Friday is free! Enjoy your long weekend.'
+          : 'You have classes on Friday. Try to move them to get a long weekend!',
+      };
+    },
+  } as Rule;
+};
+
+export const no_gaps = (scoreReward: number, stressModifier: number): Rule => {
+  return {
+    id: 'l1-no-gaps',
+    title: 'Compact Schedule',
+    description: 'Avoid gaps longer than 2 hours.',
+    category: 'Goal',
+    level: 1,
+    scoreReward,
+    stressModifier,
+
+    validate: (context: ValidationContext) => {
+      const slotsByDay = getDailySchedulesFromCourses(context.coursesSelected);
+
+      const MAX_GAP = 120;
+      let hasHugeGap = false;
+
+      for (const day in slotsByDay) {
+        const daySlots = slotsByDay[day];
+
+        for (let i = 0; i < daySlots.length - 1; i++) {
+          const currentClass = daySlots[i];
+          const nextClass = daySlots[i + 1];
+
+          const currentEndMinutes = currentClass.end * 60;
+          const nextStartMinutes = nextClass.start * 60;
+
+          if (nextStartMinutes - currentEndMinutes > MAX_GAP) {
+            hasHugeGap = true;
+            break;
+          }
+        }
+      }
+
+      return {
+        satisfied: !hasHugeGap && Object.keys(slotsByDay).length > 0,
+        message: !hasHugeGap
+          ? 'Schedule is compact.'
+          : 'You have long gaps (over 2h) between classes.',
+      };
+    },
+  };
+};
+
+const getDailySchedulesFromCourses = (courses: ReadonlyArray<Course>) => {
+  const groups: { [key: string]: { start: number; end: number; name: string }[] } = {};
+
+  courses.forEach((course) => {
+    course.schedule.forEach((slot) => {
+      if (!groups[slot.day]) {
+        groups[slot.day] = [];
+      }
+
+      groups[slot.day].push({
+        start: slot.startTime,
+        end: slot.startTime + slot.durationHours,
+        name: course.name,
+      });
+    });
+  });
+
+  Object.values(groups).forEach((daySlots) => {
+    daySlots.sort((a, b) => a.start - b.start);
+  });
+
+  return groups;
 };

@@ -1,4 +1,4 @@
-import { ScheduleSlot } from './course.interface';
+import { Course, ScheduleSlot } from './course.interface';
 import { GameStateDTO, GameStateMetadata } from './game_state.dto';
 
 export type ValidationFunction = (context: ValidationContext) => ValidationResult;
@@ -9,6 +9,7 @@ export type ValidationContext = Omit<
   'coursesSelected' | 'history' | 'stressLevel' | 'score'
 > & {
   readonly schedule: ReadonlyArray<ScheduleSlot>;
+  readonly coursesSelected: ReadonlyArray<Course>;
   metadata: GameStateMetadata;
 };
 
@@ -28,9 +29,11 @@ export interface Rule {
   id: string;
   title: string;
   description: string;
-  category: 'Cumulative' | 'Goal' | 'Additional';
+  category: 'Mandatory' | 'Goal';
+  scoreReward?: number;
+  stressModifier?: number;
   level: number | null; // null means that the rule is applied to any level
-  priority: number;
+  priority?: number;
   controlledBy?: string[];
   overrides?: string[];
   validate: ValidationFunction;

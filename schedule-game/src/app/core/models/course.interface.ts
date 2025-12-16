@@ -8,6 +8,7 @@ export interface CourseSlot {
 
 export interface Course {
   id: string;
+  subjectId: string;
   name: string;
   ects: number;
   type: 'Lecture' | 'Classes' | 'Laboratory' | 'Project' | 'Seminar';

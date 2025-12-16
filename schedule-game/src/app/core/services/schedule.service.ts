@@ -44,7 +44,7 @@ export class ScheduleService {
       }
 
       meta.ectsByType[course.type] = (meta.ectsByType[course.type] ?? 0) + course.ects;
-      meta.stressLevel += 10 * courses.length;
+      meta.stressLevel += course.ects;
       if (course.hasExam) meta.hasExamCount += 1;
       if (course.isProseminar) meta.proseminarCount += 1;
       if (course.isMandatory) meta.mandatoryCoursesCompleted.push(course.id);

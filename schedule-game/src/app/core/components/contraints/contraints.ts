@@ -23,7 +23,7 @@ export class Contraints {
 
   readonly onClickNextLevel = output();
 
-  protected readonly activeTab = signal<'Cumulative' | 'Goal' | 'Additional'>('Cumulative');
+  protected readonly activeTab = signal<'Mandatory' | 'Goal'>('Mandatory');
 
   protected readonly activeConstraints = computed(() => {
     const category = this.activeTab();
@@ -58,33 +58,26 @@ export class Contraints {
     const totalCounts = this.rulesService.getRuleCounts(context);
     const satisfiedCounts = results.satisfied.reduce(
       (acc, rule) => {
-        if (rule.category === 'Cumulative') acc.cumulative++;
+        if (rule.category === 'Mandatory') acc.mandatory++;
         else if (rule.category === 'Goal') acc.goal++;
-        else if (rule.category === 'Additional') acc.additional++;
         acc.total++;
         return acc;
       },
-      { cumulative: 0, goal: 0, additional: 0, total: 0 } as RulesCount
+      { mandatory: 0, goal: 0, total: 0 } as RulesCount
     );
 
     return [
       {
-        category: 'Cumulative' as const,
-        label: 'CUMULATIVE',
-        count: totalCounts.cumulative,
-        satisfied: satisfiedCounts.cumulative,
+        category: 'Mandatory' as const,
+        label: 'MANDATORY',
+        count: totalCounts.mandatory,
+        satisfied: satisfiedCounts.mandatory,
       },
       {
         category: 'Goal' as const,
         label: 'GOAL',
         count: totalCounts.goal,
         satisfied: satisfiedCounts.goal,
-      },
-      {
-        category: 'Additional' as const,
-        label: 'ADDITIONAL',
-        count: totalCounts.additional,
-        satisfied: satisfiedCounts.additional,
       },
     ];
   });
@@ -98,14 +91,14 @@ export class Contraints {
     this.onClickNextLevel.emit();
   }
 
-  switchTab(category: 'Cumulative' | 'Additional' | 'Goal') {
+  switchTab(category: 'Mandatory' | 'Goal') {
     this.activeTab.set(category);
   }
 
   getConstraintIcon(constraint: ConstraintDisplay): string {
     if (constraint.isSatisfied) return '✓';
 
-    if (constraint.category === 'Cumulative' || constraint.category === 'Goal') {
+    if (constraint.category === 'Mandatory') {
       return '✗';
     }
 
