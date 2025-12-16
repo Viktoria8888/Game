@@ -28,7 +28,7 @@
       @if (course.tags && course.tags.length > 0) {
       <div class="tags">
         @for (tag of course.tags; track tag) {
-        <span class="tag">{{ tag }}</span>
+        <span class="tag" matTooltipClass="tooltip" [matTooltip]="getTagTitle(tag)">{{ tag }}</span>
         }
       </div>
       }

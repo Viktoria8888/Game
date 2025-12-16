@@ -12,15 +12,16 @@ export class ValidationService {
     return rules.reduce<ValidationResultMap>(
       (acc, rule) => {
         const result = rule.validate(context);
+        const execution = { rule, result };
 
         return result.satisfied
           ? {
-              satisfied: [...acc.satisfied, rule],
+              satisfied: [...acc.satisfied, execution],
               violated: acc.violated,
             }
           : {
               satisfied: acc.satisfied,
-              violated: [...acc.violated, rule],
+              violated: [...acc.violated, execution],
             };
       },
       { satisfied: [], violated: [] }

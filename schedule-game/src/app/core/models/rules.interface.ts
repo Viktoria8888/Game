@@ -4,10 +4,7 @@ import { GameStateDTO, GameStateMetadata } from './game_state.dto';
 export type ValidationFunction = (context: ValidationContext) => ValidationResult;
 
 /**Immutable snapshot of the current game state */
-export type ValidationContext = Omit<
-  GameStateDTO,
-  'coursesSelected' | 'history' | 'stressLevel' | 'score'
-> & {
+export type ValidationContext = Omit<GameStateDTO, 'coursesSelected' | 'stressLevel' | 'score'> & {
   readonly schedule: ReadonlyArray<ScheduleSlot>;
   readonly coursesSelected: ReadonlyArray<Course>;
   metadata: GameStateMetadata;
@@ -40,7 +37,11 @@ export interface Rule {
   isActive?: (context: ValidationContext) => boolean;
 }
 
+export interface RuleExecution {
+  rule: Rule;
+  result: ValidationResult;
+}
 export interface ValidationResultMap {
-  satisfied: Array<Rule>;
-  violated: Array<Rule>;
+  satisfied: Array<RuleExecution>;
+  violated: Array<RuleExecution>;
 }

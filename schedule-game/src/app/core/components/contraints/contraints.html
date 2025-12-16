@@ -13,6 +13,10 @@
     class="constraint"
     [class.satisfied]="constraint.isSatisfied"
     [class.required]="constraint.category !== 'Goal'"
+    [matTooltip]="constraint.hint || ''"
+    [matTooltipDisabled]="!constraint.hint"
+    matTooltipPosition="above"
+    matTooltipClass="tooltip"
   >
     <span class="icon">{{ getConstraintIcon(constraint) }}</span>
 
@@ -30,10 +34,6 @@
       </div>
 
       <p>{{ constraint.description }}</p>
-
-      @if (!constraint.isSatisfied && constraint.hint) {
-      <div class="hint">💡 {{ constraint.hint }}</div>
-      }
     </div>
   </div>
   }

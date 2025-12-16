@@ -1,5 +1,5 @@
 @use 'shared' as *;
-:host  {
+:host {
   @include card-base;
   margin-bottom: 10px;
 }
@@ -79,7 +79,7 @@
 
 .constraint {
   @include flex($align: flex-start, $gap: 12px);
-  min-width: 300px;
+  min-width: 200px;
   flex-shrink: 0;
   padding: 10px;
   border: 2px solid $c-border;
@@ -180,15 +180,6 @@
     font-size: 14px;
     color: $c-text-light;
     line-height: 1.4;
-  }
-
-  .hint {
-    padding: 8px 12px;
-    font-size: 13px;
-    color: #e65100;
-    background: rgba(255, 152, 0, 0.1);
-    border-left: 3px solid #ff9800;
-    border-radius: $radius-sm;
   }
 
   @include mobile {
