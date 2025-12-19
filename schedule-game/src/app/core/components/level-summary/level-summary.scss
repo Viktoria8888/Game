@@ -1,0 +1,137 @@
+@use 'shared' as *;
+
+:host {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  @include flex($justify: center, $align: center);
+}
+
+.report-card {
+  @include card-base;
+  width: 90%;
+  max-width: 450px;
+  padding: 30px;
+  animation: slideUp 0.3s ease-out;
+  border-top: 5px solid $c-primary;
+}
+
+.header {
+  @include flex($justify: space-between);
+  margin-bottom: 20px;
+  h2 {
+    margin: 0;
+    font-size: 24px;
+    color: $c-text-main;
+  }
+}
+
+.grade-badge {
+  font-size: 32px;
+  font-weight: 800;
+  color: $c-primary;
+
+  &.A\+,
+  &.A {
+    color: $c-success;
+  }
+  &.B {
+    color: $c-primary;
+  }
+  &.C {
+    color: #ff9800;
+  }
+  &.D {
+    color: $c-error;
+  }
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 24px;
+
+  .stat {
+    background: #f8f9fa;
+    padding: 10px;
+    border-radius: 8px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+
+    .label {
+      font-size: 11px;
+      color: #888;
+      text-transform: uppercase;
+    }
+    .value {
+      font-size: 18px;
+      font-weight: 700;
+      color: #333;
+      margin-top: 4px;
+    }
+    .value.danger {
+      color: $c-error;
+    }
+  }
+}
+
+.badges-section {
+  margin-bottom: 24px;
+  h4 {
+    margin: 0 0 10px;
+    font-size: 14px;
+    color: #666;
+  }
+
+  .badges-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .achievement-badge {
+    background: linear-gradient(135deg, #ffd700 0%, #ffa500 100%);
+    color: white;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+}
+
+.next-btn {
+  width: 100%;
+  padding: 14px;
+  background: $c-primary;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s;
+
+  &:hover {
+    background: darken($c-primary, 5%);
+    transform: translateY(-2px);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

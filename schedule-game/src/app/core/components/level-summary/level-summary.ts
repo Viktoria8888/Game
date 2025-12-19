@@ -1,0 +1,28 @@
+import { Component, computed, input, output } from '@angular/core';
+import { SemesterOutcome } from '../../services/game.service';
+import { ComplexGameMetadata } from '../../models/game_state.dto';
+
+@Component({
+  selector: 'app-level-summary',
+  imports: [],
+  templateUrl: './level-summary.html',
+  styleUrl: './level-summary.scss',
+})
+export class LevelSummary {
+  readonly outcome = input.required<SemesterOutcome>();
+  readonly complexMeta = input.required<ComplexGameMetadata>();
+  readonly level = input.required<number>();
+  
+  readonly onProceed = output<void>();
+
+  readonly grade = computed(() => {
+    const score = this.outcome().scoreChange;
+    if (score >= 1000) return 'A+';
+    if (score >= 800) return 'A';
+    if (score >= 600) return 'B';
+    if (score >= 400) return 'C';
+    return 'D';
+  });
+
+  readonly badges = computed(() => this.complexMeta().achievementsUnlocked);
+}
