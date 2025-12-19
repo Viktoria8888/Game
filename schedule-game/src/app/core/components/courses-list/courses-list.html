@@ -3,14 +3,61 @@
   <span class="count">{{ availableCourses().length }} found</span>
 </div>
 
+<div class="search-box">
+  <input
+    type="text"
+    placeholder="Search course name..."
+    [ngModel]="searchTerm()"
+    (ngModelChange)="searchTerm.set($event)"
+  />
+</div>
+
+<div class="filters">
+  <div class="filter-group">
+    <span class="filter-label">Type:</span>
+    <div class="chips">
+      @for (type of availableTypes(); track type) {
+      <button
+        class="chip-btn type-chip"
+        [class.active]="selectedTypes().has(type)"
+        (click)="toggleType(type)"
+      >
+        {{ type }}
+      </button>
+      }
+    </div>
+  </div>
+
+  <div class="filter-group">
+    <span class="filter-label">Tags:</span>
+    <div class="chips">
+      @for (tag of availableTags(); track tag) {
+      <button
+        class="chip-btn tag-chip"
+        [class.active]="selectedTags().has(tag)"
+        (click)="toggleTag(tag)"
+        [matTooltip]="getTagTitle(tag)"
+      >
+        {{ tag }}
+      </button>
+      }
+    </div>
+  </div>
+</div>
+
 <div class="list-scroll-area">
-  @for (course of availableCourses(); track course.id) {
+  @for (course of filteredCourses(); track course.id) {
   <div class="course-card" (click)="handleCourse(course)">
     <div class="status-strip"></div>
 
     <div class="card-content">
       <div class="card-top">
         <span class="course-name">{{ course.name }}</span>
+        <span class="course-name">{{
+          course.schedule.startTime +
+            '-' +
+            (course.schedule.startTime + course.schedule.durationHours)
+        }}</span>
       </div>
 
       <div class="card-details">

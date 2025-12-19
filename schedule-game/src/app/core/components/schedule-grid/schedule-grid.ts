@@ -45,12 +45,12 @@ export class ScheduleGrid {
     const slot = this.getSlot(day, hour);
     if (!slot?.course) return false;
 
-    const courseSchedule = slot.course.schedule;
-    for (const timeBlock of courseSchedule) {
-      if (timeBlock.day === day && timeBlock.startTime === hour) {
-        return true;
-      }
+    const timeBlock = slot.course.schedule;
+
+    if (timeBlock.day === day && timeBlock.startTime === hour) {
+      return true;
     }
+
     return false;
   }
 
