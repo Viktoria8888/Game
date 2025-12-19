@@ -24,7 +24,7 @@ export class CourseSelectionService {
     const selected = this.selectedCoursesSignal();
 
     for (const existingCourse of selected) {
-      if (this.coursesCollide(course, existingCourse)) {
+      if (this.timeBlocksCollide(course.schedule, existingCourse.schedule)) {
         conflicts.push(existingCourse);
       }
     }
@@ -70,7 +70,7 @@ export class CourseSelectionService {
 
     for (let i = 0; i < courses.length; i++) {
       for (let j = i + 1; j < courses.length; j++) {
-        if (this.coursesCollide(courses[i], courses[j])) {
+        if (this.timeBlocksCollide(courses[i].schedule, courses[j].schedule)) {
           collisions.push({
             course1: courses[i],
             course2: courses[j],
@@ -80,17 +80,6 @@ export class CourseSelectionService {
     }
 
     return collisions;
-  }
-
-  private coursesCollide(course1: Course, course2: Course): boolean {
-    for (const block1 of course1.schedule) {
-      for (const block2 of course2.schedule) {
-        if (this.timeBlocksCollide(block1, block2)) {
-          return true;
-        }
-      }
-    }
-    return false;
   }
 
   private timeBlocksCollide(

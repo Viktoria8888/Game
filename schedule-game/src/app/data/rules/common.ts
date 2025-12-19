@@ -17,7 +17,6 @@ export const getPassedCourseIds = (ctx: ValidationContext): Set<string> => {
 export const mandatorySubjectForLevel = (
   id: string,
   level: number,
-  category: 'Mandatory' | 'Goal',
   requiredSubjectIds: string[]
 ): Rule => {
   const requiredNames = COURSES.filter(
@@ -30,8 +29,10 @@ export const mandatorySubjectForLevel = (
     id,
     title: 'Mandatory Subjects',
     description: `Required subjects: ${requiredNames}.`,
-    category,
+    category: 'Mandatory',
     level,
+    scoreReward: 100 + Number(Math.random() * 10),
+    stressModifier: 0,
 
     validate: (context: ValidationContext) => {
       const selectedIds = new Set(context.coursesSelected.map((c) => c.subjectId));
@@ -146,7 +147,7 @@ export const free_friday = (
   } as Rule;
 };
 
-export const no_gaps = (scoreReward: number, stressModifier: number): Rule => {
+export const no_gaps = (scoreReward: number, stressModifier: number, gap: number): Rule => {
   return {
     id: 'l1-no-gaps',
     title: 'Compact Schedule',
@@ -157,58 +158,14 @@ export const no_gaps = (scoreReward: number, stressModifier: number): Rule => {
     stressModifier,
 
     validate: (context: ValidationContext) => {
-      const slotsByDay = getDailySchedulesFromCourses(context.coursesSelected);
-
-      const MAX_GAP = 120;
-      let hasHugeGap = false;
-
-      for (const day in slotsByDay) {
-        const daySlots = slotsByDay[day];
-
-        for (let i = 0; i < daySlots.length - 1; i++) {
-          const currentClass = daySlots[i];
-          const nextClass = daySlots[i + 1];
-
-          const currentEndMinutes = currentClass.end * 60;
-          const nextStartMinutes = nextClass.start * 60;
-
-          if (nextStartMinutes - currentEndMinutes > MAX_GAP) {
-            hasHugeGap = true;
-            break;
-          }
-        }
-      }
+      const hasHugeGap = context.metadata.maxGapInAnyDay > gap;
 
       return {
-        satisfied: !hasHugeGap && Object.keys(slotsByDay).length > 0,
+        satisfied: !hasHugeGap && context.coursesSelected.length > 0,
         message: !hasHugeGap
           ? 'Schedule is compact.'
           : 'You have long gaps (over 2h) between classes.',
       };
     },
   };
-};
-
-const getDailySchedulesFromCourses = (courses: ReadonlyArray<Course>) => {
-  const groups: { [key: string]: { start: number; end: number; name: string }[] } = {};
-
-  courses.forEach((course) => {
-    course.schedule.forEach((slot) => {
-      if (!groups[slot.day]) {
-        groups[slot.day] = [];
-      }
-
-      groups[slot.day].push({
-        start: slot.startTime,
-        end: slot.startTime + slot.durationHours,
-        name: course.name,
-      });
-    });
-  });
-
-  Object.values(groups).forEach((daySlots) => {
-    daySlots.sort((a, b) => a.start - b.start);
-  });
-
-  return groups;
 };

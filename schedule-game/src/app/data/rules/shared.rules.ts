@@ -1,55 +1,52 @@
-import { Rule, ValidationContext } from '../../core/models/rules.interface';
-import { COURSES } from '../courses';
-import { createMaxEctsRule, createMinEctsRule } from './common';
+import { Rule } from '../../core/models/rules.interface';
+import { SUBJECTS } from '../subjects';
+import { createMinEctsRule } from './common';
 export const MIN_ECTS_RULE = createMinEctsRule('min-ects', 18, null, 'Mandatory');
 
-export const R3_PAIRING: Rule = {
-  id: 'generic-pairing',
+export const PAIRING: Rule = {
+  id: 'pairing',
   title: 'Incomplete Subjects',
-  description: 'You must take all components of a subject (e.g., Lecture + Lab).',
+  description: 'You must take all components of a subject (Lecture + Classes/Laboratory).',
   category: 'Mandatory',
   level: null,
-  priority: 10,
-
+  priority: 200,
   validate: (context) => {
-    const selectedIds = new Set(context.coursesSelected.map((c) => c.id));
     const violations: string[] = [];
+    const userMap = new Map<string, string[]>();
 
-    const allGroups = new Map<string, string[]>();
-    COURSES.forEach((course) => {
-      if (!allGroups.has(course.subjectId)) allGroups.set(course.subjectId, []);
-      allGroups.get(course.subjectId)!.push(course.id);
-    });
+    context.coursesSelected.forEach((c) => {
+      const subjectId = c.subjectId;
 
-    const checkedSubjects = new Set<string>();
-
-    context.coursesSelected.forEach((course) => {
-      const subjectId = course.subjectId;
-
-      if (checkedSubjects.has(subjectId)) return;
-      checkedSubjects.add(subjectId);
-
-      const requiredIds = allGroups.get(subjectId) || [];
-
-      const missingComponents = requiredIds.filter((reqId) => !selectedIds.has(reqId));
-
-      if (missingComponents.length > 0) {
-        const missingTypes = COURSES.filter((c) => missingComponents.includes(c.id))
-          .map((c) => c.type)
-          .join(' + ');
-
-        violations.push(`${course.name} (Missing: ${missingTypes})`);
+      if (!userMap.has(subjectId)) {
+        userMap.set(subjectId, []);
       }
+      userMap.get(subjectId)?.push(c.type);
     });
+
+    for (const [subjectId, selectedTypes] of userMap) {
+      const definition = SUBJECTS.find((s) => s.id === subjectId);
+      const requiredTypes = definition?.components.map((c) => c.type);
+
+      const uniqueSelected = new Set(selectedTypes);
+      if (uniqueSelected.size !== selectedTypes.length) {
+        violations.push(
+          `${definition?.name}: You selected multiple groups for the same component!`
+        );
+        continue;
+      }
+
+      const missing = requiredTypes?.filter((req) => !uniqueSelected.has(req));
+
+      if (missing!.length > 0) {
+        violations.push(`${definition?.name}: Missing ${missing?.join(', ')}`);
+      }
+    }
+    const isSatisfied = violations.length === 0 && context.coursesSelected.length > 0;
 
     return {
-      satisfied: violations.length === 0 && selectedIds.size > 0,
-      severity: 'error',
-      message:
-        violations.length === 0
-          ? 'All subjects are fully complete.'
-          : `Incomplete subjects: ${violations.join(', ')}`,
+      satisfied: isSatisfied,
+      message: !isSatisfied ? violations.join('; ') : 'Subjects are complete.',
     };
   },
 };
-export const GLOBAL_RULES: ReadonlyArray<Rule> = [R3_PAIRING];
+export const GLOBAL_RULES: ReadonlyArray<Rule> = [PAIRING];

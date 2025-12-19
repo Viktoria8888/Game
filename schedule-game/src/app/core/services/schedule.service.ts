@@ -132,17 +132,16 @@ export class ScheduleService {
     const slots: ScheduleSlot[] = [];
 
     for (const course of courses) {
-      for (const timeBlock of course.schedule) {
-        for (let hourOffset = 0; hourOffset < timeBlock.durationHours; hourOffset++) {
-          const hour = timeBlock.startTime + hourOffset;
+      const timeBlock = course.schedule;
+      for (let hourOffset = 0; hourOffset < timeBlock.durationHours; hourOffset++) {
+        const hour = timeBlock.startTime + hourOffset;
 
-          slots.push({
-            id: `${timeBlock.day}_${hour}`,
-            day: timeBlock.day,
-            startTime: hour,
-            course: course,
-          });
-        }
+        slots.push({
+          id: `${timeBlock.day}_${hour}`,
+          day: timeBlock.day,
+          startTime: hour,
+          course: course,
+        });
       }
     }
 

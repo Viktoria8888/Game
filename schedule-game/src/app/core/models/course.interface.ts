@@ -11,30 +11,32 @@ export type Tag =
   | 'CS' // 'I'
   | 'TOOLS' // 'K'
   | 'HUM' // 'HS'
-  | 'IP' // 'OWI'
   | 'STATS' // 'RPIS'
   | 'OOAD' // 'PIPO'
   | 'SE' // 'IO'
   | 'CSA' // 'ASK'
-  | 'OS' // 'SO'
   | 'CN' // 'SK'
   | 'DB' // 'BD'
   | 'P'
-  | 'AI';
+  | 'ADVANCED'
+  | 'OS' // 'SO'
+  | 'AI'
+  | 'TCS';
+
+export type CourseForm = 'Lecture' | 'Classes' | 'Laboratory' | 'Project' | 'Seminar';
 
 export interface Course {
   id: string;
   subjectId: string;
   name: string;
   ects: number;
-  type: 'Lecture' | 'Classes' | 'Laboratory' | 'Project' | 'Seminar';
+  type: CourseForm;
   tags: Tag[] | null;
   isMandatory: boolean;
   hasExam: boolean;
   isFirstYearRecommended?: boolean;
-  language: 'PL' | 'EN';
   isProseminar?: boolean;
-  schedule: CourseSlot[];
+  schedule: CourseSlot;
   prerequisites?: string[];
 }
 
@@ -43,7 +45,7 @@ export interface ScheduleSlot {
   day: Day;
   startTime: number;
   course: Course | null;
-} 
+}
 
 export const TAG_MAP: Record<string, string> = {
   CORE: 'Mandatory Core', // O
@@ -53,11 +55,29 @@ export const TAG_MAP: Record<string, string> = {
   OOAD: 'Object-Oriented Analysis and Design', // PIPO
   IP: 'Intellectual Property Law', // OWI
   CSA: 'Computer System Architecture', // ASK
-  OS: 'Operating Systems', // SO
   DB: 'Databases', //BD
   CN: 'Computer Networks', // SK
   SE: 'Software Engineering', // IO
   STATS: 'Probability & Statistics', // RPIS
   HUM: 'Humanities', // H
+  ADVANCED: 'Ad',
+  OS: 'Operating Systems', // SO
   AI: 'Artificial Intelligence',
+  TCS: 'Theoretical Computer Science & Functional Programming',
 };
+
+export interface SubjectDef {
+  id: string;
+  name: string;
+  tags: Tag[];
+  isMandatory: boolean;
+  hasExam: boolean;
+  isFirstYearRecommended?: boolean;
+  prerequisites?: string[];
+  components: {
+    type: CourseForm;
+    ects: number;
+    duration: number;
+    count?: number;
+  }[];
+}
