@@ -43,7 +43,7 @@ export interface ScheduleSlot {
   day: Day;
   startTime: number;
   course: Course | null;
-}
+} 
 
 export const TAG_MAP: Record<string, string> = {
   CORE: 'Mandatory Core', // O

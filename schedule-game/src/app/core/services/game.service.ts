@@ -6,12 +6,13 @@ import { ScheduleService } from './schedule.service';
 import { RulesService } from './rules.service';
 import { ValidationContext, ValidationResultMap } from '../models/rules.interface';
 
-type SemesterOutcome = {
+export type SemesterOutcome = {
   stressChange: number;
   scoreChange: number;
   predictedTotalStress: number;
   predictedTotalScore: number;
   validation: ValidationResultMap;
+  goalRules: number;
 };
 
 @Injectable({ providedIn: 'root' })
@@ -47,12 +48,13 @@ export class GameService {
 
     let stressChange = baseMeta.stressLevel;
     let scoreChange = baseMeta.score;
-
+    let goalRules = 0;
     validation.satisfied.forEach((item) => {
       const rule = item.rule;
       if (rule.category === 'Goal') {
         if (rule.stressModifier) stressChange += rule.stressModifier;
         if (rule.scoreReward) scoreChange += rule.scoreReward;
+        goalRules++;
       }
     });
 
@@ -65,6 +67,7 @@ export class GameService {
       predictedTotalStress,
       predictedTotalScore: this.totalScore() + scoreChange,
       validation,
+      goalRules,
     };
   });
 

@@ -7,7 +7,7 @@ import {
   inject,
   effect,
 } from '@angular/core';
-import { ScheduleSlot, Course } from '../models/course.interface';
+import { ScheduleSlot, Course, Day } from '../models/course.interface';
 import { ComplexGameMetadata, GameStateDTO, SimpleGameMetadata } from '../models/game_state.dto';
 import { CourseSelectionService } from './courses-selection';
 
@@ -25,6 +25,11 @@ export class ScheduleService {
 
   public readonly complexMetadata = computed<ComplexGameMetadata>(() => {
     const schedule = this.scheduleSlots();
+
+    if (schedule.length === 0) {
+      return this.createEmptyComplexMetadata();
+    }
+
     return this.calculateComplexMetadata(schedule);
   });
 
@@ -54,34 +59,80 @@ export class ScheduleService {
   });
 
   calculateComplexMetadata(schedule: ScheduleSlot[]): ComplexGameMetadata {
-    // TODO: Implement based on your game rules
-    // Calculate things like:
-    // - Total contact hours per week
-    // - Average start/end times
-    // - Gaps between classes
-    // - Free days
-    // - Achievements
+    const hoursByDay: Record<string, number[]> = { Mon: [], Tue: [], Wed: [], Thu: [], Fri: [] };
+
+    schedule.forEach((slot) => hoursByDay[slot.day].push(slot.startTime));
+
+    Object.values(hoursByDay).forEach((hours) => hours.sort((a, b) => a - b));
+
+    let totalGapTime = 0;
+    let maxGapInAnyDay = 0;
+    let startHourSum = 0;
+    let activeDaysCount = 0;
+
+    const freeDaysCount = Object.values(hoursByDay).reduce((freeCount, hours) => {
+      if (hours.length === 0) return freeCount + 1;
+
+      activeDaysCount++;
+      startHourSum += hours[0];
+
+      for (let i = 0; i < hours.length - 1; i++) {
+        const gap = hours[i + 1] - hours[i] - 1;
+
+        if (gap > 0) {
+          totalGapTime += gap;
+          maxGapInAnyDay = Math.max(maxGapInAnyDay, gap);
+        }
+      }
+      return freeCount;
+    }, 0);
+
+    const totalContactHours = schedule.length; // 1 slot = 1 hour
+    const morningSlots = schedule.filter((s) => s.startTime < 12).length;
+
+    const averageStartTime = activeDaysCount > 0 ? startHourSum / activeDaysCount : 0;
+    const morningToAfternoonRatio = totalContactHours > 0 ? morningSlots / totalContactHours : 0;
+
+    const achievements: string[] = [];
+
+    if (activeDaysCount > 0) {
+      if (averageStartTime < 10) achievements.push('Early Bird');
+      else if (averageStartTime >= 12) achievements.push('Night Owl');
+
+      if (totalGapTime > 5) {
+        achievements.push('Campus Resident');
+      } else if (totalGapTime === 0 && totalContactHours >= 10) {
+        achievements.push('Speedrunner');
+      }
+
+      if (totalContactHours < 12) {
+        achievements.push('Part-Timer');
+      }
+      if (freeDaysCount >= 2) {
+        achievements.push('Long Weekender');
+      }
+      // (40-60% Morning)
+      if (morningToAfternoonRatio >= 0.4 && morningToAfternoonRatio <= 0.6) {
+        achievements.push('Zen Balanced');
+      }
+    }
 
     return {
-      totalContactHours: 0,
-      averageStartTime: 0,
-      averageEndTime: 0,
-      morningToAfternoonRatio: 0,
-      maxGapInAnyDay: 0,
-      totalGapTime: 0,
-      freeDaysCount: 0,
-      consecutiveFreeDays: 0,
-      currentStreak: 0,
-      bestStreak: 0,
-      achievementsUnlocked: [],
+      totalContactHours,
+      averageStartTime,
+      morningToAfternoonRatio,
+      maxGapInAnyDay,
+      totalGapTime,
+      freeDaysCount,
+      achievementsUnlocked: achievements,
     };
   }
+
   private coursesToScheduleSlots(courses: Course[]): ScheduleSlot[] {
     const slots: ScheduleSlot[] = [];
 
     for (const course of courses) {
       for (const timeBlock of course.schedule) {
-        // Create 1-hour slots for this time block
         for (let hourOffset = 0; hourOffset < timeBlock.durationHours; hourOffset++) {
           const hour = timeBlock.startTime + hourOffset;
 
@@ -109,6 +160,21 @@ export class ScheduleService {
       uniqueCoursesCount: 0,
       proseminarCount: 0,
       mandatoryCoursesCompleted: [],
+    };
+  }
+
+  private createEmptyComplexMetadata(): ComplexGameMetadata {
+    return {
+      totalContactHours: 0,
+      averageStartTime: 0,
+      morningToAfternoonRatio: 0,
+
+      maxGapInAnyDay: 0,
+      totalGapTime: 0,
+
+      freeDaysCount: 5,
+
+      achievementsUnlocked: [],
     };
   }
 }

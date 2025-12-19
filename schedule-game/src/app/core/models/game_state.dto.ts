@@ -12,23 +12,16 @@ export interface SimpleGameMetadata {
   mandatoryCoursesCompleted: string[];
 }
 
-/** Metadata that requires full recalculation (O(n)) */
 export interface ComplexGameMetadata {
-  // Time-dependent (need to scan all slots)
   totalContactHours: number;
+  totalGapTime: number;
+  maxGapInAnyDay: number;
+  
   averageStartTime: number;
-  averageEndTime: number;
   morningToAfternoonRatio: number;
 
-  maxGapInAnyDay: number;
-  totalGapTime: number;
-
   freeDaysCount: number;
-  consecutiveFreeDays: number;
-
-  currentStreak: number;
-  bestStreak: number;
-  achievementsUnlocked: string[];
+  achievementsUnlocked: string[]; // ['Early Bird', 'Speedrunner'...]
 }
 
 export interface SemesterHistory {
