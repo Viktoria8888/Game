@@ -14,3 +14,14 @@
   <app-schedule-grid [schedule]="scheduleSlots()" [conflictingCourseIds]="conflictingCourseIds()" />
   <app-courses [availableCourses]="availableCourses()" />
 </div>
+
+@if (showLevelSummary()) {
+<app-level-summary
+  [outcome]="gameService.currentSemesterOutcome()"
+  [complexMeta]="schedule.complexMetadata()"
+  [level]="currentLevel()"
+  (onProceed)="proceedToNextLevel()"
+  (onClose)="showLevelSummary.set(false)"
+/>
+
+}

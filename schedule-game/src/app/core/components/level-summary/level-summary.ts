@@ -1,4 +1,4 @@
-import { Component, computed, input, output } from '@angular/core';
+import { Component, computed, HostListener, input, output } from '@angular/core';
 import { SemesterOutcome } from '../../services/game.service';
 import { ComplexGameMetadata } from '../../models/game_state.dto';
 
@@ -12,8 +12,9 @@ export class LevelSummary {
   readonly outcome = input.required<SemesterOutcome>();
   readonly complexMeta = input.required<ComplexGameMetadata>();
   readonly level = input.required<number>();
-  
+
   readonly onProceed = output<void>();
+  readonly onClose = output<void>();
 
   readonly grade = computed(() => {
     const score = this.outcome().scoreChange;
@@ -25,4 +26,9 @@ export class LevelSummary {
   });
 
   readonly badges = computed(() => this.complexMeta().achievementsUnlocked);
+
+  @HostListener('window:keydown.escape')
+  handleEscKey() {
+    this.onClose.emit();
+  }
 }

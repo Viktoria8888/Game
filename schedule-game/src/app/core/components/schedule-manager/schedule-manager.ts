@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 import { CourseSelectionService } from '../../services/courses-selection';
 import { ScheduleService } from '../../services/schedule.service';
 import { Course } from '../../models/course.interface';
@@ -8,21 +8,21 @@ import { AuthService } from '../../services/auth.service';
 import { Contraints } from '../contraints/contraints';
 import { ValidationContext, ValidationResultMap } from '../../models/rules.interface';
 import { Courses } from '../courses-list/courses-list';
-import { RulesService } from '../../services/rules.service';
 import { GameService } from '../../services/game.service';
 import { PersistenceService } from '../../services/persistence.service';
 import { COURSES } from '../../../data/courses';
+import { LevelSummary } from '../level-summary/level-summary';
 
 @Component({
   selector: 'app-schedule-manager',
-  imports: [ScheduleGrid, HeaderComponent, Contraints, Courses],
+  imports: [ScheduleGrid, HeaderComponent, Contraints, Courses, LevelSummary],
   templateUrl: './schedule-manager.html',
   styleUrl: './schedule-manager.scss',
 })
 export class ScheduleManagerComponent {
   protected readonly gameService = inject(GameService);
   private readonly courseSelection = inject(CourseSelectionService);
-  private readonly schedule = inject(ScheduleService);
+  protected  readonly schedule = inject(ScheduleService);
   protected readonly authService = inject(AuthService);
   private readonly persistency = inject(PersistenceService);
 
@@ -31,6 +31,8 @@ export class ScheduleManagerComponent {
   protected readonly scheduleSlots = this.schedule.scheduleSlots;
   protected readonly metadata = this.schedule.simpleMetadata;
   protected readonly currentLevel = this.gameService.currentLevel;
+
+  protected showLevelSummary = signal(false);
 
   protected readonly validationContext = computed<ValidationContext>(() => ({
     schedule: this.schedule.scheduleSlots(),
@@ -64,7 +66,12 @@ export class ScheduleManagerComponent {
   });
 
   handleNextLevel() {
+    this.showLevelSummary.set(true);
+  }
+
+  proceedToNextLevel() {
     this.gameService.completeLevel();
     this.persistency.saveImmediately();
+    this.showLevelSummary.set(false);
   }
 }
