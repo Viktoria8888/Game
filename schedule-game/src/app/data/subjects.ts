@@ -227,15 +227,6 @@ export const SUBJECTS: SubjectDef[] = [
     components: [{ type: 'Laboratory', ects: 6, duration: 2, count: 4 }],
   },
   {
-    id: '4152',
-    name: 'Intro to Programming in Python',
-    tags: ['CORE', 'TOOLS'],
-    isFirstYearRecommended: true,
-    isMandatory: true,
-    hasExam: false,
-    components: [{ type: 'Laboratory', ects: 6, duration: 2, count: 4 }],
-  },
-  {
     id: '4095',
     name: 'Advanced Techniques in C++ and STL',
     tags: ['TOOLS', 'ADVANCED'],
@@ -488,7 +479,7 @@ export const SUBJECTS: SubjectDef[] = [
   {
     id: '4065',
     name: 'Advanced Algorithms and Data Structures',
-    tags: ['CS', 'ADVANCED'],
+    tags: ['CORE'],
     isMandatory: false,
     hasExam: true,
     components: [

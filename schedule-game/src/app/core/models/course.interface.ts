@@ -31,7 +31,7 @@ export interface Course {
   name: string;
   ects: number;
   type: CourseForm;
-  tags: Tag[] | null;
+  tags: Tag[];
   isMandatory: boolean;
   hasExam: boolean;
   isFirstYearRecommended?: boolean;

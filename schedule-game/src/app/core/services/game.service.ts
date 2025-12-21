@@ -51,11 +51,9 @@ export class GameService {
     let goalRules = 0;
     validation.satisfied.forEach((item) => {
       const rule = item.rule;
-      if (rule.category === 'Goal') {
-        if (rule.stressModifier) stressChange += rule.stressModifier;
-        if (rule.scoreReward) scoreChange += rule.scoreReward;
-        goalRules++;
-      }
+      if (rule.stressModifier) stressChange += rule.stressModifier;
+      if (rule.scoreReward) scoreChange += rule.scoreReward;
+      goalRules++;
     });
 
     let predictedTotalStress = this.playerStress() + stressChange;

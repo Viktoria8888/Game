@@ -26,7 +26,6 @@ export class Courses {
 
   readonly availableTypes = computed(() => {
     const types = new Set<string>();
-    // @ts-ignore - Assuming flattened structure where course.type exists
     this.availableCourses().forEach((c) => types.add(c.type));
     return Array.from(types).sort();
   });

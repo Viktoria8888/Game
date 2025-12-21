@@ -30,7 +30,7 @@ export interface Rule {
   scoreReward?: number;
   stressModifier?: number;
   level: number | null; // null means that the rule is applied to any level
-  priority?: number;
+  priority: number;
   controlledBy?: string[];
   overrides?: string[];
   validate: ValidationFunction;
