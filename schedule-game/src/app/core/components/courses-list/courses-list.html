@@ -54,7 +54,9 @@
       <div class="card-top">
         <span class="course-name">{{ course.name }}</span>
         <span class="course-name">{{
-          course.schedule.startTime +
+          course.schedule.day +
+            ' ' +
+            course.schedule.startTime +
             '-' +
             (course.schedule.startTime + course.schedule.durationHours)
         }}</span>

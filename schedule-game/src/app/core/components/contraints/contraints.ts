@@ -52,7 +52,9 @@ export class Contraints {
         })),
     ];
 
-    return allRules.sort((a, b) => Number(a.isSatisfied) - Number(b.isSatisfied));
+    return allRules.sort(
+      (a, b) => Number(a.isSatisfied) - Number(b.isSatisfied) || a.priority - b.priority
+    );
   });
 
   protected readonly tabInfo = computed(() => {
