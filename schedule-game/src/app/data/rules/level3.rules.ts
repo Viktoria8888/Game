@@ -1,49 +1,63 @@
 import { Rule } from '../../core/models/rules.interface';
 import {
-  countCoursesByType,
+  createCumulativeProgressRule,
   createMinEctsRule,
-  free_friday,
-  mandatorySubjectForLevel,
+  createStandardLoadRule,
+  createTagDiversityRule,
+  createTagSpecialistRule,
+  createVowelCountRule,
+  hasCourseWithTag,
 } from './common';
 
-const L3_MIN_ECTS = createMinEctsRule('l3-min', 22, 3, 'Mandatory');
-
-const L3_PROJECT_GOAL: Rule = {
-  id: 'l3-proj-req',
-  title: 'Project Practice',
-  description: 'You must enroll in at least one "Project" type course.',
-  category: 'Goal',
+const DEPT_RIVALRY: Rule = {
+  id: 'l3-rivalry',
+  title: 'Department Rivalry',
+  description: 'Do not mix AI and OS courses (Civil War!).',
+  category: 'Mandatory',
   level: 3,
-  validate: (ctx) => ({
-    satisfied: countCoursesByType(ctx, 'Project') >= 1,
-    severity: 'error',
-    message: 'No "Project" type course selected.',
-  }),
-};
-
-const L3_LATE_RISER: Rule = {
-  id: 'l3-goal-sleep',
-  title: 'Late Riser',
-  description: 'Avoid classes before 10:00 AM.',
-  category: 'Goal',
-  level: 3,
-  scoreReward: 150,
-  stressModifier: -10,
+  priority: 130,
   validate: (ctx) => {
-    const earlyClasses = ctx.schedule.filter((s) => s.startTime < 10);
+    const hasAI = hasCourseWithTag(ctx, 'AI');
+    const hasOS = hasCourseWithTag(ctx, 'OS');
+    const conflict = hasAI && hasOS;
     return {
-      satisfied: earlyClasses.length === 0 && ctx.schedule.length > 0,
-      message:
-        earlyClasses.length === 0 ? 'Schedule fits your sleep cycle.' : 'You have morning classes.',
+      satisfied: !conflict,
+      severity: 'error',
+      message: conflict ? 'Conflict! Pick either AI or OS.' : 'Loyalty preserved.',
     };
   },
 };
-const L3_FREE_FRIDAY = free_friday(3, 'Goal', 200, -10);
-const L3_MANDATORY = mandatorySubjectForLevel('mandatory3', 3, 'Mandatory', []);
+
+const NO_FRIDAY: Rule = {
+  id: 'l3-weekend',
+  title: 'Long Weekend',
+  description: 'Keep Friday completely free.',
+  category: 'Goal',
+  level: 3,
+  priority: 55,
+  scoreReward: 600,
+  stressModifier: -25,
+  validate: (ctx) => {
+    const friday = ctx.schedule.filter((s) => s.day === 'Fri').length;
+    return {
+      satisfied: friday === 0,
+      message: friday === 0 ? '3-day weekend secured! 🎉' : 'Friday is not free.',
+    };
+  },
+};
+
+const TAG_EXPLORER = createTagDiversityRule('l3-explorer', 4, 3, 'Goal');
+const TOOLS = createTagSpecialistRule('l3-tools', 'TOOLS', 8, 3);
+const VOWEL_HARMONY = createVowelCountRule('l3-vowel', 3, 3);
+const PROGRESS_CHECK_1 = createCumulativeProgressRule('l3-progress', 66, 3);
+const STANDARD_LOAD = createStandardLoadRule('l3-standard', 3, 22);
 export const LEVEL_3_RULES = [
-  L3_MIN_ECTS,
-  L3_PROJECT_GOAL,
-  L3_LATE_RISER,
-  L3_FREE_FRIDAY,
-  L3_MANDATORY,
+  createMinEctsRule('l3-min', 22, 3, 'Mandatory'),
+  DEPT_RIVALRY,
+  NO_FRIDAY,
+  TAG_EXPLORER,
+  VOWEL_HARMONY,
+  TOOLS,
+  STANDARD_LOAD,
+  PROGRESS_CHECK_1,
 ];

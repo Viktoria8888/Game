@@ -1,44 +1,66 @@
 import { Rule, ValidationContext } from '../../core/models/rules.interface';
 import { COURSES } from '../courses';
-import { createMaxEctsRule, createMinEctsRule, mandatorySubjectForLevel, no_gaps } from './common';
+import {
+  createMinEctsRule,
+  createStandardLoadRule,
+  createTagBanRule,
+  mandatorySubjectForLevel,
+  noGaps,
+} from './common';
 
 export const RECOMMENDED: Rule = {
-  id: 'first_year_recommended',
+  id: 'l1-recommended',
   title: 'Recommended Subjects',
   description: 'Select all subjects recommended for the first year.',
   category: 'Goal',
+  priority: 20,
   level: 1,
-  scoreReward: 200,
-  stressModifier: -10,
-
-  validate: (context: ValidationContext) => {
-    const selectedIds = new Set(context.coursesSelected.map((c) => c.id));
-
-    const missingCourses = COURSES.filter(
-      (course) => course.isFirstYearRecommended && !selectedIds.has(course.id)
+  scoreReward: 250,
+  stressModifier: -5,
+  validate: (ctx: ValidationContext) => {
+    const userSubjectIds = new Set(ctx.coursesSelected.map((c) => c.subjectId));
+    const recommendedIds = new Set(
+      COURSES.filter((c) => c.isFirstYearRecommended).map((c) => c.subjectId)
     );
-
-    const isSatisfied = missingCourses.length === 0;
+    const missing = [...recommendedIds].filter((id) => !userSubjectIds.has(id));
+    const isSatisfied = missing.length === 0;
 
     return {
-      satisfied: isSatisfied && selectedIds.size > 0,
+      satisfied: isSatisfied,
       severity: isSatisfied ? 'warning' : 'error',
       message: isSatisfied
-        ? 'Great! All recommended subjects are selected.'
-        : `Missing: ${missingCourses.map((c) => c.name).join(', ')}`,
+        ? 'Great! All recommended subjects selected.'
+        : `Missing recommended subjects (Analysis, Logic...).`,
     };
   },
 };
 
-const NO_GAPS = no_gaps(300, 20, 2);
-const MIN_ECTS = createMinEctsRule('l1-min', 18, 1, 'Mandatory');
-const MAX_ECTS = createMaxEctsRule('l1-max', 35, 1, 'Mandatory');
-const MANDATORY_COURSES = mandatorySubjectForLevel('l1-mandatory', 1, ['4141', '4108']);
+const EXAM_LIMIT: Rule = {
+  id: 'l1-exams',
+  title: 'Exam Anxiety',
+  description: 'Max 3 courses with Final Exams allowed.',
+  category: 'Goal',
+  priority: 30,
+  level: 1,
+  stressModifier: -15,
+  scoreReward: 200,
+  validate: (ctx) => {
+    const count = ctx.coursesSelected.filter((c) => c.hasExam).length;
+    return {
+      satisfied: count <= 3 && ctx.coursesSelected.length > 0,
+      message: count <= 3 ? 'Anxiety managed.' : `Too many exams (${count}/3)!`,
+    };
+  },
+};
+const NO_ADVANCED = createTagBanRule('l1-no-advanced', 'ADVANCED', 1, 'Mandatory');
+const STANDARD_LOAD = createStandardLoadRule('l1-standard', 1, 22);
 
 export const LEVEL_1_RULES: ReadonlyArray<Rule> = [
-  MANDATORY_COURSES,
+  mandatorySubjectForLevel('l1-mandatory', 1, ['4141', '4108'], 100),
+  createMinEctsRule('l1-min', 16, 1, 'Mandatory'),
+  noGaps('Lost Freshman', 'No gaps >2h allowed.', 'Goal', 150, -5, 2, 1),
   RECOMMENDED,
-  MAX_ECTS,
-  MIN_ECTS,
-  NO_GAPS,
+  EXAM_LIMIT,
+  NO_ADVANCED,
+  STANDARD_LOAD,
 ];

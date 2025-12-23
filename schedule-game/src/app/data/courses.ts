@@ -12,9 +12,29 @@ function generateCourses(): Course[] {
   const START_HOUR = 8;
   const END_HOUR = 20;
 
-  const getSafeSlot = (duration: number): { day: Day; startTime: number } => {
+  const isBlocked = (
+    start: number,
+    duration: number,
+    blockedTimes?: { start: number; end: number }[]
+  ): boolean => {
+    if (!blockedTimes || blockedTimes.length === 0) return false;
+
+    const end = start + duration;
+
+    return blockedTimes.some((block) => {
+      return start < block.end && end > block.start;
+    });
+  };
+
+  const getSafeSlot = (
+    duration: number,
+    blockedTimes?: { start: number; end: number }[]
+  ): { day: Day; startTime: number } => {
     for (const day of DAYS) {
       for (let hour = START_HOUR; hour <= END_HOUR - duration; hour++) {
+        if (isBlocked(hour, duration, blockedTimes)) {
+          continue;
+        }
         const collides = goldenPathSlots.some(
           (reserved) =>
             reserved.day === day && !(hour >= reserved.end || hour + duration <= reserved.start)
@@ -29,15 +49,29 @@ function generateCourses(): Course[] {
     return getRandomSlot(duration);
   };
 
-  const getRandomSlot = (duration: number): { day: Day; startTime: number } => {
+  const getRandomSlot = (
+    duration: number,
+    blockedTimes?: { start: number; end: number }[]
+  ): { day: Day; startTime: number } => {
     const day = DAYS[Math.floor(Math.random() * DAYS.length)];
     const maxStart = END_HOUR - duration;
-    const startTime = Math.floor(Math.random() * (maxStart - START_HOUR + 1) + START_HOUR);
-    return { day, startTime };
+    let attempts = 0;
+    while (attempts < 50) {
+      const startTime = Math.floor(Math.random() * (maxStart - START_HOUR + 1) + START_HOUR);
+
+      if (!isBlocked(startTime, duration, blockedTimes)) {
+        return { day, startTime };
+      }
+      attempts++;
+    }
+
+    return { day, startTime: START_HOUR };
   };
 
   SUBJECTS.forEach((subject) => {
-    const isCritical = subject.isMandatory || subject.isFirstYearRecommended;
+    const useGoldenPath =
+      subject.scheduling?.useGoldenPath || subject.isFirstYearRecommended || subject.isMandatory;
+    const blockedTimes = subject.scheduling?.blockedTimes;
 
     subject.components.forEach((comp) => {
       const groupsCount = comp.count || 1;
@@ -45,10 +79,10 @@ function generateCourses(): Course[] {
       for (let i = 1; i <= groupsCount; i++) {
         let schedule: { day: Day; startTime: number };
 
-        if (isCritical && i === 1) {
-          schedule = getSafeSlot(comp.duration);
+        if (useGoldenPath && i === 1) {
+          schedule = getSafeSlot(comp.duration, blockedTimes);
         } else {
-          schedule = getRandomSlot(comp.duration);
+          schedule = getRandomSlot(comp.duration, blockedTimes);
         }
 
         gameCourses.push({
@@ -67,7 +101,6 @@ function generateCourses(): Course[] {
             durationHours: comp.duration,
           },
           isFirstYearRecommended: subject.isFirstYearRecommended,
-          // Optional: Add helper flags if needed
           isProseminar: comp.type === 'Seminar' || subject.name.includes('Proseminar'),
         });
       }

@@ -66,6 +66,10 @@ export const TAG_MAP: Record<string, string> = {
   TCS: 'Theoretical Computer Science & Functional Programming',
 };
 
+export interface SchedulingConstraints {
+  blockedTimes?: { start: number; end: number }[];
+  useGoldenPath?: boolean;
+}
 export interface SubjectDef {
   id: string;
   name: string;
@@ -74,6 +78,7 @@ export interface SubjectDef {
   hasExam: boolean;
   isFirstYearRecommended?: boolean;
   prerequisites?: string[];
+  scheduling?: SchedulingConstraints;
   components: {
     type: CourseForm;
     ects: number;

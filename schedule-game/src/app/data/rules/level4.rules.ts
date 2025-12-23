@@ -1,39 +1,61 @@
 import { Rule } from '../../core/models/rules.interface';
-import { countCoursesByType, createMinEctsRule, mandatorySubjectForLevel } from './common';
+import {
+  createMinEctsRule,
+  createStandardLoadRule,
+  createTagSynergyRule,
+  mandatorySubjectForLevel,
+} from './common';
 
-const MIN_ECTS = createMinEctsRule('l5-min', 23, 5, 'Mandatory');
-const SEMINAR: Rule = {
-  id: 'l6-seminar',
-  title: 'Proseminar',
-  description: 'You must choose a Proseminar or Seminar.',
-  category: 'Mandatory',
-  level: 4,
-  validate: (ctx) => ({
-    satisfied:
-      countCoursesByType(ctx, 'Seminar') > 0 || ctx.coursesSelected.some((c) => c.isProseminar),
-    severity: 'error',
-    message: 'No Seminar in the schedule.',
-  }),
-};
-const BALANCED_LIFE: Rule = {
-  id: 'goal-balance',
-  title: 'Work-Life Balance',
-  description: 'Maximum 6 hours of classes per day.',
+const PRIME_ECTS: Rule = {
+  id: 'l4-prime',
+  title: 'Prime ECTS',
+  description: 'Total ECTS must be a Prime Number.',
   category: 'Goal',
   level: 4,
-  scoreReward: 200,
-  stressModifier: -15,
+  priority: 55,
+  scoreReward: 1000,
   validate: (ctx) => {
-    const hoursPerDay: Record<string, number> = {};
-    ctx.schedule.forEach((slot) => {
-      hoursPerDay[slot.day] = (hoursPerDay[slot.day] || 0) + 1;
-    });
-    const overloaded = Object.values(hoursPerDay).some((h) => h > 6);
+    const n = ctx.metadata.currentSemesterEcts;
+    const isPrime = (num: number) => {
+      for (let i = 2, s = Math.sqrt(num); i <= s; i++) if (num % i === 0) return false;
+      return num > 1;
+    };
     return {
-      satisfied: !overloaded,
-      message: !overloaded ? 'Schedule is balanced.' : 'You have days with over 6h of classes.',
+      satisfied: isPrime(n),
+      message: isPrime(n) ? `Prime (${n})!` : `${n} is not prime. Change your points.`,
     };
   },
 };
-const MANDATORY = mandatorySubjectForLevel('mandatory4', 4, 'Mandatory', []);
-export const LEVEL_4_RULES = [MIN_ECTS, SEMINAR, BALANCED_LIFE, MANDATORY];
+
+const PALINDROME_HOURS: Rule = {
+  id: 'l5-palindrome',
+  title: 'Palindrome Schedule',
+  description: 'Total contact hours must be a palindrome (11, 22, 33...).',
+  category: 'Goal',
+  level: 4,
+  priority: 55,
+  scoreReward: 1000,
+  stressModifier: -10,
+  validate: (ctx) => {
+    const hours = ctx.metadata.totalContactHours;
+    const isPalindrome = hours.toString() === hours.toString().split('').reverse().join('');
+    return {
+      satisfied: isPalindrome,
+      message: isPalindrome
+        ? `${hours} hours - palindrome!`
+        : `${hours} hours is not a palindrome.`,
+    };
+  },
+};
+
+const DB_SE_SYNERGY = createTagSynergyRule('l4-synergy', 'DB', 'SE', 4);
+const MANDATORY = mandatorySubjectForLevel('l4-mandatory', 4, ['41199']);
+const STANDARD_LOAD = createStandardLoadRule('l4-standard', 4, 23);
+export const LEVEL_4_RULES = [
+  createMinEctsRule('l4-min', 23, 4, 'Mandatory'),
+  PRIME_ECTS,
+  DB_SE_SYNERGY,
+  MANDATORY,
+  PALINDROME_HOURS,
+  STANDARD_LOAD,
+];

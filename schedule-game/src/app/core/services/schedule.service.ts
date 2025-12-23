@@ -111,10 +111,6 @@ export class ScheduleService {
       if (freeDaysCount >= 2) {
         achievements.push('Long Weekender');
       }
-      // (40-60% Morning)
-      if (morningToAfternoonRatio >= 0.4 && morningToAfternoonRatio <= 0.6) {
-        achievements.push('Zen Balanced');
-      }
     }
 
     return {
