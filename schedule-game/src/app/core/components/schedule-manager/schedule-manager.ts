@@ -22,7 +22,7 @@ import { LevelSummary } from '../level-summary/level-summary';
 export class ScheduleManagerComponent {
   protected readonly gameService = inject(GameService);
   private readonly courseSelection = inject(CourseSelectionService);
-  protected  readonly schedule = inject(ScheduleService);
+  protected readonly schedule = inject(ScheduleService);
   protected readonly authService = inject(AuthService);
   private readonly persistency = inject(PersistenceService);
 
@@ -48,7 +48,14 @@ export class ScheduleManagerComponent {
   private courses: ReadonlyArray<Course> = COURSES;
   protected readonly availableCourses = computed(() => {
     const selected = this.selectedCourses();
-    return this.courses.filter((course) => !selected.some((sc) => sc.id === course.id));
+    const takenIds = this.gameService.history.previouslyTakenCourseIds();
+
+    return this.courses.filter((course) => {
+      const isSelected = selected.some((sc) => sc.id === course.id);
+      const isTaken = takenIds.has(course.subjectId);
+
+      return !isSelected && !isTaken;
+    });
   });
 
   protected readonly validationResults = computed(() => {

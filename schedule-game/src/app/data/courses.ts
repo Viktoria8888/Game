@@ -1,6 +1,8 @@
+import seedrandom from 'seedrandom';
 import { Course, Day } from '../core/models/course.interface';
 import { SUBJECTS } from './subjects';
 
+const rng = seedrandom('my-stable-seed');
 export const COURSES = generateCourses();
 
 function generateCourses(): Course[] {
@@ -53,11 +55,11 @@ function generateCourses(): Course[] {
     duration: number,
     blockedTimes?: { start: number; end: number }[]
   ): { day: Day; startTime: number } => {
-    const day = DAYS[Math.floor(Math.random() * DAYS.length)];
+    const day = DAYS[Math.floor(rng() * DAYS.length)];
     const maxStart = END_HOUR - duration;
     let attempts = 0;
     while (attempts < 50) {
-      const startTime = Math.floor(Math.random() * (maxStart - START_HOUR + 1) + START_HOUR);
+      const startTime = Math.floor(rng() * (maxStart - START_HOUR + 1) + START_HOUR);
 
       if (!isBlocked(startTime, duration, blockedTimes)) {
         return { day, startTime };

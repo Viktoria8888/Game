@@ -7,7 +7,7 @@ export const hasCourseWithTag = (ctx: ValidationContext, tag: string) =>
 export const countCoursesByType = (ctx: ValidationContext, type: string) =>
   ctx.coursesSelected.filter((c) => c.type === type).length;
 
-export const getPassedCourseIds = (ctx: ValidationContext): Set<string> => {
+export const getPassedCourseSubjectIds = (ctx: ValidationContext): Set<string> => {
   const ids = new Set<string>();
   ctx.history.forEach((sem) => sem.coursesTaken.forEach((id) => ids.add(id)));
   return ids;

@@ -3,7 +3,7 @@ import { SUBJECTS } from '../subjects';
 import {
   createMinEctsRule,
   createStandardLoadRule,
-  getPassedCourseIds,
+  getPassedCourseSubjectIds,
   hasCourseWithTag,
   mandatorySubjectForLevel,
 } from './common';
@@ -15,12 +15,15 @@ export const PREREQUISITES: Rule = {
   level: 2,
   priority: 150,
   validate: (ctx) => {
-    const passedIds = getPassedCourseIds(ctx);
+    const passedIds = getPassedCourseSubjectIds(ctx);
+    const currentSubjectIds = new Set(ctx.coursesSelected.map((c) => c.subjectId));
     const violations: string[] = [];
 
     ctx.coursesSelected.forEach((course) => {
       if (course.prerequisites && course.prerequisites.length > 0) {
-        const missingIds = course.prerequisites.filter((id) => !passedIds.has(id));
+        const missingIds = course.prerequisites.filter(
+          (id) => !passedIds.has(id) && !currentSubjectIds.has(id)
+        );
 
         if (missingIds.length > 0) {
           const missingNames = missingIds

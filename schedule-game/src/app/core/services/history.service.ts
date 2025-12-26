@@ -5,6 +5,14 @@ import { SemesterHistory } from '../models/game_state.dto';
 export class HistoryService {
   readonly history = signal<SemesterHistory[]>([]);
 
+  readonly previouslyTakenCourseIds = computed(() => {
+    const ids = new Set<string>();
+    this.history().forEach((semester) => {
+      semester.coursesTaken.forEach((id) => ids.add(id));
+    });
+    return ids;
+  });
+
   readonly totalHistoricalEcts = computed(() =>
     this.history().reduce((sum, record) => sum + record.ectsEarned, 0)
   );
