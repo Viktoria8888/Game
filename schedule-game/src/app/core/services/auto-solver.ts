@@ -36,7 +36,6 @@ export class AutoSolverService {
     const bannedTimeSlots = new Set<number>();
     const tagSynergies: { primary: string; required: string }[] = [];
 
-
     let targetEcts = 22;
     let minNameLength = 0;
     let oddHoursOnly = false;
@@ -154,7 +153,7 @@ export class AutoSolverService {
             tagSynergies,
             validPool,
             undefined,
-            attemptBannedDays 
+            attemptBannedDays
           );
         }
 
@@ -208,7 +207,7 @@ export class AutoSolverService {
           tagSynergies,
           validPool,
           undefined,
-          attemptBannedDays 
+          attemptBannedDays
         );
 
         const outcome = this.game.currentSemesterOutcome();
@@ -239,7 +238,6 @@ export class AutoSolverService {
     return false;
   }
 
-
   private fillRandomly(
     pool: Course[],
     globalEctsLimit: number,
@@ -248,7 +246,7 @@ export class AutoSolverService {
     synergies: { primary: string; required: string }[],
     fullPool: Course[],
     customStopCondition?: () => boolean,
-    attemptBannedDays?: Set<string> 
+    attemptBannedDays?: Set<string>
   ) {
     const shuffled = [...pool].sort(() => Math.random() - 0.5);
 
@@ -283,7 +281,7 @@ export class AutoSolverService {
             (c) =>
               c.tags?.includes(triggeredSynergy.required as any) &&
               !currentSelection.some((sel) => sel.id === c.id) &&
-              (!attemptBannedDays || !attemptBannedDays.has(c.schedule.day)) 
+              (!attemptBannedDays || !attemptBannedDays.has(c.schedule.day))
           );
 
           const shuffledPartners = possiblePartners.sort(() => Math.random() - 0.5);

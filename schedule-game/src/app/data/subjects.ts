@@ -177,7 +177,10 @@ export const SUBJECTS: SubjectDef[] = [
     isMandatory: false,
     hasExam: false,
     prerequisites: ['4072'],
-    components: [{ type: 'Laboratory', ects: 4, duration: 2, count: 3 }],
+    components: [
+      { type: 'Lecture', ects: 4, duration: 2, count: 1 },
+      { type: 'Laboratory', ects: 4, duration: 2, count: 3 },
+    ],
   },
   {
     id: '4107',
@@ -292,7 +295,7 @@ export const SUBJECTS: SubjectDef[] = [
     tags: ['CORE'],
     isMandatory: true,
     hasExam: true,
-    prerequisites: ['4141'], 
+    prerequisites: ['4141'],
     components: [
       { type: 'Lecture', ects: 3, duration: 2, count: 1 },
       { type: 'Classes', ects: 3, duration: 2, count: 4 },
@@ -304,7 +307,7 @@ export const SUBJECTS: SubjectDef[] = [
     tags: ['AI'],
     isMandatory: false,
     hasExam: true,
-    prerequisites: ['4140', '4111'], 
+    prerequisites: ['4140', '4111'],
     components: [
       { type: 'Lecture', ects: 3, duration: 2, count: 1 },
       { type: 'Laboratory', ects: 3, duration: 2, count: 2 },
@@ -349,7 +352,7 @@ export const SUBJECTS: SubjectDef[] = [
     tags: ['TCS'],
     isMandatory: false,
     hasExam: true,
-    prerequisites: ['4141', '41199'], 
+    prerequisites: ['4141', '41199'],
     components: [
       { type: 'Lecture', ects: 3, duration: 2, count: 1 },
       { type: 'Laboratory', ects: 3, duration: 2, count: 2 },
@@ -361,7 +364,7 @@ export const SUBJECTS: SubjectDef[] = [
     tags: ['CS'],
     isMandatory: true,
     hasExam: true,
-    prerequisites: ['3766', '4072'], 
+    prerequisites: ['3766', '4072'],
     components: [
       { type: 'Lecture', ects: 3, duration: 2, count: 1 },
       { type: 'Laboratory', ects: 3, duration: 2, count: 3 },
@@ -391,7 +394,7 @@ export const SUBJECTS: SubjectDef[] = [
     tags: ['SE'],
     isMandatory: false,
     hasExam: false,
-    prerequisites: ['4105'], 
+    prerequisites: ['4105'],
     components: [{ type: 'Seminar', ects: 2, duration: 2, count: 1 }],
   },
   {
@@ -400,7 +403,7 @@ export const SUBJECTS: SubjectDef[] = [
     tags: ['STATS'],
     isMandatory: true,
     hasExam: true,
-    prerequisites: ['4108'], 
+    prerequisites: ['4108'],
     components: [
       { type: 'Lecture', ects: 3, duration: 2, count: 1 },
       { type: 'Classes', ects: 3, duration: 2, count: 3 },
@@ -412,7 +415,7 @@ export const SUBJECTS: SubjectDef[] = [
     tags: ['TCS'],
     isMandatory: false,
     hasExam: true,
-    prerequisites: ['41199', '4077'], 
+    prerequisites: ['41199', '4077'],
     components: [
       { type: 'Lecture', ects: 3, duration: 2, count: 1 },
       { type: 'Classes', ects: 3, duration: 2, count: 2 },
@@ -424,7 +427,7 @@ export const SUBJECTS: SubjectDef[] = [
     tags: ['AI'],
     isMandatory: false,
     hasExam: false,
-    prerequisites: ['4140'], 
+    prerequisites: ['4140'],
     components: [{ type: 'Seminar', ects: 2, duration: 2, count: 1 }],
   },
   {
@@ -433,7 +436,7 @@ export const SUBJECTS: SubjectDef[] = [
     tags: ['AI'],
     isMandatory: false,
     hasExam: false,
-    prerequisites: ['4140'], 
+    prerequisites: ['4140'],
     components: [{ type: 'Seminar', ects: 2, duration: 2, count: 1 }],
   },
   {
@@ -451,7 +454,7 @@ export const SUBJECTS: SubjectDef[] = [
     tags: ['OS'],
     isMandatory: true,
     hasExam: true,
-    prerequisites: ['3766'], 
+    prerequisites: ['3766'],
     components: [
       { type: 'Lecture', ects: 3, duration: 2, count: 1 },
       { type: 'Laboratory', ects: 3, duration: 2, count: 4 },
@@ -463,7 +466,7 @@ export const SUBJECTS: SubjectDef[] = [
     tags: ['CS', 'TOOLS', 'OS'],
     isMandatory: false,
     hasExam: true,
-    prerequisites: ['4084', '4072'], 
+    prerequisites: ['4084', '4072'],
     components: [
       { type: 'Lecture', ects: 3, duration: 2, count: 1 },
       { type: 'Laboratory', ects: 3, duration: 2, count: 2 },
@@ -475,7 +478,7 @@ export const SUBJECTS: SubjectDef[] = [
     tags: ['TCS'],
     isMandatory: false,
     hasExam: true,
-    prerequisites: ['4077', '4141'], 
+    prerequisites: ['4077', '4141'],
     components: [
       { type: 'Lecture', ects: 3, duration: 2, count: 1 },
       { type: 'Classes', ects: 3, duration: 2, count: 2 },
@@ -487,7 +490,7 @@ export const SUBJECTS: SubjectDef[] = [
     tags: ['AI'],
     isMandatory: false,
     hasExam: true,
-    prerequisites: ['4070', '3805', '4111'], 
+    prerequisites: ['4070', '3805', '4111'],
     components: [
       { type: 'Lecture', ects: 3, duration: 2, count: 1 },
       { type: 'Laboratory', ects: 3, duration: 2, count: 3 },
@@ -508,7 +511,7 @@ export const SUBJECTS: SubjectDef[] = [
     tags: ['TCS'],
     isMandatory: false,
     hasExam: true,
-    prerequisites: ['4141'], 
+    prerequisites: ['4141'],
     components: [
       { type: 'Lecture', ects: 2, duration: 2, count: 1 },
       { type: 'Classes', ects: 2, duration: 2, count: 1 },
@@ -533,7 +536,7 @@ export const SUBJECTS: SubjectDef[] = [
     tags: ['SE'],
     isMandatory: false,
     hasExam: false,
-    prerequisites: ['3818', '4105'], 
+    prerequisites: ['3818', '4105'],
     components: [
       { type: 'Lecture', ects: 2, duration: 2, count: 1 },
       { type: 'Laboratory', ects: 2, duration: 2, count: 1 },
@@ -545,7 +548,7 @@ export const SUBJECTS: SubjectDef[] = [
     tags: ['CORE'],
     isMandatory: false,
     hasExam: true,
-    prerequisites: ['41199'], 
+    prerequisites: ['41199'],
     components: [
       { type: 'Lecture', ects: 3, duration: 2, count: 1 },
       { type: 'Classes', ects: 3, duration: 2, count: 2 },
@@ -557,7 +560,7 @@ export const SUBJECTS: SubjectDef[] = [
     tags: ['TCS'],
     isMandatory: false,
     hasExam: true,
-    prerequisites: ['4098'], 
+    prerequisites: ['4098'],
     components: [
       { type: 'Lecture', ects: 3, duration: 2, count: 1 },
       { type: 'Classes', ects: 3, duration: 2, count: 2 },
@@ -569,7 +572,7 @@ export const SUBJECTS: SubjectDef[] = [
     tags: ['AI', 'DB'],
     isMandatory: false,
     hasExam: true,
-    prerequisites: ['3835', '4140'], 
+    prerequisites: ['3835', '4140'],
     components: [
       { type: 'Lecture', ects: 3, duration: 2, count: 1 },
       { type: 'Laboratory', ects: 3, duration: 2, count: 2 },
@@ -608,7 +611,7 @@ export const SUBJECTS: SubjectDef[] = [
     tags: ['CS', 'TOOLS'],
     isMandatory: false,
     hasExam: false,
-    prerequisites: ['41199', '4072'], 
+    prerequisites: ['41199', '4072'],
     components: [{ type: 'Laboratory', ects: 4, duration: 2, count: 2 }],
   },
   {
@@ -617,7 +620,7 @@ export const SUBJECTS: SubjectDef[] = [
     tags: ['TCS'],
     isMandatory: false,
     hasExam: true,
-    prerequisites: ['41199', '4119'], 
+    prerequisites: ['41199', '4119'],
     components: [
       { type: 'Lecture', ects: 3, duration: 2, count: 1 },
       { type: 'Laboratory', ects: 3, duration: 2, count: 2 },
@@ -653,7 +656,7 @@ export const SUBJECTS: SubjectDef[] = [
     tags: ['DB'],
     isMandatory: true,
     hasExam: true,
-    prerequisites: ['41199'], 
+    prerequisites: ['41199'],
     components: [
       { type: 'Lecture', ects: 3, duration: 2, count: 1 },
       { type: 'Laboratory', ects: 3, duration: 2, count: 4 },
@@ -665,7 +668,7 @@ export const SUBJECTS: SubjectDef[] = [
     tags: ['CS'],
     isMandatory: false,
     hasExam: true,
-    prerequisites: ['41199', '4077'], 
+    prerequisites: ['41199', '4077'],
     components: [
       { type: 'Lecture', ects: 3, duration: 2, count: 1 },
       { type: 'Classes', ects: 3, duration: 2, count: 2 },
@@ -710,7 +713,7 @@ export const SUBJECTS: SubjectDef[] = [
     tags: ['CS', 'TOOLS'],
     isMandatory: false,
     hasExam: true,
-    prerequisites: ['41199', '4077'], 
+    prerequisites: ['4077'],
     components: [
       { type: 'Lecture', ects: 3, duration: 2, count: 1 },
       { type: 'Laboratory', ects: 3, duration: 2, count: 2 },
@@ -731,7 +734,7 @@ export const SUBJECTS: SubjectDef[] = [
     tags: ['TOOLS'],
     isMandatory: false,
     hasExam: false,
-    prerequisites: ['4072'], 
+    prerequisites: ['4072'],
     components: [{ type: 'Laboratory', ects: 4, duration: 2, count: 4 }],
   },
   {
@@ -740,7 +743,6 @@ export const SUBJECTS: SubjectDef[] = [
     tags: ['TOOLS'],
     isMandatory: false,
     hasExam: false,
-    prerequisites: ['3818'],
     components: [{ type: 'Laboratory', ects: 4, duration: 2, count: 2 }],
   },
   {
@@ -758,7 +760,7 @@ export const SUBJECTS: SubjectDef[] = [
     tags: ['TOOLS'],
     isMandatory: false,
     hasExam: false,
-    prerequisites: ['4148'], 
+    prerequisites: ['4148'],
     components: [{ type: 'Laboratory', ects: 4, duration: 2, count: 2 }],
   },
   {
@@ -767,7 +769,7 @@ export const SUBJECTS: SubjectDef[] = [
     tags: ['TOOLS', 'CS'],
     isMandatory: false,
     hasExam: false,
-    prerequisites: ['4120', '3801'], 
+    prerequisites: ['4120', '3801'],
     components: [{ type: 'Laboratory', ects: 4, duration: 2, count: 1 }],
   },
   {
@@ -800,7 +802,7 @@ export const SUBJECTS: SubjectDef[] = [
     tags: ['AI'],
     isMandatory: false,
     hasExam: true,
-    prerequisites: ['4140'], 
+    prerequisites: ['4140'],
     components: [
       { type: 'Lecture', ects: 3, duration: 2, count: 1 },
       { type: 'Laboratory', ects: 3, duration: 2, count: 2 },
@@ -812,7 +814,7 @@ export const SUBJECTS: SubjectDef[] = [
     tags: ['CS'],
     isMandatory: false,
     hasExam: true,
-    prerequisites: ['4090', '3805'], 
+    prerequisites: ['4090', '3805'],
     components: [
       { type: 'Lecture', ects: 3, duration: 2, count: 1 },
       { type: 'Laboratory', ects: 3, duration: 2, count: 2 },
@@ -824,7 +826,7 @@ export const SUBJECTS: SubjectDef[] = [
     tags: ['AI'],
     isMandatory: false,
     hasExam: false,
-    prerequisites: ['3808'], 
+    prerequisites: ['3808'],
     components: [
       { type: 'Lecture', ects: 3, duration: 2, count: 1 },
       { type: 'Laboratory', ects: 3, duration: 2, count: 2 },
@@ -836,7 +838,7 @@ export const SUBJECTS: SubjectDef[] = [
     tags: ['TOOLS', 'TCS'],
     isMandatory: false,
     hasExam: false,
-    prerequisites: ['4141'], 
+    prerequisites: ['4141'],
     components: [{ type: 'Laboratory', ects: 2, duration: 2, count: 2 }],
   },
   {
@@ -845,7 +847,7 @@ export const SUBJECTS: SubjectDef[] = [
     tags: ['CS', 'SE'],
     isMandatory: true,
     hasExam: true,
-    prerequisites: ['4072'], 
+    prerequisites: ['4072'],
     components: [
       { type: 'Lecture', ects: 3, duration: 2, count: 1 },
       { type: 'Laboratory', ects: 3, duration: 2, count: 4 },
@@ -878,7 +880,7 @@ export const SUBJECTS: SubjectDef[] = [
     tags: ['CS'],
     isMandatory: false,
     hasExam: true,
-    prerequisites: ['3805', '4072'],
+    prerequisites: ['3805'],
     components: [
       { type: 'Lecture', ects: 3, duration: 2, count: 1 },
       { type: 'Laboratory', ects: 3, duration: 2, count: 2 },
@@ -890,7 +892,7 @@ export const SUBJECTS: SubjectDef[] = [
     tags: ['TOOLS', 'TCS'],
     isMandatory: false,
     hasExam: false,
-    prerequisites: ['3818', '4119'], 
+    prerequisites: ['3818'],
     components: [{ type: 'Laboratory', ects: 4, duration: 2, count: 1 }],
   },
   {
@@ -908,7 +910,7 @@ export const SUBJECTS: SubjectDef[] = [
     tags: ['CN'],
     isMandatory: true,
     hasExam: true,
-    prerequisites: ['3766'],
+    prerequisites: [],
     components: [
       { type: 'Lecture', ects: 3, duration: 2, count: 1 },
       { type: 'Laboratory', ects: 3, duration: 2, count: 3 },
@@ -920,7 +922,7 @@ export const SUBJECTS: SubjectDef[] = [
     tags: ['CS', 'CSA'],
     isMandatory: true,
     hasExam: true,
-    prerequisites: ['3804', '4072'], 
+    prerequisites: ['3804', '4072'],
     components: [
       { type: 'Lecture', ects: 3, duration: 2, count: 1 },
       { type: 'Laboratory', ects: 3, duration: 2, count: 3 },
@@ -956,7 +958,7 @@ export const SUBJECTS: SubjectDef[] = [
     tags: ['CS', 'TOOLS'],
     isMandatory: false,
     hasExam: true,
-    prerequisites: ['4084', '3810'], 
+    prerequisites: ['4084'],
     components: [
       { type: 'Lecture', ects: 3, duration: 2, count: 1 },
       { type: 'Laboratory', ects: 3, duration: 2, count: 2 },

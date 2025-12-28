@@ -2,10 +2,10 @@ import { Rule, ValidationContext } from '../../core/models/rules.interface';
 import { COURSES } from '../courses';
 import {
   createMinEctsRule,
+  createNoGapsRule,
   createStandardLoadRule,
   createTagBanRule,
   mandatorySubjectForLevel,
-  noGaps,
 } from './common';
 
 export const RECOMMENDED: Rule = {
@@ -58,7 +58,7 @@ const STANDARD_LOAD = createStandardLoadRule('l1-standard', 1, 22);
 export const LEVEL_1_RULES: ReadonlyArray<Rule> = [
   mandatorySubjectForLevel('l1-mandatory', 1, ['4141', '4108'], 100),
   createMinEctsRule('l1-min', 16, 1, 'Mandatory'),
-  noGaps('Lost Freshman', 'No gaps >2h allowed.', 'Goal', 150, -5, 2, 1),
+  createNoGapsRule('l1-no-gaps', 2, 1, 'Goal', 150, -5, ['', 'No gaps >2h allowed.']),
   RECOMMENDED,
   EXAM_LIMIT,
   NO_ADVANCED,

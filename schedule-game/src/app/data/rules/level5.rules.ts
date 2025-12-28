@@ -30,14 +30,8 @@ const ALPHABET_SOUP: Rule = {
 
 const TCS_MASTER = createTagSpecialistRule('l5-tcs', 'TCS', 12, 5);
 
-const NO_TOOLS = createTagBanRule('l5-pure', 'TOOLS', 5, 'Goal',1200,-20);
-const ADVANCED = createTagSpecialistRule(
-  'l5-advanced',
-  'ADVANCED',
-  12,
-  5,
-  'Get a bit more advanced'
-);
+const NO_TOOLS = createTagBanRule('l5-pure', 'TOOLS', 5, 'Goal', 1200, -20);
+const ADVANCED = createTagSpecialistRule('l5-advanced', 'ADVANCED', 12, 5, 'Mandatory');
 const STANDARD_LOAD = createStandardLoadRule('l5-standard', 5, 22);
 
 const PROGRESS_CHECK_2 = createCumulativeProgressRule('l5-progress', 110, 5);

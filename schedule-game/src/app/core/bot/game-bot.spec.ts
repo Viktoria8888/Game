@@ -10,7 +10,6 @@ import { RulesService } from '../services/rules.service';
 describe('AutoSolver Bot Integration', () => {
   let bot: AutoSolverService;
   let game: GameService;
-  let selection: CourseSelectionService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -26,40 +25,21 @@ describe('AutoSolver Bot Integration', () => {
 
     bot = TestBed.inject(AutoSolverService);
     game = TestBed.inject(GameService);
-    selection = TestBed.inject(CourseSelectionService);
 
     game.markAsInitialized();
   });
 
-  it('should conquer the entire game (Level 1 to 5) with retries', () => {
+  it('should conquer the entire game (Level 1 to 5)', () => {
     let currentLevel = game.currentLevel();
-    const TARGET_LEVEL = 5;
-    const MAX_RETRIES_PER_LEVEL = 10;
-
     expect(currentLevel).toBe(1);
 
-    while (currentLevel <= TARGET_LEVEL) {
-      console.log(`\nSTARTING LEVEL ${currentLevel} 🏁`);
+    while (currentLevel <= 5) {
+      console.log(`\nSTARTING LEVEL ${currentLevel}`);
 
-      let success = false;
-
-      for (let attempt = 1; attempt <= MAX_RETRIES_PER_LEVEL; attempt++) {
-        selection.clearAll();
-
-        success = bot.solveCurrentLevel();
-
-        if (success) {
-          console.log(`Passed Level ${currentLevel} on attempt #${attempt}`);
-          break;
-        } else {
-          console.warn(`Failed attempt #${attempt} for level ${currentLevel}`);
-        }
-      }
+      const success = bot.solveCurrentLevel();
 
       if (!success) {
-        fail(
-          `Bot failed to find a solution for level ${currentLevel} after ${MAX_RETRIES_PER_LEVEL} macro-attempts.`
-        );
+        fail(`Bot failed to find a solution for Level ${currentLevel}`);
         return;
       }
 
@@ -67,19 +47,17 @@ describe('AutoSolver Bot Integration', () => {
       expect(outcome.predictedTotalStress).toBeLessThan(100);
 
       console.log(
-        `   Stats: Score +${outcome.scoreChange}, Stress ${outcome.predictedTotalStress}%`
+        `   Solved! Score Gain: ${outcome.scoreChange}, Stress: ${outcome.predictedTotalStress}%`
       );
 
       game.completeLevel();
 
       const nextLevel = game.currentLevel();
-      if (currentLevel < TARGET_LEVEL) {
-        expect(nextLevel).toBe(currentLevel + 1);
-      }
+      expect(nextLevel).toBe(currentLevel + 1);
 
       currentLevel = nextLevel;
     }
 
-    console.log('GAME COMPLETED');
+    console.log('GAME COMPLETED ');
   });
 });
