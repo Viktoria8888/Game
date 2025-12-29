@@ -3,30 +3,29 @@ import {
   createFreeDayRule,
   createMinEctsRule,
   createMutuallyExclusiveTagsRule,
+  createStaircaseRule,
   createStandardLoadRule,
-  createTagDiversityRule,
+  createTagSynergyRule,
+  mandatorySubjectForLevel,
   createTagSpecialistRule,
   createVowelCountRule,
-  mandatorySubjectForLevel,
 } from './common';
 
-const DEPT_RIVALRY = createMutuallyExclusiveTagsRule('l3-rivalry', 'AI', 'OS', 3);
-const NO_FRIDAY = createFreeDayRule('l3-weekend', 'Fri', 3, 'Mandatory', 600, -25);
-const TAG_EXPLORER = createTagDiversityRule('l3-explorer', 4, 3, 'Goal');
-const TOOLS = createTagSpecialistRule('l3-tools', 'TOOLS', 8, 3);
-const VOWEL_HARMONY = createVowelCountRule('l3-vowel', 3, 3);
-const PROGRESS_CHECK_1 = createCumulativeProgressRule('l3-progress', 66, 3);
-const STANDARD_LOAD = createStandardLoadRule('l3-standard', 3, 22);
-const MANDATORY = mandatorySubjectForLevel('l3-mandatory', 3, ['4077', '4090']);
-
 export const LEVEL_3_RULES = [
-  createMinEctsRule('l3-min', 17, 3, 'Mandatory'),
-  DEPT_RIVALRY,
-  NO_FRIDAY,
-  TAG_EXPLORER,
-  VOWEL_HARMONY,
-  TOOLS,
-  STANDARD_LOAD,
-  PROGRESS_CHECK_1,
-  MANDATORY,
+  createMinEctsRule({ id: 'l3-min', level: 3, category: 'Mandatory' }, 20),
+  createStandardLoadRule({ id: 'l3-standard', level: 3 }, 22),
+  mandatorySubjectForLevel({ id: 'l3-mandatory', level: 3 }, ['4077']),
+  createTagSynergyRule({ id: 'l3-synergy', level: 3, category: 'Mandatory' }, 'AI', 'STATS'),
+  createMutuallyExclusiveTagsRule(
+    { id: 'l3-rivalry', level: 3, category: 'Mandatory' },
+    'AI',
+    'OS'
+  ),
+  createCumulativeProgressRule({ id: 'l3-progress', level: 3, category: 'Goal' }, 66),
+  createFreeDayRule(
+    { id: 'l3-weekend', level: 3, category: 'Goal', scoreReward: 800, stressModifier: -20 },
+    'Fri'
+  ),
+  createVowelCountRule({ id: 'l3-vowel', level: 3 }, 3),
+  createStaircaseRule({ id: 'l3-stair', level: 3, category: 'Mandatory' }),
 ];

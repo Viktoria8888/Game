@@ -1,41 +1,41 @@
 import { Rule } from '../../core/models/rules.interface';
 import {
   createBanTimeSlots,
-  createMaxDailyHoursRule,
   createMinEctsRule,
   createNoEarlyMorningRule,
   createPrerequisiteRule,
   createStandardLoadRule,
   createTagRequirementRule,
+  createTagDiversityRule,
+  createMinNameLengthRule,
   mandatorySubjectForLevel,
+  createMaxDailyHoursRule,
 } from './common';
 
-const MIN_ECTS = createMinEctsRule('l2-min', 17, 2, 'Mandatory');
-
-const STANDARD_LOAD = createStandardLoadRule('l2-standard', 2, 22);
-
-const MANDATORY_SUB = mandatorySubjectForLevel('l2-mandatory', 2, ['3805']);
-
-const PREREQUISITES = createPrerequisiteRule('l2-prereqs', 2);
-
-const LUNCH_BREAK = createBanTimeSlots('l2-lunch', 2, 12, 14);
-
-const HUMAN_GOAL = createTagRequirementRule('l2-hum', 'HUM', 2, 'Goal');
-
-const NO_EARLY_MORNING = createNoEarlyMorningRule('l2-sleep', 2);
-
-const MAX_DAILY_HOURS = createMaxDailyHoursRule('l2-daily-limit', 2, 6);
-
-const PRACTICAL_SKILLS = createTagRequirementRule('l2-tools', 'TOOLS', 2, 'Mandatory');
-
 export const LEVEL_2_RULES: Rule[] = [
-  MIN_ECTS,
-  MANDATORY_SUB,
-  PREREQUISITES,
-  LUNCH_BREAK,
-  HUMAN_GOAL,
-  NO_EARLY_MORNING,
-  MAX_DAILY_HOURS,
-  STANDARD_LOAD,
-  PRACTICAL_SKILLS,
+  createMinEctsRule({ id: 'l2-min', level: 2, category: 'Mandatory' }, 18),
+  createStandardLoadRule({ id: 'l2-standard', level: 2 }, 22),
+  mandatorySubjectForLevel({ id: 'l2-mandatory', level: 2 }, ['3805']),
+  createNoEarlyMorningRule({ id: 'l2-sleep', level: 2, category: 'Mandatory' }),
+
+  createBanTimeSlots(
+    {
+      id: 'l2-lunch',
+      level: 2,
+      category: 'Mandatory',
+      messages: ['Yum!', 'Cafeteria is closed. You MUST take a break 13-14.'],
+    },
+    13,
+    14
+  ),
+
+  createTagRequirementRule({ id: 'l2-hum', level: 2, category: 'Goal' }, 'HUM'),
+  createPrerequisiteRule({ id: 'l2-prereqs', level: 2 }),
+  createTagRequirementRule({ id: 'l2-tools', level: 2, category: 'Goal' }, 'TOOLS'),
+
+  createTagDiversityRule(
+    { id: 'l2-diversity', level: 2, category: 'Mandatory', scoreReward: 100, stressModifier: 0 },
+    4
+  ),
+  createMaxDailyHoursRule({ id: 'l2-daily-limit', level: 2 }, 6),
 ];

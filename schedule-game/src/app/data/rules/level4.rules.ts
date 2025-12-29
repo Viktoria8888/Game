@@ -1,27 +1,35 @@
+import { Rule } from '../../core/models/rules.interface';
 import {
-  createMinEctsRule,
-  createStandardLoadRule,
-  createTagSynergyRule,
-  mandatorySubjectForLevel,
-  createPrimeEctsRule,
+  createTypeSegregationRule,
+  createMaxContactHoursRule,
   createPalindromeHoursRule,
-  createPrerequisiteRule,
+  mandatorySubjectForLevel,
 } from './common';
 
-const PRIME_ECTS = createPrimeEctsRule('l4-prime', 4);
-const PALINDROME_HOURS = createPalindromeHoursRule('l5-palindrome', 4);
-
-const DB_SE_SYNERGY = createTagSynergyRule('l4-synergy', 'DB', 'SE', 4);
-const MANDATORY = mandatorySubjectForLevel('l4-mandatory', 4, ['41199']);
-const STANDARD_LOAD = createStandardLoadRule('l4-standard', 4, 23);
-const PREREQUISITES = createPrerequisiteRule('l4-prereqs', 4);
+const BLACKJACK: Rule = {
+  id: 'l4-blackjack',
+  title: 'Blackjack',
+  description: 'Your total ECTS must be exactly 21. Do not bust!',
+  category: 'Mandatory',
+  level: 4,
+  priority: 10,
+  validate: (ctx) => {
+    const current = ctx.metadata.currentSemesterEcts;
+    return {
+      satisfied: current === 21,
+      message: current === 21 ? 'Blackjack! (21 ECTS) ♠️♥️' : `Current: ${current}. Target: 21.`,
+    };
+  },
+};
 
 export const LEVEL_4_RULES = [
-  createMinEctsRule('l4-min', 23, 4, 'Mandatory'),
-  PRIME_ECTS,
-  DB_SE_SYNERGY,
-  MANDATORY,
-  PALINDROME_HOURS,
-  STANDARD_LOAD,
-  PREREQUISITES,
+  BLACKJACK,
+  mandatorySubjectForLevel({ id: 'l4-mandatory', level: 4 }, ['41199']),
+  createTypeSegregationRule({ id: 'l4-segregate', level: 4 }, 'Lecture', 'Laboratory'),
+  createTypeSegregationRule({ id: 'l4-segregate', level: 4 }, 'Lecture', 'Classes'),
+  createPalindromeHoursRule({ id: 'l4-palindrome', level: 4, category: 'Goal' }),
+  createMaxContactHoursRule(
+    { id: 'l4-efficient', level: 4, category: 'Goal', scoreReward: 400 },
+    18
+  ),
 ];

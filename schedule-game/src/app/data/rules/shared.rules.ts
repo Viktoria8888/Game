@@ -1,7 +1,5 @@
 import { Rule } from '../../core/models/rules.interface';
 import { SUBJECTS } from '../subjects';
-import { createMinEctsRule, createStandardLoadRule } from './common';
-export const MIN_ECTS_RULE = createMinEctsRule('min-ects', 18, null, 'Mandatory');
 
 export const PAIRING: Rule = {
   id: 'pairing',
@@ -49,40 +47,5 @@ export const PAIRING: Rule = {
     };
   },
 };
-// add implementation
-// const SPEEDRUNNER: Rule = {
-//   id: 'secret-speedrun',
-//   title: '🏃 Speedrunner',
-//   description: 'Complete level in under 2 minutes (hidden achievement).',
-//   category: 'Goal',
-//   level: null,
-//   priority: 5,
-//   scoreReward: 2000,
-//   isActive: (ctx) => {
-//     return ctx.metadata.achievementsUnlocked?.includes('Speedrunner');
-//   },
-//   validate: (ctx) => ({
-//     satisfied: true,
-//     message: 'Speedrun achievement unlocked! 🏆',
-//   }),
-// };
-
-// const PERFECTIONIST: Rule = {
-//   id: 'secret-perfect',
-//   title: '💎 Perfectionist',
-//   description: 'Satisfy ALL goal rules in current level.',
-//   category: 'Goal',
-//   level: null,
-//   priority: 1,
-//   scoreReward: 5000,
-//   stressModifier: -100,
-//   isActive: (ctx) => ctx.level >= 5,
-//   validate: (ctx) => {
-//     return {
-//       satisfied: false,
-//       message: 'Need to satisfy ALL goal rules.',
-//     };
-//   },
-// };
 
 export const GLOBAL_RULES: ReadonlyArray<Rule> = [PAIRING];

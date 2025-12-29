@@ -5,42 +5,82 @@ import {
   createStandardLoadRule,
   createTagBanRule,
   createTagSpecialistRule,
+  createWordChainRule,
 } from './common';
 
-const ALPHABET_SOUP: Rule = {
-  id: 'l5-abc',
-  title: 'Alphabet Soup',
-  description: 'No two courses can start with the same letter.',
+const WORD_CHAIN = createWordChainRule({
+  id: 'l5-chain',
+  level: 5,
+  category: 'Mandatory',
+  scoreReward: 2000,
+});
+
+
+const TCS_MASTER = createTagSpecialistRule({ id: 'l5-tcs', level: 5 }, 'TCS', 12);
+const ALLITERATION: Rule = {
+  id: 'l5-alliteration',
+  title: 'Poetic Alliteration',
+  description: 'Select at least 3 courses that start with the same letter.',
   category: 'Goal',
   level: 5,
-  priority: 50,
-  scoreReward: 1500,
+  scoreReward: 1000,
+  stressModifier: -15,
+  priority: 100,
   validate: (ctx) => {
-    const letters = ctx.coursesSelected.map((c) => c.name.trim().charAt(0).toUpperCase());
-    const dupes = letters.filter((l, i) => letters.indexOf(l) !== i);
+    const counts: Record<string, number> = {};
+    ctx.coursesSelected.forEach((c) => {
+      const char = c.name.trim().charAt(0).toUpperCase();
+      counts[char] = (counts[char] || 0) + 1;
+    });
+    const max = Math.max(0, ...Object.values(counts));
+    const letter = Object.keys(counts).find((k) => counts[k] === max);
+
     return {
-      satisfied: dupes.length === 0 && ctx.coursesSelected.length > 0,
+      satisfied: max >= 3,
       message:
-        dupes.length === 0
-          ? 'Alphabetically unique.'
-          : `Duplicates: ${[...new Set(dupes)].join(', ')}.`,
+        max >= 3
+          ? `Beautiful alliteration on '${letter}'! (${max} courses).`
+          : `Poetry requires repetition. Max same-start: ${max}/3.`,
     };
   },
 };
 
-const TCS_MASTER = createTagSpecialistRule('l5-tcs', 'TCS', 12, 5);
+const NO_NUMBERS: Rule = {
+  id: 'l5-no-numbers',
+  title: 'Pure Prose',
+  description: 'Course names must not contain digits (0-9). Numbers are for mathematicians.',
+  category: 'Goal',
+  level: 5,
+  scoreReward: 600,
+  stressModifier: -10,
+  priority: 100,
+  validate: (ctx) => {
+    const withNumbers = ctx.coursesSelected.filter((c) => /\d/.test(c.name));
+    return {
+      satisfied: withNumbers.length === 0 && ctx.coursesSelected.length > 0,
+      message:
+        withNumbers.length === 0
+          ? 'A purely textual schedule.'
+          : `Digits found in: ${withNumbers.map((c) => c.name).join(', ')}.`,
+    };
+  },
+};
 
-const NO_TOOLS = createTagBanRule('l5-pure', 'TOOLS', 5, 'Goal', 1200, -20);
-const ADVANCED = createTagSpecialistRule('l5-advanced', 'ADVANCED', 12, 5, 'Mandatory');
-const STANDARD_LOAD = createStandardLoadRule('l5-standard', 5, 22);
+const NO_TOOLS = createTagBanRule(
+  { id: 'l5-pure', level: 5, category: 'Goal', scoreReward: 1200, stressModifier: -20 },
+  'TOOLS'
+);
 
-const PROGRESS_CHECK_2 = createCumulativeProgressRule('l5-progress', 110, 5);
-export const LEVEL_5_RULES = [
-  createMinEctsRule('l5-min', 22, 5, 'Mandatory'),
+const STANDARD_LOAD = createStandardLoadRule({ id: 'l5-standard', level: 5 }, 22);
+const PROGRESS_CHECK_2 = createCumulativeProgressRule({ id: 'l5-progress', level: 5 }, 105); // slightly lowered to be forgiving
+
+export const LEVEL_5_RULES: ReadonlyArray<Rule> = [
+  createMinEctsRule({ id: 'l5-min', level: 5, category: 'Mandatory' }, 16),
+  WORD_CHAIN,
   TCS_MASTER,
-  NO_TOOLS,
-  ALPHABET_SOUP,
-  ADVANCED,
   STANDARD_LOAD,
   PROGRESS_CHECK_2,
+  ALLITERATION, 
+  NO_NUMBERS, 
+  NO_TOOLS, 
 ];

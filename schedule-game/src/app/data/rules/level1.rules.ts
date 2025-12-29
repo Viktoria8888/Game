@@ -5,7 +5,9 @@ import {
   createNoGapsRule,
   createStandardLoadRule,
   createTagBanRule,
+  createMaxDailyHoursRule,
   mandatorySubjectForLevel,
+  createMinNameLengthRule,
 } from './common';
 
 export const RECOMMENDED: Rule = {
@@ -35,32 +37,32 @@ export const RECOMMENDED: Rule = {
   },
 };
 
-const EXAM_LIMIT: Rule = {
-  id: 'l1-exams',
-  title: 'Exam Anxiety',
-  description: 'Max 3 courses with Final Exams allowed.',
-  category: 'Goal',
-  priority: 30,
-  level: 1,
-  stressModifier: -15,
-  scoreReward: 200,
-  validate: (ctx) => {
-    const count = ctx.coursesSelected.filter((c) => c.hasExam).length;
-    return {
-      satisfied: count <= 3 && ctx.coursesSelected.length > 0,
-      message: count <= 3 ? 'Anxiety managed.' : `Too many exams (${count}/3)!`,
-    };
-  },
-};
-const NO_ADVANCED = createTagBanRule('l1-no-advanced', 'ADVANCED', 1, 'Mandatory');
-const STANDARD_LOAD = createStandardLoadRule('l1-standard', 1, 22);
 
 export const LEVEL_1_RULES: ReadonlyArray<Rule> = [
-  mandatorySubjectForLevel('l1-mandatory', 1, ['4141', '4108'], 100),
-  createMinEctsRule('l1-min', 16, 1, 'Mandatory'),
-  createNoGapsRule('l1-no-gaps', 2, 1, 'Goal', 150, -5, ['', 'No gaps >2h allowed.']),
+  mandatorySubjectForLevel({ id: 'l1-mandatory', level: 1, scoreReward: 100 }, ['4141', '4108']),
+  createMinEctsRule({ id: 'l1-min', level: 1, category: 'Mandatory' }, 20),
+  createNoGapsRule(
+    {
+      id: 'l1-no-gaps',
+      level: 1,
+      category: 'Goal',
+      scoreReward: 150,
+      stressModifier: -5,
+      messages: ['', 'No gaps >2h allowed.'],
+    },
+    2
+  ),
+  createTagBanRule({ id: 'l1-no-advanced', level: 1, category: 'Mandatory' }, 'ADVANCED'),
+  createStandardLoadRule({ id: 'l1-standard', level: 1 }, 25),
+  createMaxDailyHoursRule(
+    {
+      id: 'l1-daily',
+      level: 1,
+      category: 'Goal',
+      messages: ['Healthy work-life balance.', 'Warning: You have a day with >6 hours of classes!'],
+    },
+    6
+  ),
+  createMinNameLengthRule({ id: 'l1-names', level: 1, category: 'Goal' }, 10),
   RECOMMENDED,
-  EXAM_LIMIT,
-  NO_ADVANCED,
-  STANDARD_LOAD,
 ];
