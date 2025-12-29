@@ -15,13 +15,13 @@ export const SUBJECTS: SubjectDef[] = [
   },
   {
     id: '4118',
-    name: 'Algorithms on Planar Graphs',
+    name: 'Planar Graphs',
     tags: ['CS', 'ADVANCED'],
     isMandatory: false,
     hasExam: true,
     prerequisites: ['41199', '4077'], // ADS and Discrete Math
     components: [
-      { type: 'Lecture', ects: 3, duration: 2, count: 1 },
+      { type: 'Lecture', ects: 4, duration: 2, count: 1 },
       { type: 'Classes', ects: 3, duration: 2, count: 2 },
     ],
   },
@@ -33,7 +33,7 @@ export const SUBJECTS: SubjectDef[] = [
     hasExam: true,
     prerequisites: ['4072', '4077', '4141'], // C Programming, Discrete Math, Logic
     components: [
-      { type: 'Lecture', ects: 6, duration: 2, count: 1 },
+      { type: 'Lecture', ects: 6, duration: 3, count: 1 },
       { type: 'Classes', ects: 6, duration: 2, count: 4 },
     ],
   },
@@ -131,7 +131,7 @@ export const SUBJECTS: SubjectDef[] = [
     prerequisites: ['3805', '4108'], // Algebra and Math Analysis
     components: [
       { type: 'Lecture', ects: 3, duration: 2, count: 1 },
-      { type: 'Classes', ects: 3, duration: 2, count: 2 },
+      { type: 'Classes', ects: 3, duration: 2, count: 3 },
     ],
   },
   {
@@ -193,12 +193,15 @@ export const SUBJECTS: SubjectDef[] = [
   },
   {
     id: '4087',
-    name: 'Parallel Computing on CUDA',
+    name: 'CUDA',
     tags: ['TOOLS', 'ADVANCED'],
     isMandatory: false,
     hasExam: false,
     prerequisites: ['4072', '3766'], // Programming and Systems
-    components: [{ type: 'Laboratory', ects: 4, duration: 2, count: 1 }],
+    components: [
+      { type: 'Lecture', ects: 3, duration: 2, count: 1 },
+      { type: 'Laboratory', ects: 4, duration: 2, count: 2 },
+    ],
   },
   {
     id: '4121',
@@ -274,7 +277,7 @@ export const SUBJECTS: SubjectDef[] = [
     isMandatory: false,
     hasExam: false,
     prerequisites: ['3801'], // C++ Course
-    components: [{ type: 'Laboratory', ects: 4, duration: 2, count: 2 }],
+    components: [{ type: 'Laboratory', ects: 3, duration: 2, count: 2 }],
   },
   {
     id: '4141',
@@ -297,8 +300,8 @@ export const SUBJECTS: SubjectDef[] = [
     hasExam: true,
     prerequisites: ['4141'],
     components: [
-      { type: 'Lecture', ects: 3, duration: 2, count: 1 },
-      { type: 'Classes', ects: 3, duration: 2, count: 4 },
+      { type: 'Lecture', ects: 6, duration: 4, count: 1 },
+      { type: 'Classes', ects: 4, duration: 2, count: 4 },
     ],
   },
   {
@@ -418,7 +421,7 @@ export const SUBJECTS: SubjectDef[] = [
     prerequisites: ['41199', '4077'],
     components: [
       { type: 'Lecture', ects: 3, duration: 2, count: 1 },
-      { type: 'Classes', ects: 3, duration: 2, count: 2 },
+      { type: 'Classes', ects: 3, duration: 2, count: 3 },
     ],
   },
   {
@@ -432,7 +435,7 @@ export const SUBJECTS: SubjectDef[] = [
   },
   {
     id: '4127',
-    name: 'Seminar: Graph Neural Networks',
+    name: 'Graph Neural Networks',
     tags: ['AI'],
     isMandatory: false,
     hasExam: false,
@@ -456,8 +459,8 @@ export const SUBJECTS: SubjectDef[] = [
     hasExam: true,
     prerequisites: ['3766'],
     components: [
-      { type: 'Lecture', ects: 3, duration: 2, count: 1 },
-      { type: 'Laboratory', ects: 3, duration: 2, count: 4 },
+      { type: 'Lecture', ects: 6, duration: 4, count: 1 },
+      { type: 'Laboratory', ects: 4, duration: 2, count: 4 },
     ],
   },
   {
@@ -644,7 +647,7 @@ export const SUBJECTS: SubjectDef[] = [
     tags: ['CSA'],
     isMandatory: false,
     hasExam: true,
-    prerequisites: ['3804'],
+    prerequisites: [],
     components: [
       { type: 'Lecture', ects: 3, duration: 2, count: 1 },
       { type: 'Laboratory', ects: 3, duration: 2, count: 3 },
@@ -855,12 +858,12 @@ export const SUBJECTS: SubjectDef[] = [
   },
   {
     id: '3825',
-    name: 'Project: Machine Learning for Temporal Data Mining',
-    tags: ['P', 'AI'],
+    name: 'Diploma Work',
+    tags: ['P'],
     isMandatory: false,
     hasExam: false,
     prerequisites: ['4140'],
-    components: [{ type: 'Project', ects: 6, duration: 2, count: 1 }],
+    components: [{ type: 'Project', ects: 12, duration: 4, count: 1 }],
   },
   {
     id: '3788',
@@ -893,7 +896,7 @@ export const SUBJECTS: SubjectDef[] = [
     isMandatory: false,
     hasExam: false,
     prerequisites: ['3818'],
-    components: [{ type: 'Laboratory', ects: 4, duration: 2, count: 1 }],
+    components: [{ type: 'Laboratory', ects: 4, duration: 2, count: 3 }],
   },
   {
     id: '3929',
@@ -922,7 +925,7 @@ export const SUBJECTS: SubjectDef[] = [
     tags: ['CS', 'CSA'],
     isMandatory: true,
     hasExam: true,
-    prerequisites: ['3804', '4072'],
+    prerequisites: [],
     components: [
       { type: 'Lecture', ects: 3, duration: 2, count: 1 },
       { type: 'Laboratory', ects: 3, duration: 2, count: 3 },

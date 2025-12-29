@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { CourseSelectionService } from '../../services/courses-selection';
 import { ScheduleService } from '../../services/schedule.service';
 import { Course } from '../../models/course.interface';
@@ -6,11 +6,11 @@ import { ScheduleGrid } from '../schedule-grid/schedule-grid';
 import { HeaderComponent } from '../header/header';
 import { AuthService } from '../../services/auth.service';
 import { Contraints } from '../contraints/contraints';
-import { ValidationContext, ValidationResultMap } from '../../models/rules.interface';
+import { ValidationContext } from '../../models/rules.interface';
 import { Courses } from '../courses-list/courses-list';
 import { GameService } from '../../services/game.service';
 import { PersistenceService } from '../../services/persistence.service';
-import { COURSES } from '../../../data/courses';
+import { COURSES, RESERVED_COURSES } from '../../../data/courses'; // Import RESERVED_COURSES
 import { LevelSummary } from '../level-summary/level-summary';
 
 @Component({
@@ -46,15 +46,22 @@ export class ScheduleManagerComponent {
   }));
 
   private courses: ReadonlyArray<Course> = COURSES;
+
   protected readonly availableCourses = computed(() => {
     const selected = this.selectedCourses();
     const takenIds = this.gameService.history.previouslyTakenCourseIds();
+    const level = this.currentLevel();
 
     return this.courses.filter((course) => {
       const isSelected = selected.some((sc) => sc.id === course.id);
       const isTaken = takenIds.has(course.subjectId);
+      if (isSelected || isTaken) return false;
+      const reservedLevel = RESERVED_COURSES[course.subjectId];
+      if (reservedLevel && reservedLevel > level) {
+        return false; 
+      }
 
-      return !isSelected && !isTaken;
+      return true;
     });
   });
 
