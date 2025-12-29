@@ -209,7 +209,7 @@ export const SUBJECTS: SubjectDef[] = [
     tags: ['TOOLS', 'SE'],
     isMandatory: false,
     hasExam: false,
-    prerequisites: ['3798'], // Linux Admin
+    prerequisites: [],
     components: [{ type: 'Laboratory', ects: 4, duration: 2, count: 2 }],
   },
   {
@@ -347,7 +347,7 @@ export const SUBJECTS: SubjectDef[] = [
     isMandatory: false,
     hasExam: false,
     prerequisites: [],
-    components: [{ type: 'Lecture', ects: 2, duration: 2, count: 1 }],
+    components: [{ type: 'Lecture', ects: 3, duration: 2, count: 1 }],
   },
   {
     id: '4119',
@@ -592,7 +592,7 @@ export const SUBJECTS: SubjectDef[] = [
     hasExam: true,
     prerequisites: [],
     components: [
-      { type: 'Lecture', ects: 3, duration: 2, count: 1 },
+      { type: 'Lecture', ects: 6, duration: 3, count: 1 },
       { type: 'Classes', ects: 3, duration: 2, count: 4 },
     ],
   },
@@ -684,7 +684,7 @@ export const SUBJECTS: SubjectDef[] = [
     isMandatory: false,
     hasExam: false,
     prerequisites: [],
-    components: [{ type: 'Lecture', ects: 2, duration: 2, count: 1 }],
+    components: [{ type: 'Lecture', ects: 3, duration: 2, count: 1 }],
   },
   {
     id: '3781',

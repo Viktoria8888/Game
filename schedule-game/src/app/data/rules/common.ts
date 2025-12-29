@@ -604,8 +604,13 @@ export const createPrerequisiteRule = (config: RuleConfig): Rule => {
       const currentSubjectIds = new Set(ctx.coursesSelected.map((c) => c.subjectId));
       const violations: string[] = [];
 
+      const checkedSubjects = new Set<string>();
+
       ctx.coursesSelected.forEach((course) => {
-        if (course.type == 'Lecture' && course.prerequisites && course.prerequisites.length > 0) {
+        if (checkedSubjects.has(course.subjectId)) return;
+        checkedSubjects.add(course.subjectId);
+
+        if (course.prerequisites && course.prerequisites.length > 0) {
           const missingIds = course.prerequisites.filter(
             (id) => !passedIds.has(id) && !currentSubjectIds.has(id)
           );
@@ -618,6 +623,7 @@ export const createPrerequisiteRule = (config: RuleConfig): Rule => {
           }
         }
       });
+
       const satisfied = violations.length === 0;
 
       return {

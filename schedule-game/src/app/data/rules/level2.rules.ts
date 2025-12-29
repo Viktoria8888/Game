@@ -38,4 +38,5 @@ export const LEVEL_2_RULES: Rule[] = [
     4
   ),
   createMaxDailyHoursRule({ id: 'l2-daily-limit', level: 2 }, 6),
+  createPrerequisiteRule({ id: 'l2-prereqs', level: 2 }),
 ];

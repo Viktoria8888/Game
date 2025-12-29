@@ -37,7 +37,6 @@ export const RECOMMENDED: Rule = {
   },
 };
 
-
 export const LEVEL_1_RULES: ReadonlyArray<Rule> = [
   mandatorySubjectForLevel({ id: 'l1-mandatory', level: 1, scoreReward: 100 }, ['4141', '4108']),
   createMinEctsRule({ id: 'l1-min', level: 1, category: 'Mandatory' }, 20),
@@ -48,9 +47,9 @@ export const LEVEL_1_RULES: ReadonlyArray<Rule> = [
       category: 'Goal',
       scoreReward: 150,
       stressModifier: -5,
-      messages: ['', 'No gaps >2h allowed.'],
+      messages: ['', 'No gaps >3h allowed.'],
     },
-    2
+    3
   ),
   createTagBanRule({ id: 'l1-no-advanced', level: 1, category: 'Mandatory' }, 'ADVANCED'),
   createStandardLoadRule({ id: 'l1-standard', level: 1 }, 25),
