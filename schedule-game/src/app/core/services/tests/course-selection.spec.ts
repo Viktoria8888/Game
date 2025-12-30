@@ -14,7 +14,7 @@ const MOCK_COURSE_A: Course = {
   hasExam: true,
   isFirstYearRecommended: true,
   isProseminar: false,
-  schedule: { day: 'Mon', startTime: 8, durationHours: 2 }, 
+  schedule: { day: 'Mon', startTime: 8, durationHours: 2 },
 };
 
 const MOCK_COURSE_B: Course = {
@@ -68,6 +68,12 @@ describe('CourseSelectionService', () => {
 
       expect(service.selectedCourses().length).toBe(1);
       expect(service.selectedCourses()[0]).toBe(MOCK_COURSE_A);
+    });
+
+    it('throws when adding the same course twice', () => {
+      service.addCourse(MOCK_COURSE_A);
+
+      expect(() => service.addCourse(MOCK_COURSE_A)).toThrowError(/already selected/);
     });
 
     it('removes a course by ID', () => {

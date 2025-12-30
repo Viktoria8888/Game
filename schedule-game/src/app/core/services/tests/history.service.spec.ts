@@ -9,14 +9,14 @@ const MOCK_SEMESTER_1: SemesterHistory = {
   coursesTaken: [],
   ectsEarned: 10,
   scoreEarned: 50,
-  stressLevel: 50,
+  willpowerCost: 10,
 };
 const MOCK_SEMESTER_2: SemesterHistory = {
   level: 2,
   coursesTaken: [],
   ectsEarned: 30,
   scoreEarned: 50,
-  stressLevel: 33,
+  willpowerCost: 4,
 };
 
 describe('HistoryService', () => {
@@ -40,7 +40,6 @@ describe('HistoryService', () => {
 
     expect(service.history().length).toBe(1);
     expect(service.history()[0]).toBe(MOCK_SEMESTER_1);
-
     expect(service.totalHistoricalEcts()).toBe(10);
     expect(service.totalHistoricalScore()).toBe(50);
   });
@@ -61,7 +60,6 @@ describe('HistoryService', () => {
 
     expect(service.history().length).toBe(2);
     expect(service.history()).toEqual(newHistory);
-
     expect(service.totalHistoricalEcts()).toBe(60);
   });
 
