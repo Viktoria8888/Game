@@ -23,7 +23,7 @@ export interface ValidationResult {
 }
 
 /**
- * Metadata for the Bot/AutoSolver.
+ * Metadata for the Bot/AutoSolver. Will be extended futher
  */
 export type SolverHint =
   | { type: 'REQUIRED_SUBJECTS'; value: string[] }
@@ -54,7 +54,6 @@ export interface Rule {
   description: string;
   category: 'Mandatory' | 'Goal';
   scoreReward?: number;
-  stressModifier?: number;
   level: number | null; // null means that the rule is applied to any level
   priority: number;
   controlledBy?: string[];
@@ -68,6 +67,7 @@ export interface RuleExecution {
   rule: Rule;
   result: ValidationResult;
 }
+
 export interface ValidationResultMap {
   satisfied: Array<RuleExecution>;
   violated: Array<RuleExecution>;

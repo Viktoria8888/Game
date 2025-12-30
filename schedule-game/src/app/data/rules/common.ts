@@ -8,7 +8,6 @@ export interface RuleConfig {
   level: number | null;
   category?: 'Mandatory' | 'Goal';
   scoreReward?: number;
-  stressModifier?: number;
   messages?: [string, string];
   title?: string;
   description?: string;
@@ -50,14 +49,12 @@ const resolveMessage = (
   return satisfied ? defaultSuccess : defaultFail;
 };
 
-// ... [Keep other rules like createCumulativeProgressRule, mandatorySubjectForLevel, etc. unchanged] ...
 export const createCumulativeProgressRule = (config: RuleConfig, minTotalEcts: number): Rule => {
   const {
     id,
     level,
     category = 'Mandatory',
     scoreReward = category === 'Goal' ? 600 : 0,
-    stressModifier = category === 'Goal' ? -15 : 0,
     messages,
     priority = 200,
   } = config;
@@ -72,7 +69,6 @@ export const createCumulativeProgressRule = (config: RuleConfig, minTotalEcts: n
     level,
     priority,
     scoreReward,
-    stressModifier,
     solverHint: { type: 'MIN_TOTAL_ECTS', value: minTotalEcts },
     validate: (ctx) => {
       const pastEcts = ctx.history.reduce((sum, h) => sum + h.ectsEarned, 0);
@@ -172,7 +168,6 @@ export const createStandardLoadRule = (config: RuleConfig, target: number = 22):
     level,
     category = 'Goal',
     scoreReward = 350 + (level || 0) * 50,
-    stressModifier = -15,
     priority = 40,
     messages,
   } = config;
@@ -185,7 +180,6 @@ export const createStandardLoadRule = (config: RuleConfig, target: number = 22):
     level,
     priority,
     scoreReward,
-    stressModifier,
     solverHint: { type: 'MIN_ECTS', value: target },
     validate: (ctx) => {
       const current = ctx.metadata.currentSemesterEcts;
@@ -209,7 +203,6 @@ export const createNoGapsRule = (config: RuleConfig, gap: number): Rule => {
     level,
     category = 'Goal',
     scoreReward = 0,
-    stressModifier = 0,
     priority = 80,
     messages,
   } = config;
@@ -222,7 +215,6 @@ export const createNoGapsRule = (config: RuleConfig, gap: number): Rule => {
     priority,
     level,
     scoreReward,
-    stressModifier,
     solverHint: { type: 'NO_GAPS', value: gap },
     validate: (context) => {
       const hasHugeGap = context.metadata.maxGapInAnyDay > gap;
@@ -246,7 +238,6 @@ export const createMaxContactHoursRule = (config: RuleConfig, maxHours: number):
     level,
     category = 'Goal',
     scoreReward = 500,
-    stressModifier = -20,
     priority = 50,
     messages,
   } = config;
@@ -259,7 +250,6 @@ export const createMaxContactHoursRule = (config: RuleConfig, maxHours: number):
     level,
     priority,
     scoreReward,
-    stressModifier,
     solverHint: { type: 'MAX_CONTACT_HOURS', value: maxHours },
     validate: (ctx) => {
       const hours = ctx.metadata.totalContactHours;
@@ -283,7 +273,6 @@ export const createTagDiversityRule = (config: RuleConfig, minUniqueTags: number
     level,
     category = 'Goal',
     scoreReward = 400,
-    stressModifier = -5,
     priority = 60,
     messages,
   } = config;
@@ -297,7 +286,6 @@ export const createTagDiversityRule = (config: RuleConfig, minUniqueTags: number
     level,
     priority,
     scoreReward,
-    stressModifier,
     solverHint: { type: 'TAG_DIVERSITY', value: minUniqueTags },
     validate: (ctx) => {
       const uniqueTags = new Set<string>();
@@ -326,7 +314,6 @@ export const createTagSynergyRule = (
     level,
     category = 'Mandatory',
     scoreReward = category === 'Goal' ? 400 : 0,
-    stressModifier = category === 'Goal' ? -10 : 0,
     priority = 120,
     messages,
   } = config;
@@ -341,7 +328,6 @@ export const createTagSynergyRule = (
     level,
     priority,
     scoreReward,
-    stressModifier,
     solverHint: { type: 'TAG_SYNERGY', value: { primary: primaryTag, required: requiredTag } },
     validate: (ctx) => {
       const hasPrimary = hasCourseWithTag(ctx, primaryTag);
@@ -367,7 +353,6 @@ export const createTagBanRule = (config: RuleConfig, bannedTag: string): Rule =>
     level,
     category = 'Mandatory',
     scoreReward,
-    stressModifier,
     priority = 70,
     messages,
   } = config;
@@ -377,7 +362,6 @@ export const createTagBanRule = (config: RuleConfig, bannedTag: string): Rule =>
     description: config.description ?? `Do not take any "${bannedTag}" courses.`,
     category,
     scoreReward,
-    stressModifier,
     level,
     priority,
     solverHint: { type: 'BAN_TAG', value: bannedTag },
@@ -431,7 +415,6 @@ export const createMinNameLengthRule = (config: RuleConfig, minLength: number): 
     level,
     category = 'Goal',
     scoreReward = 300,
-    stressModifier = -10,
     priority = 55,
     messages,
   } = config;
@@ -446,7 +429,6 @@ export const createMinNameLengthRule = (config: RuleConfig, minLength: number): 
     level,
     priority,
     scoreReward,
-    stressModifier,
     solverHint: { type: 'NAME_LENGTH', value: minLength },
     validate: (ctx) => {
       const violations = ctx.coursesSelected.filter((c) => c.name.length < minLength);
@@ -470,7 +452,6 @@ export const createVowelCountRule = (config: RuleConfig, divisor: number): Rule 
     level,
     category = 'Goal',
     scoreReward = 800,
-    stressModifier = -15,
     priority = 60,
     messages,
   } = config;
@@ -485,7 +466,6 @@ export const createVowelCountRule = (config: RuleConfig, divisor: number): Rule 
     level,
     priority,
     scoreReward,
-    stressModifier,
     solverHint: { type: 'VOWEL_COUNT', value: divisor },
     validate: (ctx) => {
       const vowels = /[aeiou]/gi;
@@ -515,7 +495,6 @@ export const createOddStartTimesRule = (config: RuleConfig): Rule => {
     level,
     category = 'Goal',
     scoreReward = 1000,
-    stressModifier = -10,
     priority = 50,
     messages,
   } = config;
@@ -530,7 +509,6 @@ export const createOddStartTimesRule = (config: RuleConfig): Rule => {
     level,
     priority,
     scoreReward,
-    stressModifier,
     solverHint: { type: 'ODD_HOURS', value: true },
     validate: (ctx) => {
       const evenStarts = ctx.schedule.filter((s) => s.startTime % 2 === 0);
@@ -553,7 +531,6 @@ export const createBanTimeSlots = (config: RuleConfig, start: number, end: numbe
     id,
     level,
     category = 'Mandatory',
-    stressModifier = -15,
     priority = 90,
     messages,
   } = config;
@@ -565,7 +542,6 @@ export const createBanTimeSlots = (config: RuleConfig, start: number, end: numbe
     category,
     level,
     priority,
-    stressModifier,
     solverHint: { type: 'BAN_TIME_SLOTS', value: [start, end] },
     validate: (ctx) => {
       const violations: string[] = [];
@@ -646,7 +622,6 @@ export const createNoEarlyMorningRule = (config: RuleConfig, hour: number = 10):
     level,
     category = 'Goal',
     scoreReward = 400,
-    stressModifier = -20,
     priority = 50,
     messages,
   } = config;
@@ -659,7 +634,6 @@ export const createNoEarlyMorningRule = (config: RuleConfig, hour: number = 10):
     priority,
     level,
     scoreReward,
-    stressModifier,
     solverHint: { type: 'MIN_START_HOUR', value: 10 },
     validate: (ctx) => {
       const early = ctx.schedule.filter((s) => s.startTime < hour).length;
@@ -683,7 +657,6 @@ export const createMaxDailyHoursRule = (config: RuleConfig, limit: number = 6): 
     level,
     category = 'Goal',
     scoreReward = 250,
-    stressModifier = -5,
     priority = 45,
     messages,
   } = config;
@@ -697,7 +670,6 @@ export const createMaxDailyHoursRule = (config: RuleConfig, limit: number = 6): 
     priority,
     level,
     scoreReward,
-    stressModifier,
     solverHint: { type: 'MAX_DAILY_HOURS', value: limit },
     validate: (ctx) => {
       const hoursByDay = new Map<string, number>();
@@ -725,7 +697,6 @@ export const createTagRequirementRule = (config: RuleConfig, tag: string): Rule 
     level,
     category = 'Mandatory',
     scoreReward = category === 'Goal' ? 300 : 0,
-    stressModifier = category === 'Goal' ? -5 : 0,
     priority = 100,
     messages,
   } = config;
@@ -739,7 +710,6 @@ export const createTagRequirementRule = (config: RuleConfig, tag: string): Rule 
     level,
     priority,
     scoreReward,
-    stressModifier,
     solverHint: { type: 'TAG_REQUIREMENT', value: tag },
     validate: (ctx) => {
       const hasIt = hasCourseWithTag(ctx, tag);
@@ -767,7 +737,6 @@ export const createMutuallyExclusiveTagsRule = (
     level,
     category = 'Mandatory',
     scoreReward = category === 'Goal' ? 500 : 0,
-    stressModifier = category === 'Goal' ? -10 : 0,
     priority = 130,
     messages,
   } = config;
@@ -780,7 +749,6 @@ export const createMutuallyExclusiveTagsRule = (
     level,
     priority,
     scoreReward,
-    stressModifier,
     solverHint: { type: 'MUTUALLY_EXCLUSIVE_TAGS', value: [tag1, tag2] },
     validate: (ctx) => {
       const has1 = hasCourseWithTag(ctx, tag1);
@@ -806,7 +774,6 @@ export const createFreeDayRule = (config: RuleConfig, day: string): Rule => {
     level,
     category = 'Mandatory',
     scoreReward = 600,
-    stressModifier = -25,
     priority = 55,
     messages,
   } = config;
@@ -819,7 +786,6 @@ export const createFreeDayRule = (config: RuleConfig, day: string): Rule => {
     level,
     priority,
     scoreReward,
-    stressModifier,
     solverHint: { type: 'BAN_DAYS', value: [day] },
     validate: (ctx) => {
       const busy = ctx.schedule.filter((s) => s.day === day).length;
@@ -875,7 +841,6 @@ export const createPalindromeHoursRule = (config: RuleConfig): Rule => {
     level,
     category = 'Goal',
     scoreReward = 1000,
-    stressModifier = -10,
     priority = 55,
     messages,
   } = config;
@@ -888,7 +853,6 @@ export const createPalindromeHoursRule = (config: RuleConfig): Rule => {
     level,
     priority,
     scoreReward,
-    stressModifier,
     solverHint: { type: 'FORCE_PALINDROME_HOURS', value: true },
     validate: (ctx) => {
       const hours = ctx.metadata.totalContactHours;
@@ -912,7 +876,6 @@ export const createMinFreeDaysRule = (config: RuleConfig, minFreeDays: number): 
     level,
     category = 'Mandatory',
     scoreReward = category === 'Goal' ? 1000 : 0,
-    stressModifier = category === 'Goal' ? -30 : 0,
     priority = 100,
     messages,
   } = config;
@@ -925,7 +888,6 @@ export const createMinFreeDaysRule = (config: RuleConfig, minFreeDays: number): 
     level,
     priority,
     scoreReward,
-    stressModifier,
     solverHint: { type: 'MIN_FREE_DAYS', value: minFreeDays },
     validate: (ctx) => {
       const free = ctx.metadata.freeDaysCount;
@@ -943,14 +905,12 @@ export const createMinFreeDaysRule = (config: RuleConfig, minFreeDays: number): 
   };
 };
 
-// Ignores duplicate subjects so Lecture->Lab doesn't break the chain
 export const createWordChainRule = (config: RuleConfig): Rule => {
   const {
     id,
     level,
     category = 'Mandatory',
     scoreReward = 1500,
-    stressModifier = -25,
     priority = 60,
     messages,
   } = config;
@@ -965,7 +925,6 @@ export const createWordChainRule = (config: RuleConfig): Rule => {
     level,
     priority,
     scoreReward,
-    stressModifier,
     validate: (ctx) => {
       const sortedSlots = [...ctx.schedule].sort((a, b) => {
         const days = { Mon: 0, Tue: 1, Wed: 2, Thu: 3, Fri: 4 };
@@ -974,7 +933,7 @@ export const createWordChainRule = (config: RuleConfig): Rule => {
       });
 
       const orderedCourses: Course[] = [];
-      const seenSubjects = new Set<string>(); // CHANGED: Track subjects, not course IDs
+      const seenSubjects = new Set<string>();
 
       sortedSlots.forEach((slot) => {
         if (slot.course && !seenSubjects.has(slot.course.subjectId)) {
@@ -1091,7 +1050,6 @@ export const createStaircaseRule = (config: RuleConfig): Rule => {
     level,
     category = 'Goal',
     scoreReward = 2000,
-    stressModifier = 15,
     priority = 80,
     messages,
   } = config;
@@ -1106,7 +1064,6 @@ export const createStaircaseRule = (config: RuleConfig): Rule => {
     level,
     priority,
     scoreReward,
-    stressModifier,
     validate: (ctx) => {
       const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
       let previousStart = -1;

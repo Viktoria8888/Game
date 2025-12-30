@@ -7,7 +7,6 @@ import {
   createStandardLoadRule,
   createTagRequirementRule,
   createTagDiversityRule,
-  createMinNameLengthRule,
   mandatorySubjectForLevel,
   createMaxDailyHoursRule,
 } from './common';
@@ -34,7 +33,7 @@ export const LEVEL_2_RULES: Rule[] = [
   createTagRequirementRule({ id: 'l2-tools', level: 2, category: 'Goal' }, 'TOOLS'),
 
   createTagDiversityRule(
-    { id: 'l2-diversity', level: 2, category: 'Mandatory', scoreReward: 100, stressModifier: 0 },
+    { id: 'l2-diversity', level: 2, category: 'Mandatory', scoreReward: 100},
     4
   ),
   createMaxDailyHoursRule({ id: 'l2-daily-limit', level: 2 }, 6),

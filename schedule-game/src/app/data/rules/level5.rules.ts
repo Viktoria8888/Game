@@ -24,7 +24,6 @@ const ALLITERATION: Rule = {
   category: 'Goal',
   level: 5,
   scoreReward: 1000,
-  stressModifier: -15,
   priority: 100,
   validate: (ctx) => {
     const counts: Record<string, number> = {};
@@ -52,7 +51,6 @@ const NO_NUMBERS: Rule = {
   category: 'Goal',
   level: 5,
   scoreReward: 600,
-  stressModifier: -10,
   priority: 100,
   validate: (ctx) => {
     const withNumbers = ctx.coursesSelected.filter((c) => /\d/.test(c.name));
@@ -67,12 +65,12 @@ const NO_NUMBERS: Rule = {
 };
 
 const NO_TOOLS = createTagBanRule(
-  { id: 'l5-pure', level: 5, category: 'Goal', scoreReward: 1200, stressModifier: -20 },
+  { id: 'l5-pure', level: 5, category: 'Goal', scoreReward: 1200 },
   'TOOLS'
 );
 
 const STANDARD_LOAD = createStandardLoadRule({ id: 'l5-standard', level: 5 }, 22);
-const PROGRESS_CHECK_2 = createCumulativeProgressRule({ id: 'l5-progress', level: 5 }, 105); // slightly lowered to be forgiving
+const PROGRESS_CHECK_2 = createCumulativeProgressRule({ id: 'l5-progress', level: 5 }, 105);
 
 export const LEVEL_5_RULES: ReadonlyArray<Rule> = [
   createMinEctsRule({ id: 'l5-min', level: 5, category: 'Mandatory' }, 16),

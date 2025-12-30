@@ -23,7 +23,7 @@ export const LEVEL_3_RULES = [
   ),
   createCumulativeProgressRule({ id: 'l3-progress', level: 3, category: 'Goal' }, 66),
   createFreeDayRule(
-    { id: 'l3-weekend', level: 3, category: 'Goal', scoreReward: 800, stressModifier: -20 },
+    { id: 'l3-weekend', level: 3, category: 'Goal', scoreReward: 800 },
     'Fri'
   ),
   createVowelCountRule({ id: 'l3-vowel', level: 3 }, 3),

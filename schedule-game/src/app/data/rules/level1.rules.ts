@@ -18,7 +18,6 @@ export const RECOMMENDED: Rule = {
   priority: 20,
   level: 1,
   scoreReward: 250,
-  stressModifier: -5,
   validate: (ctx: ValidationContext) => {
     const userSubjectIds = new Set(ctx.coursesSelected.map((c) => c.subjectId));
     const recommendedIds = new Set(
@@ -46,7 +45,6 @@ export const LEVEL_1_RULES: ReadonlyArray<Rule> = [
       level: 1,
       category: 'Goal',
       scoreReward: 150,
-      stressModifier: -5,
       messages: ['', 'No gaps >3h allowed.'],
     },
     3
