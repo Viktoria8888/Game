@@ -21,6 +21,14 @@ export class HistoryService {
     this.history().reduce((sum, record) => sum + record.scoreEarned, 0)
   );
 
+  readonly averageWillpowerUsed = computed(() => {
+    const records = this.history();
+    if (records.length === 0) return 0;
+
+    const total = records.reduce((sum, record) => sum + record.willpowerCost, 0);
+    return Math.round((total / records.length) * 10) / 10;
+  });
+
   addRecord(record: SemesterHistory) {
     this.history.update((prev) => [...prev, record]);
   }

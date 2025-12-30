@@ -93,7 +93,7 @@ export class GameService {
       coursesTaken: [...new Set(this.courseSelection.selectedCourses().map((c) => c.subjectId))],
       ectsEarned: this.schedule.simpleMetadata().currentSemesterEcts,
       scoreEarned: outcome.scoreChange,
-      stressLevel: outcome.willpowerCost,
+      willpowerCost: outcome.willpowerCost,
     });
 
     this.totalScore.set(outcome.predictedTotalScore);

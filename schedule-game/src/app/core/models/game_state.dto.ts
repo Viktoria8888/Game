@@ -15,7 +15,6 @@ export interface ComplexGameMetadata {
   totalGapTime: number;
   maxGapInAnyDay: number;
   averageStartTime: number;
-  morningToAfternoonRatio: number;
   freeDaysCount: number;
   // Willpower System
   willpowerCost: number;
@@ -27,8 +26,9 @@ export interface SemesterHistory {
   coursesTaken: string[];
   ectsEarned: number;
   scoreEarned: number;
-  stressLevel: number;
+  willpowerCost: number;
 }
+
 export type GameStateMetadata = SimpleGameMetadata & ComplexGameMetadata;
 
 export interface GameStateDTO {

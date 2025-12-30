@@ -147,7 +147,6 @@ export class ScheduleService {
 
     const totalContactHours = schedule.length;
     const averageStartTime = activeDaysCount > 0 ? startHourSum / activeDaysCount : 0;
-    const morningToAfternoonRatio = totalContactHours > 0 ? morningSlots / totalContactHours : 0;
     const freeDaysCount = 5 - activeDaysCount;
 
     return {
@@ -155,7 +154,6 @@ export class ScheduleService {
       totalGapTime,
       maxGapInAnyDay,
       averageStartTime,
-      morningToAfternoonRatio,
       freeDaysCount,
       willpowerCost,
       costBreakdown: breakdown,
@@ -200,7 +198,6 @@ export class ScheduleService {
       totalGapTime: 0,
       maxGapInAnyDay: 0,
       averageStartTime: 0,
-      morningToAfternoonRatio: 0,
       freeDaysCount: 5,
       willpowerCost: 0,
       costBreakdown: [],
