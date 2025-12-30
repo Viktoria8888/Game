@@ -12,8 +12,15 @@
 />
 
 <div class="grid-courses">
-  <app-schedule-grid [schedule]="scheduleSlots()" [conflictingCourseIds]="conflictingCourseIds()" />
-  <app-courses [availableCourses]="availableCourses()" />
+  <app-schedule-grid
+    [schedule]="scheduleSlots()"
+    [conflictingCourseIds]="conflictingCourseIds()"
+    [shakingIds]="shakingCourseIds()"
+  />
+  <app-courses
+    [availableCourses]="availableCourses()"
+    (courseConflict)="triggerConflictShake($event)"
+  />
 </div>
 
 @if (showLevelSummary()) {

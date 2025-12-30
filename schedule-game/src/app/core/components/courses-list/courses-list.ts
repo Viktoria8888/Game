@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, signal } from '@angular/core';
+import { Component, computed, inject, input, output, signal } from '@angular/core';
 import { Course, Tag, TAG_MAP } from '../../models/course.interface';
 import { CourseSelectionService } from '../../services/courses-selection';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -17,6 +17,8 @@ export class Courses {
   readonly searchTerm = signal('');
   readonly selectedTags = signal<Set<Tag>>(new Set());
   readonly selectedTypes = signal<Set<string>>(new Set());
+
+  readonly courseConflict = output<string[]>();
 
   readonly availableTags = computed(() => {
     const tags = new Set<Tag>();
@@ -68,6 +70,14 @@ export class Courses {
   }
 
   handleCourse(course: Course) {
+    const { canAdd, conflicts } = this.courseSelection.canAddCourse(course);
+
+    if (!canAdd) {
+      const conflictIds = conflicts.map((c) => c.id);
+      this.courseConflict.emit(conflictIds);
+      return;
+    }
+
     try {
       this.courseSelection.addCourse(course);
     } catch (error: any) {

@@ -34,6 +34,8 @@ export class ScheduleManagerComponent {
 
   protected showLevelSummary = signal(false);
 
+  protected readonly shakingCourseIds = signal<Set<string>>(new Set());
+
   protected readonly validationContext = computed<ValidationContext>(() => ({
     schedule: this.schedule.scheduleSlots(),
     coursesSelected: this.selectedCourses(),
@@ -58,7 +60,7 @@ export class ScheduleManagerComponent {
       if (isSelected || isTaken) return false;
       const reservedLevel = RESERVED_COURSES[course.subjectId];
       if (reservedLevel && reservedLevel > level) {
-        return false; 
+        return false;
       }
 
       return true;
@@ -87,5 +89,13 @@ export class ScheduleManagerComponent {
     this.gameService.completeLevel();
     this.persistency.saveImmediately();
     this.showLevelSummary.set(false);
+  }
+
+  triggerConflictShake(ids: string[]) {
+    this.shakingCourseIds.set(new Set(ids));
+
+    setTimeout(() => {
+      this.shakingCourseIds.set(new Set());
+    }, 500);
   }
 }

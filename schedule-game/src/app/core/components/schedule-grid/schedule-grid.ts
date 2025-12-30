@@ -17,6 +17,8 @@ export class ScheduleGrid {
 
   readonly viewMode = signal<'grid' | 'compact'>('grid');
 
+  readonly shakingIds = input<Set<string>>(new Set());
+
   readonly days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
   readonly hours = [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
 
@@ -34,11 +36,6 @@ export class ScheduleGrid {
 
   getSlot(day: string, hour: number): ScheduleSlot | undefined {
     return this.slotMap().get(`${day}_${hour}`);
-  }
-
-  hasConflict(day: string, hour: number): boolean {
-    const slot = this.getSlot(day, hour);
-    return slot?.course ? this.conflictingCourseIds().has(slot.course.id) : false;
   }
 
   isFirstSlot(day: string, hour: number): boolean {
@@ -81,4 +78,9 @@ export class ScheduleGrid {
       this.courseSelection.removeCourse(slot.course.id);
     }
   }
+
+  isShaking(day: string, hour: number): boolean {
+    const slot = this.getSlot(day, hour);
+    return slot?.course ? this.shakingIds().has(slot.course.id) : false;
+  } 
 }

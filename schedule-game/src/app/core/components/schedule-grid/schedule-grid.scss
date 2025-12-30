@@ -176,9 +176,12 @@
   &.first-slot {
     border-top: 2px solid $c-primary;
 
-    &.conflict {
-      border-top-color: $c-error;
-    }
+  }
+
+  &.shake {
+    animation: shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+    background: #ffebee;
+    border-color: $c-error;
   }
 }
 
@@ -240,22 +243,6 @@
   }
 }
 
-.compact-slot {
-  padding: 6px;
-  margin-bottom: 6px;
-  border-radius: $radius-sm;
-  background: #f9f9f9;
-  border-left: 3px solid #2196f3;
-
-  &:last-child {
-    margin-bottom: 0;
-  }
-
-  &.conflict {
-    border-left-color: $c-error;
-    background: #fff5f5;
-  }
-}
 
 .slot-time {
   font-size: 10px;
@@ -316,5 +303,25 @@
       background: $c-error-bg;
       border: 1px solid $c-error;
     }
+  }
+}
+
+@keyframes shake {
+  10%,
+  90% {
+    transform: translate3d(-1px, 0, 0);
+  }
+  20%,
+  80% {
+    transform: translate3d(2px, 0, 0);
+  }
+  30%,
+  50%,
+  70% {
+    transform: translate3d(-4px, 0, 0);
+  }
+  40%,
+  60% {
+    transform: translate3d(4px, 0, 0);
   }
 }
