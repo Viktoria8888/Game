@@ -1,10 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import {
-  Rule,
-  ValidationContext,
-  ValidationResult,
-  ValidationResultMap,
-} from '../models/rules.interface';
+import { Rule, ValidationContext, ValidationResultMap } from '../models/rules.interface';
 import { ValidationService } from './validation.service';
 import { ALL_GAME_RULES } from '../../data/rules';
 

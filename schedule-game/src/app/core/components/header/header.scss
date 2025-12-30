@@ -85,39 +85,42 @@ $c-danger-dark: #b71c1c;
   }
 }
 
-.stat-item.level,
-.stat-item.stress {
+.stat-item.willpower {
   border-left-width: 4px;
 
-  &.beginner,
-  &.low {
+  &.safe {
     border-left-color: $c-success;
     .stat-value {
       color: lighten($c-success, 10%);
     }
   }
 
-  &.intermediate,
-  &.medium {
-    border-left-color: $c-warning;
+  &.caution {
+    border-left-color: $c-warning; 
     .stat-value {
       color: lighten($c-warning, 10%);
     }
   }
 
-  &.advanced,
-  &.high {
-    border-left-color: $c-error;
+  &.danger {
+    border-left-color: #ff5722;
     .stat-value {
-      color: lighten($c-error, 10%);
+      color: #ffab91;
     }
   }
 
-  &.master,
-  &.extreme {
-    border-left-color: $c-danger-dark;
+  &.critical {
+    border-left-color: $c-danger-dark; 
+    background: rgba($c-danger-dark, 0.15); 
+    border-color: rgba($c-danger-dark, 0.5);
+
     .stat-value {
-      color: lighten($c-error, 20%);
+      color: #ff8a80;
+      font-weight: 800;
+    }
+
+    .stat-icon {
+      animation: pulse 1s infinite;
     }
   }
 }

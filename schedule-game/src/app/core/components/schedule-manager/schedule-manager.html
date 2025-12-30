@@ -1,6 +1,7 @@
 <app-header
   [currentLevel]="currentLevel()"
-  [stressLevel]="this.gameService.currentSemesterOutcome().predictedTotalStress"
+  [willpowerCost]="gameService.currentSemesterOutcome().willpowerCost"
+  [willpowerBudget]="gameService.currentSemesterOutcome().willpowerBudget"
   [totalScore]="this.gameService.currentSemesterOutcome().predictedTotalScore"
   [userName]="authService.username()"
 />

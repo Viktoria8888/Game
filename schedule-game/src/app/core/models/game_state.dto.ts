@@ -1,8 +1,6 @@
-import { Course, ScheduleSlot } from './course.interface';
+import { Course } from './course.interface';
 
 export interface SimpleGameMetadata {
-  stressLevel: number;
-  score: number;
   currentSemesterEcts: number;
   ectsByTag: Record<string, number>;
   ectsByType: Record<string, number>;
@@ -16,12 +14,12 @@ export interface ComplexGameMetadata {
   totalContactHours: number;
   totalGapTime: number;
   maxGapInAnyDay: number;
-  
   averageStartTime: number;
   morningToAfternoonRatio: number;
-
   freeDaysCount: number;
-  achievementsUnlocked: string[]; // ['Early Bird', 'Speedrunner'...]
+  // Willpower System
+  willpowerCost: number;
+  costBreakdown: string[];
 }
 
 export interface SemesterHistory {
@@ -36,7 +34,6 @@ export type GameStateMetadata = SimpleGameMetadata & ComplexGameMetadata;
 export interface GameStateDTO {
   level: number;
   score: number;
-  stressLevel: number;
   coursesSelected: Course[];
   history: SemesterHistory[];
 }

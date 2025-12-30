@@ -9,26 +9,35 @@ import { CommonModule } from '@angular/common';
 })
 export class HeaderComponent {
   readonly currentLevel = input.required<number>();
-  readonly stressLevel = input.required<number>();
   readonly totalScore = input.required<number>();
+
+  readonly willpowerCost = input.required<number>();
+  readonly willpowerBudget = input.required<number>();
 
   readonly userName = input('Player');
   readonly userAvatar = input<string | undefined>(undefined);
 
-  readonly stressColorClass = computed((): string => {
-    const stress = this.stressLevel();
-    if (stress < 30) return 'low';
-    if (stress < 60) return 'medium';
-    if (stress < 80) return 'high';
-    return 'extreme';
+  readonly willpowerState = computed((): 'safe' | 'caution' | 'danger' | 'critical' => {
+    const cost = this.willpowerCost();
+    const budget = this.willpowerBudget();
+
+    if (cost > budget) return 'critical'; // > 100%
+    if (cost >= budget * 0.8) return 'danger'; // 80-100%
+    if (cost >= budget * 0.5) return 'caution'; // 50-79%
+    return 'safe'; // 0-49%
   });
 
-  readonly stressEmoji = computed((): string => {
-    const stress = this.stressLevel();
-    if (stress < 30) return '😊';
-    if (stress < 60) return '😐';
-    if (stress < 80) return '😰';
-    return '🔥';
+  readonly willpowerEmoji = computed((): string => {
+    switch (this.willpowerState()) {
+      case 'safe':
+        return '🔋';
+      case 'caution':
+        return '⚡';
+      case 'danger':
+        return '😓';
+      case 'critical':
+        return '💥';
+    }
   });
 
   readonly levelBadgeClass = computed((): string => {

@@ -35,15 +35,10 @@
 
       <p>{{ constraint.description }}</p>
 
-      @if (constraint.scoreReward || constraint.stressModifier) {
+      @if (constraint.scoreReward) {
       <div class="rewards">
         @if (constraint.scoreReward) {
         <span class="reward-tag score"> ⭐ +{{ constraint.scoreReward }} </span>
-        } @if (constraint.stressModifier) {
-        <span class="reward-tag stress" [class.relief]="constraint.stressModifier < 0">
-          {{ constraint.stressModifier > 0 ? '🔥' : '😌' }}
-          {{ constraint.stressModifier > 0 ? '+' : '' }}{{ constraint.stressModifier }}%
-        </span>
         }
       </div>
       }

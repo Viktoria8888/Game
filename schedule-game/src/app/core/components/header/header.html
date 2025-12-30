@@ -1,7 +1,6 @@
 <header class="game-header">
   <div class="game-title">
-    <!-- <div class="title-icon">🎮</div> -->
-    <h1>Semester Survival Simulator</h1>
+    <h1>THE SEMESTER GAME</h1>
   </div>
 
   <div class="stats-bar">
@@ -13,11 +12,13 @@
       </div>
     </div>
 
-    <div class="stat-item stress" [class]="stressColorClass()">
-      <div class="stat-icon">{{ stressEmoji() }}</div>
+    <div class="stat-item willpower" [class]="willpowerState()">
+      <div class="stat-icon">{{ willpowerEmoji() }}</div>
       <div class="stat-content">
-        <div class="stat-label">Stress</div>
-        <div class="stat-value">{{ stressLevel() }}%</div>
+        <div class="stat-label">Willpower</div>
+        <div class="stat-value">
+          {{ willpowerCost() }} <span class="divider">/</span> {{ willpowerBudget() }}
+        </div>
       </div>
     </div>
 

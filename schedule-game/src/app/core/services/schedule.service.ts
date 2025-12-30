@@ -1,15 +1,19 @@
-import {
-  Injectable,
-  Signal,
-  computed,
-  WritableSignal,
-  signal,
-  inject,
-  effect,
-} from '@angular/core';
+import { Injectable, Signal, computed, inject } from '@angular/core';
 import { ScheduleSlot, Course, Day } from '../models/course.interface';
 import { ComplexGameMetadata, GameStateDTO, SimpleGameMetadata } from '../models/game_state.dto';
 import { CourseSelectionService } from './courses-selection';
+
+export const WILLPOWER_PRICES = {
+  EARLY_RISER: 2, // 8:00 start
+  NIGHT_SHIFT: 3, // Ends after 18:00
+  FRIDAY_DRAG: 4, // Friday late classes
+  COMMUTER_TAX: 1, // Coming to campus for only 1 class
+  STARVATION: 5, // 6+ consecutive hours (No Lunch)
+  AWKWARD_GAP: 1, // 1h gap
+  HUGE_GAP: 2, // >3h gap
+  THE_CLOPEN: 3, // Late night -> Early morning
+  EXAM_STRESS: 1, // Cost per exam
+};
 
 /**Single source of truth for the SCHEDULE
  * Takes care of metadata
@@ -37,7 +41,6 @@ export class ScheduleService {
     const courses = this.courseSelectionService.selectedCourses();
     const meta = this.createEmptySimpleMetadata();
 
-    // recalculateMetaData
     for (const course of courses) {
       meta.currentSemesterEcts += course.ects;
       meta.uniqueCoursesCount += 1;
@@ -49,7 +52,6 @@ export class ScheduleService {
       }
 
       meta.ectsByType[course.type] = (meta.ectsByType[course.type] ?? 0) + course.ects;
-      meta.stressLevel += course.ects;
       if (course.hasExam) meta.hasExamCount += 1;
       if (course.isProseminar) meta.proseminarCount += 1;
       if (course.isMandatory) meta.mandatoryCoursesCompleted.push(course.id);
@@ -60,67 +62,103 @@ export class ScheduleService {
 
   calculateComplexMetadata(schedule: ScheduleSlot[]): ComplexGameMetadata {
     const hoursByDay: Record<string, number[]> = { Mon: [], Tue: [], Wed: [], Thu: [], Fri: [] };
-
     schedule.forEach((slot) => hoursByDay[slot.day].push(slot.startTime));
-
     Object.values(hoursByDay).forEach((hours) => hours.sort((a, b) => a - b));
+
+    let willpowerCost = 0;
+    const breakdown: string[] = [];
+
+    // Exam Cost
+    const uniqueExams = new Set(schedule.filter((s) => s.course?.hasExam).map((s) => s.course!.id))
+      .size;
+    if (uniqueExams > 0) {
+      willpowerCost += uniqueExams * WILLPOWER_PRICES.EXAM_STRESS;
+      breakdown.push(`Exams (${uniqueExams}): -${uniqueExams * WILLPOWER_PRICES.EXAM_STRESS}`);
+    }
 
     let totalGapTime = 0;
     let maxGapInAnyDay = 0;
     let startHourSum = 0;
     let activeDaysCount = 0;
+    let morningSlots = 0;
 
-    const freeDaysCount = Object.values(hoursByDay).reduce((freeCount, hours) => {
-      if (hours.length === 0) return freeCount + 1;
+    const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
+
+    days.forEach((day, index) => {
+      const hours = hoursByDay[day];
+      if (!hours || hours.length === 0) return;
 
       activeDaysCount++;
       startHourSum += hours[0];
+      const start = hours[0];
+      const end = hours[hours.length - 1] + 1;
+
+      hours.forEach((h) => {
+        if (h < 12) morningSlots++;
+      });
+
+      // Willpower: Commuter Tax
+      if (hours.length <= 2) willpowerCost += WILLPOWER_PRICES.COMMUTER_TAX;
+
+      // Willpower: Early/Late
+      if (start === 8) willpowerCost += WILLPOWER_PRICES.EARLY_RISER;
+      if (end > 18) willpowerCost += WILLPOWER_PRICES.NIGHT_SHIFT;
+      if (day === 'Fri' && end > 16) willpowerCost += WILLPOWER_PRICES.FRIDAY_DRAG;
+
+      // Willpower: Clopen
+      if (index > 0) {
+        const prevDay = days[index - 1];
+        const prevHours = hoursByDay[prevDay];
+        if (prevHours.length > 0) {
+          const prevEnd = prevHours[prevHours.length - 1] + 1;
+          if (prevEnd >= 20 && start <= 8) {
+            willpowerCost += WILLPOWER_PRICES.THE_CLOPEN;
+            breakdown.push(`Clopen (${prevDay}-${day}): -${WILLPOWER_PRICES.THE_CLOPEN}`);
+          }
+        }
+      }
+
+      let consecutive = 0;
+      let dailyMaxGap = 0;
 
       for (let i = 0; i < hours.length - 1; i++) {
         const gap = hours[i + 1] - hours[i] - 1;
 
-        if (gap > 0) {
+        if (gap === 0) {
+          consecutive++;
+        } else {
           totalGapTime += gap;
-          maxGapInAnyDay = Math.max(maxGapInAnyDay, gap);
+          dailyMaxGap = Math.max(dailyMaxGap, gap);
+
+          if (gap === 1) willpowerCost += WILLPOWER_PRICES.AWKWARD_GAP;
+          if (gap >= 3) willpowerCost += WILLPOWER_PRICES.HUGE_GAP;
+
+          const blockDuration = consecutive + 1;
+          if (blockDuration >= 6) willpowerCost += WILLPOWER_PRICES.STARVATION;
+
+          consecutive = 0;
         }
       }
-      return freeCount;
-    }, 0);
+      const lastBlockDuration = consecutive + 1;
+      if (lastBlockDuration >= 6) willpowerCost += WILLPOWER_PRICES.STARVATION;
 
-    const totalContactHours = schedule.length; // 1 slot = 1 hour
-    const morningSlots = schedule.filter((s) => s.startTime < 12).length;
+      maxGapInAnyDay = Math.max(maxGapInAnyDay, dailyMaxGap);
+    });
 
+    const totalContactHours = schedule.length;
     const averageStartTime = activeDaysCount > 0 ? startHourSum / activeDaysCount : 0;
     const morningToAfternoonRatio = totalContactHours > 0 ? morningSlots / totalContactHours : 0;
-
-    const achievements: string[] = [];
-
-    if (activeDaysCount > 0) {
-      if (averageStartTime < 10) achievements.push('Early Bird');
-      else if (averageStartTime >= 12) achievements.push('Night Owl');
-
-      if (totalGapTime > 5) {
-        achievements.push('Campus Resident');
-      } else if (totalGapTime === 0 && totalContactHours >= 10) {
-        achievements.push('Speedrunner');
-      }
-
-      if (totalContactHours < 12) {
-        achievements.push('Part-Timer');
-      }
-      if (freeDaysCount >= 2) {
-        achievements.push('Long Weekender');
-      }
-    }
+    const freeDaysCount = 5 - activeDaysCount;
 
     return {
       totalContactHours,
+      totalGapTime,
+      maxGapInAnyDay,
       averageStartTime,
       morningToAfternoonRatio,
-      maxGapInAnyDay,
-      totalGapTime,
       freeDaysCount,
-      achievementsUnlocked: achievements,
+      willpowerCost,
+      costBreakdown: breakdown,
     };
   }
 
@@ -146,8 +184,6 @@ export class ScheduleService {
 
   private createEmptySimpleMetadata(): SimpleGameMetadata {
     return {
-      score: 0,
-      stressLevel: 0,
       currentSemesterEcts: 0,
       ectsByTag: {},
       ectsByType: {},
@@ -161,15 +197,13 @@ export class ScheduleService {
   private createEmptyComplexMetadata(): ComplexGameMetadata {
     return {
       totalContactHours: 0,
+      totalGapTime: 0,
+      maxGapInAnyDay: 0,
       averageStartTime: 0,
       morningToAfternoonRatio: 0,
-
-      maxGapInAnyDay: 0,
-      totalGapTime: 0,
-
       freeDaysCount: 5,
-
-      achievementsUnlocked: [],
+      willpowerCost: 0,
+      costBreakdown: [],
     };
   }
 }

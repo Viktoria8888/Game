@@ -25,8 +25,6 @@ export class LevelSummary {
     return 'D';
   });
 
-  readonly badges = computed(() => this.complexMeta().achievementsUnlocked);
-
   @HostListener('window:keydown.escape')
   handleEscKey() {
     this.onClose.emit();

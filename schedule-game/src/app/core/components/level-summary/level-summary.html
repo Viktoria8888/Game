@@ -11,26 +11,12 @@
     </div>
     <div class="stat">
       <span class="label">Stress Change</span>
-      <span class="value" [class.danger]="outcome().stressChange > 0">
-        {{ outcome().stressChange > 0 ? '+' : '' }}{{ outcome().stressChange }}%
-      </span>
     </div>
     <div class="stat">
       <span class="label">Goal Rules Met</span>
       <span class="value">{{ outcome().goalRules }}</span>
     </div>
   </div>
-
-  @if (badges().length > 0) {
-  <div class="badges-section">
-    <h4>Achievements Unlocked</h4>
-    <div class="badges-list">
-      @for (badge of badges(); track badge) {
-      <span class="achievement-badge">{{ badge }}</span>
-      }
-    </div>
-  </div>
-  }
 
   <button class="next-btn" (click)="onProceed.emit()">Start Next Semester ➞</button>
 </div>
