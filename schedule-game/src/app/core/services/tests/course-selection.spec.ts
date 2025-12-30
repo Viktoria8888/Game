@@ -5,44 +5,44 @@ import { Course } from '../../models/course.interface';
 
 const MOCK_COURSE_A: Course = {
   id: '1001-L',
+  subjectId: '1001',
   name: 'Mathematical Analysis I (Lecture)',
   ects: 5,
   type: 'Lecture',
-  tags: ['I', 'O'],
+  tags: ['CS', 'CORE'],
   isMandatory: true,
   hasExam: true,
   isFirstYearRecommended: true,
-  language: 'PL',
   isProseminar: false,
-  schedule: [{ day: 'Mon', startTime: 8, durationHours: 2 }],
+  schedule: { day: 'Mon', startTime: 8, durationHours: 2 }, 
 };
 
 const MOCK_COURSE_B: Course = {
   id: '1002-L',
+  subjectId: '1002',
   name: 'Introduction to Programming (Lecture)',
   ects: 4,
   type: 'Lecture',
-  tags: ['I', 'IO'],
+  tags: ['CS', 'SE'],
   isMandatory: true,
   hasExam: true,
   isFirstYearRecommended: true,
-  language: 'EN',
   isProseminar: false,
-  schedule: [{ day: 'Tue', startTime: 10, durationHours: 2 }],
+  schedule: { day: 'Tue', startTime: 10, durationHours: 2 },
 };
 
 const MOCK_COURSE_CONFLICTING: Course = {
   id: '1001-C',
+  subjectId: '1001',
   name: 'Mathematical Analysis I (Classes)',
   ects: 3,
   type: 'Classes',
-  tags: ['I', 'O'],
+  tags: ['CS', 'CORE'],
   isMandatory: true,
   hasExam: false,
   isFirstYearRecommended: true,
-  language: 'PL',
   isProseminar: false,
-  schedule: [{ day: 'Mon', startTime: 9, durationHours: 2 }],
+  schedule: { day: 'Mon', startTime: 9, durationHours: 2 },
 };
 
 describe('CourseSelectionService', () => {
@@ -62,7 +62,7 @@ describe('CourseSelectionService', () => {
     expect(service.isValid()).toBeTrue();
   });
 
-  describe('Adding and Removing Courses', () => {
+  describe('Adding and Removing Courses:', () => {
     it('adds a course successfully', () => {
       service.addCourse(MOCK_COURSE_A);
 
@@ -90,7 +90,7 @@ describe('CourseSelectionService', () => {
     });
   });
 
-  describe('Collision Detection', () => {
+  describe('Collision Detection:', () => {
     it('allows adding non-conflicting courses', () => {
       service.addCourse(MOCK_COURSE_A);
 
@@ -127,11 +127,13 @@ describe('CourseSelectionService', () => {
   it('does not collide if one ends exactly when other starts', () => {
     const courseEarly: Course = {
       ...MOCK_COURSE_A,
-      schedule: [{ day: 'Mon', startTime: 9, durationHours: 1 }],
+      id: 'early-course',
+      schedule: { day: 'Mon', startTime: 9, durationHours: 1 },
     };
     const courseLate: Course = {
       ...MOCK_COURSE_B,
-      schedule: [{ day: 'Mon', startTime: 10, durationHours: 1 }],
+      id: 'late-course',
+      schedule: { day: 'Mon', startTime: 10, durationHours: 1 },
     };
 
     service.addCourse(courseEarly);

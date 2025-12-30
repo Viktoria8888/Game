@@ -1,5 +1,10 @@
 import { TestBed } from '@angular/core/testing';
-import { Rule, ValidationContext, ValidationResultMap } from '../../models/rules.interface';
+import {
+  Rule,
+  ValidationContext,
+  ValidationResultMap,
+  RuleExecution,
+} from '../../models/rules.interface';
 import { RulesService } from '../rules.service';
 import { ValidationService } from '../validation.service';
 import { provideZonelessChangeDetection } from '@angular/core';
@@ -14,21 +19,21 @@ const RULE_LEVEL_1_GOAL: Rule = {
   validate: () => ({ satisfied: true }),
 };
 
-const RULE_GLOBAL_CUMULATIVE: Rule = {
+const RULE_GLOBAL_MANDATORY: Rule = {
   id: 'r2',
-  title: 'Global Cumulative',
+  title: 'Global Mandatory',
   description: '...',
-  category: 'Cumulative',
+  category: 'Mandatory',
   level: null,
   priority: 1,
   validate: () => ({ satisfied: true }),
 };
 
-const RULE_LEVEL_2_ADDITIONAL: Rule = {
+const RULE_LEVEL_2_GOAL: Rule = {
   id: 'r3',
   title: 'Level 2 Add',
   description: '...',
-  category: 'Additional',
+  category: 'Goal',
   level: 2,
   priority: 1,
   validate: () => ({ satisfied: true }),
@@ -66,8 +71,8 @@ describe('RulesService', () => {
 
   const MOCK_ALL_RULES = [
     RULE_LEVEL_1_GOAL,
-    RULE_GLOBAL_CUMULATIVE,
-    RULE_LEVEL_2_ADDITIONAL,
+    RULE_GLOBAL_MANDATORY,
+    RULE_LEVEL_2_GOAL,
     RULE_WITH_IS_ACTIVE_TRUE,
     RULE_WITH_IS_ACTIVE_FALSE,
   ];
@@ -92,31 +97,26 @@ describe('RulesService', () => {
   describe('getRulesByCategory', () => {
     it('includes rules that match the current level', () => {
       const rules = service.getRulesByCategory(MOCK_CONTEXT_L1, 'Goal');
-
       expect(rules).toContain(RULE_LEVEL_1_GOAL);
     });
 
     it('includes rules that are Global (level null)', () => {
-      const rules = service.getRulesByCategory(MOCK_CONTEXT_L1, 'Cumulative');
-
-      expect(rules).toContain(RULE_GLOBAL_CUMULATIVE);
+      const rules = service.getRulesByCategory(MOCK_CONTEXT_L1, 'Mandatory');
+      expect(rules).toContain(RULE_GLOBAL_MANDATORY);
     });
 
-    it('exludes rules from other levels', () => {
-      const rules = service.getRulesByCategory(MOCK_CONTEXT_L1, 'Additional');
-
-      expect(rules).not.toContain(RULE_LEVEL_2_ADDITIONAL);
+    it('excludes rules from other levels', () => {
+      const rules = service.getRulesByCategory(MOCK_CONTEXT_L1, 'Goal');
+      expect(rules).not.toContain(RULE_LEVEL_2_GOAL);
     });
 
     it('includes rules with wrong level if isActive returns TRUE', () => {
       const rules = service.getRulesByCategory(MOCK_CONTEXT_L1, 'Goal');
-
       expect(rules).toContain(RULE_WITH_IS_ACTIVE_TRUE);
     });
 
     it('excludes rules with wrong level if isActive returns FALSE', () => {
       const rules = service.getRulesByCategory(MOCK_CONTEXT_L1, 'Goal');
-
       expect(rules).not.toContain(RULE_WITH_IS_ACTIVE_FALSE);
     });
   });
@@ -125,12 +125,11 @@ describe('RulesService', () => {
     const counts = service.getRuleCounts(MOCK_CONTEXT_L1);
 
     expect(counts.goal).toBe(2);
-    expect(counts.cumulative).toBe(1);
-    expect(counts.additional).toBe(0);
+    expect(counts.mandatory).toBe(1);
     expect(counts.total).toBe(3);
   });
 
-  it('validate filters rules and delegate to validationService', () => {
+  it('validate filters rules and delegates to validationService', () => {
     service.validate(MOCK_CONTEXT_L1);
 
     expect(validationServiceSpy.validateAll).toHaveBeenCalled();
@@ -144,7 +143,7 @@ describe('RulesService', () => {
   });
 
   it('validateByCategory only validates rules of the specific category', () => {
-    service.validateByCategory(MOCK_CONTEXT_L1, 'Cumulative');
+    service.validateByCategory(MOCK_CONTEXT_L1, 'Mandatory');
 
     expect(validationServiceSpy.validateAll).toHaveBeenCalled();
 
@@ -152,32 +151,28 @@ describe('RulesService', () => {
     const passedRules = args[0] as Rule[];
 
     expect(passedRules.length).toBe(1);
-    expect(passedRules[0]).toBe(RULE_GLOBAL_CUMULATIVE);
+    expect(passedRules[0]).toBe(RULE_GLOBAL_MANDATORY);
   });
 
   describe('areRequiredRulesSatisfied', () => {
-    it('returns TRUE if violated list only contains Additional rules', () => {
+    const createViolation = (rule: Rule): RuleExecution => ({
+      rule,
+      result: { satisfied: false, message: 'fail' },
+    });
+
+    it('returns TRUE if violated list only contains Goal rules', () => {
       const result: ValidationResultMap = {
         satisfied: [],
-        violated: [RULE_LEVEL_2_ADDITIONAL],
+        violated: [createViolation(RULE_LEVEL_1_GOAL)],
       };
 
       expect(service.areRequiredRulesSatisfied(result)).toBeTrue();
     });
 
-    it('returns FALSE if violated list contains a Goal rule', () => {
+    it('returns FALSE if violated list contains a Mandatory rule', () => {
       const result: ValidationResultMap = {
         satisfied: [],
-        violated: [RULE_LEVEL_2_ADDITIONAL, RULE_LEVEL_1_GOAL],
-      };
-
-      expect(service.areRequiredRulesSatisfied(result)).toBeFalse();
-    });
-
-    it('returns FALSE if violated list contains a Cumulative rule', () => {
-      const result: ValidationResultMap = {
-        satisfied: [],
-        violated: [RULE_GLOBAL_CUMULATIVE],
+        violated: [createViolation(RULE_GLOBAL_MANDATORY), createViolation(RULE_LEVEL_1_GOAL)],
       };
 
       expect(service.areRequiredRulesSatisfied(result)).toBeFalse();

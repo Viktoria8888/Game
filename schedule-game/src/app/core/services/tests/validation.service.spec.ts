@@ -19,7 +19,7 @@ const RULE_FAIL: Rule = {
   id: 'fail',
   title: 'Failing Rule',
   description: 'Always Fails',
-  category: 'Cumulative',
+  category: 'Mandatory',
   level: 1,
   priority: 10,
   validate: () => ({ satisfied: false, message: 'Failure reason' }),
@@ -41,10 +41,13 @@ describe('ValidationService', () => {
     const result = service.validateAll(rules, MOCK_CONTEXT);
 
     expect(result.satisfied.length).toBe(1);
-    expect(result.satisfied[0]).toBe(RULE_PASS);
+    expect(result.satisfied[0]).toEqual({ rule: RULE_PASS, result: { satisfied: true } });
 
     expect(result.violated.length).toBe(1);
-    expect(result.violated[0]).toBe(RULE_FAIL);
+    expect(result.violated[0]).toEqual({
+      rule: RULE_FAIL,
+      result: { satisfied: false, message: 'Failure reason' },
+    });
   });
 
   it('validateRule: returns result for a single rule', () => {
