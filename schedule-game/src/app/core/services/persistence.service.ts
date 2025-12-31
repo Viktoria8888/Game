@@ -41,7 +41,8 @@ export class PersistenceService {
         )
         .subscribe(async (state) => {
           if (this.authService.userId) {
-            await this.firestoreService.set(userId, state);
+            const cleanState = this.sanitize(state);
+            await this.firestoreService.set(userId, cleanState);
           }
         });
 
@@ -90,5 +91,12 @@ export class PersistenceService {
     setTimeout(() => {
       this.isRestoring = false;
     }, 0);
+  }
+  private sanitize<T>(obj: T): T {
+    return JSON.parse(
+      JSON.stringify(obj, (key, value) => {
+        return value === undefined ? null : value;
+      })
+    );
   }
 }

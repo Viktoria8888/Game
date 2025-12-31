@@ -103,11 +103,9 @@ describe('GameService', () => {
     it('calculates score based on ECTS and rule rewards', () => {
       selectedCoursesSignal.set([{ id: 'c1', ects: 5 }]);
       simpleMetaSignal.set({ ...defaultSimpleMeta, currentSemesterEcts: 5 });
-
       const satisfiedRule = {
         rule: { id: 'test-rule', scoreReward: 100, category: 'Goal' as const },
       };
-
       mockRules.validate.and.returnValue({ satisfied: [satisfiedRule as any], violated: [] });
 
       const outcome = service.currentSemesterOutcome();
@@ -143,24 +141,26 @@ describe('GameService', () => {
       });
 
       const outcome = service.currentSemesterOutcome();
+
       expect(outcome.goalRules).toBe(2);
     });
 
     it('recomputes outcome when metadata changes', () => {
+      selectedCoursesSignal.set([{ id: 'c1', ects: 5 }]);
+
       simpleMetaSignal.set({ ...defaultSimpleMeta, currentSemesterEcts: 10 });
-
-      expect(service.currentSemesterOutcome().scoreChange).toBe(100);
-
+      const scoreChange1 = service.currentSemesterOutcome().scoreChange;
       simpleMetaSignal.set({ ...defaultSimpleMeta, currentSemesterEcts: 20 });
+      const scoreChange2 = service.currentSemesterOutcome().scoreChange;
 
-      expect(service.currentSemesterOutcome().scoreChange).toBe(200);
+      expect(scoreChange1).toBe(100);
+      expect(scoreChange2).toBe(200);
     });
   });
 
   describe('completeLevel', () => {
     it('SUCCESS: increments level, updates score, and adds history record', () => {
       service.currentLevel.set(1);
-
       selectedCoursesSignal.set([{ id: 'c1', subjectId: 'math' }]);
       simpleMetaSignal.set({ ...defaultSimpleMeta, currentSemesterEcts: 10 });
       complexMetaSignal.set({ ...defaultComplexMeta, willpowerCost: 15 });
@@ -175,7 +175,6 @@ describe('GameService', () => {
           willpowerCost: 15,
         })
       );
-
       expect(service.totalScore()).toBe(100);
       expect(service.currentLevel()).toBe(2);
       expect(mockSelection.clearAll).toHaveBeenCalled();

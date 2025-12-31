@@ -80,7 +80,7 @@ describe('ScheduleService', () => {
     service = TestBed.inject(ScheduleService);
   });
 
-  describe('scheduleSlots', () => {
+  describe('ScheduleSlots', () => {
     it('creates one slot per contact hour', () => {
       setCourses(MOCK_COURSE_A, MOCK_COURSE_B);
 
@@ -110,7 +110,7 @@ describe('ScheduleService', () => {
     });
   });
 
-  describe('simpleMetadata', () => {
+  describe('SimpleMetadata', () => {
     it('starts with empty values', () => {
       expect(service.simpleMetadata()).toEqual({
         currentSemesterEcts: 0,
@@ -164,7 +164,7 @@ describe('ScheduleService', () => {
     });
   });
 
-  describe('complexMetadata', () => {
+  describe('ComplexMetadata', () => {
     it('returns empty defaults when no courses selected', () => {
       expect(service.complexMetadata()).toEqual({
         totalContactHours: 0,

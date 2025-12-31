@@ -58,7 +58,7 @@ describe('CourseSelectionService', () => {
   it('is created with empty selection', () => {
     expect(service).toBeTruthy();
     expect(service.selectedCourses()).toEqual([]);
-    expect(service.collisions()).toEqual([]);
+    expect(service.collisions()).toEqual(new Set([]));
     expect(service.isValid()).toBeTrue();
   });
 
@@ -126,7 +126,7 @@ describe('CourseSelectionService', () => {
       service.setSelectedCourses([MOCK_COURSE_A, MOCK_COURSE_CONFLICTING]);
 
       expect(service.isValid()).toBeFalse();
-      expect(service.collisions().length).toBe(1);
+      expect(service.collisions().size).toBe(2);
     });
   });
 

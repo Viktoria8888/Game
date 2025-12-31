@@ -56,7 +56,7 @@ describe('PersistenceService', () => {
     });
   }));
 
-  describe('effect():', () => {
+  describe('Effect():', () => {
     const setup = () => {
       const s = TestBed.inject(PersistenceService);
       tick();
@@ -72,13 +72,12 @@ describe('PersistenceService', () => {
       expect(mockFirestoreService.subscribeToUser).toHaveBeenCalled();
     }));
 
-    it('saves to Firestore after 2000ms debounce', fakeAsync(() => {
+    it('saves to Firestore after 500ms debounce', fakeAsync(() => {
       setup();
       const newState = { level: 2 } as GameStateDTO;
-
       mockGameService.gameStateSnapshot.set(newState);
-      tick(499);
 
+      tick(499);
       expect(mockFirestoreService.set).not.toHaveBeenCalled();
 
       tick(1);
@@ -87,6 +86,35 @@ describe('PersistenceService', () => {
         jasmine.objectContaining(newState)
       );
     }));
-    // add test for isRestoring flag
+
+    it('does not echo remote changes back to Firestore (isRestoring check)', fakeAsync(() => {
+      setup();
+      const remoteState = { level: 99 } as GameStateDTO;
+      mockGameService.restoreState.and.callFake((state: GameStateDTO) => {
+        mockGameService.gameStateSnapshot.set(state);
+      });
+      // This calls updateLocalState -> sets isRestoring=true -> updates Signal -> schedules setTimeout
+      firestoreCallback(remoteState);
+      // At this exact moment:
+      // - The Signal has updated.
+      // - The saveSubscription pipeline has fired.
+      // - It hits the filter: filter(() => !this.isRestoring)
+      // - Since isRestoring is TRUE, the  should be blocked immediately.
+
+      // Advance time past the debounce
+      // This also flushes the setTimeout(0) which resets the flag to false
+      tick(500);
+      expect(mockFirestoreService.set).not.toHaveBeenCalled();
+    }));
+
+    it('does save local changes initiated by the user', fakeAsync(() => {
+      setup();
+
+      // (Signal updates WITHOUT firestoreCallback)
+      mockGameService.gameStateSnapshot.set({ level: 5 });
+
+      tick(500);
+      expect(mockFirestoreService.set).toHaveBeenCalled();
+    }));
   });
 });

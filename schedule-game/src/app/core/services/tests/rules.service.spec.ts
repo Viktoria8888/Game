@@ -94,7 +94,7 @@ describe('RulesService', () => {
     (service as any).allRules = MOCK_ALL_RULES;
   });
 
-  describe('getRulesByCategory', () => {
+  describe('GetRulesByCategory', () => {
     it('includes rules that match the current level', () => {
       const rules = service.getRulesByCategory(MOCK_CONTEXT_L1, 'Goal');
       expect(rules).toContain(RULE_LEVEL_1_GOAL);
@@ -154,7 +154,7 @@ describe('RulesService', () => {
     expect(passedRules[0]).toBe(RULE_GLOBAL_MANDATORY);
   });
 
-  describe('areRequiredRulesSatisfied', () => {
+  describe('AreRequiredRulesSatisfied', () => {
     const createViolation = (rule: Rule): RuleExecution => ({
       rule,
       result: { satisfied: false, message: 'fail' },
