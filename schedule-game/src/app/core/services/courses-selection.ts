@@ -16,7 +16,7 @@ export class CourseSelectionService {
   });
 
   public readonly isValid = computed(() => {
-    return this.collisions().length === 0;
+    return this.collisions().size === 0;
   });
 
   canAddCourse(course: Course): { canAdd: boolean; conflicts: Course[] } {
@@ -62,23 +62,16 @@ export class CourseSelectionService {
     this.selectedCoursesSignal.set(courses);
   }
 
-  private findAllCollisions(courses: Course[]): Array<{
-    course1: Course;
-    course2: Course;
-  }> {
-    const collisions: Array<{ course1: Course; course2: Course }> = [];
-
+  private findAllCollisions(courses: Course[]): Set<string> {
+    const collisions: Set<string> = new Set();
     for (let i = 0; i < courses.length; i++) {
       for (let j = i + 1; j < courses.length; j++) {
         if (this.timeBlocksCollide(courses[i].schedule, courses[j].schedule)) {
-          collisions.push({
-            course1: courses[i],
-            course2: courses[j],
-          });
+          collisions.add(courses[i].id);
+          collisions.add(courses[j].id);
         }
       }
     }
-
     return collisions;
   }
 

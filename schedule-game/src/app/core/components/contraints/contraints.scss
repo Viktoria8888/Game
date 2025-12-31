@@ -70,11 +70,7 @@
   gap: 12px;
   overflow-x: auto;
   padding-bottom: 4px;
-  @include custom-scrollbar();
-
-  @include mobile {
-    gap: 10px;
-  }
+  @include custom-scrollbar($width: 10px);
 }
 
 .constraint {

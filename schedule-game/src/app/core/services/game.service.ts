@@ -5,6 +5,7 @@ import { GameStateDTO, GameStateMetadata } from '../models/game_state.dto';
 import { ScheduleService } from './schedule.service';
 import { RulesService } from './rules.service';
 import { ValidationContext, ValidationResultMap } from '../models/rules.interface';
+import { COURSES, RESERVED_COURSES } from '../../data/courses';
 
 export type SemesterOutcome = {
   scoreChange: number;
@@ -29,6 +30,24 @@ export class GameService {
   readonly totalScore = signal(0);
 
   readonly SEMESTER_BUDGET = 20;
+
+  readonly availableCourses = computed(() => {
+    const selected = this.courseSelection.selectedCourses();
+    const takenIds = this.history.previouslyTakenCourseIds();
+    const level = this.currentLevel();
+
+    return COURSES.filter((course) => {
+      const isSelected = selected.some((sc) => sc.id === course.id);
+      const isTaken = takenIds.has(course.subjectId);
+      if (isSelected || isTaken) return false;
+      const reservedLevel = RESERVED_COURSES[course.subjectId];
+      if (reservedLevel && reservedLevel > level) {
+        return false;
+      }
+
+      return true;
+    });
+  });
 
   readonly currentSemesterOutcome = computed<SemesterOutcome>(() => {
     const baseMeta = this.schedule.simpleMetadata();

@@ -14,7 +14,7 @@
 <div class="grid-courses">
   <app-schedule-grid
     [schedule]="scheduleSlots()"
-    [conflictingCourseIds]="conflictingCourseIds()"
+    [conflictingCourseIds]="collisions()"
     [shakingIds]="shakingCourseIds()"
   />
   <app-courses

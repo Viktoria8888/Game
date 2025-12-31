@@ -15,8 +15,6 @@ export class ScheduleGrid {
 
   readonly conflictingCourseIds = input.required<Set<string>>();
 
-  readonly viewMode = signal<'grid' | 'compact'>('grid');
-
   readonly shakingIds = input<Set<string>>(new Set());
 
   readonly days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];

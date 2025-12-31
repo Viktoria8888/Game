@@ -70,7 +70,7 @@ $trans-fast: all 0.2s;
   }
 }
 
-@mixin custom-scrollbar($width: 6px, $thumb-color: rgba(0, 0, 0, 0.2), $track-color: transparent) {
+@mixin custom-scrollbar($width, $thumb-color: rgba(0, 0, 0, 0.2), $track-color: transparent) {
   &::-webkit-scrollbar {
     width: $width;
     height: $width;
@@ -88,6 +88,6 @@ $trans-fast: all 0.2s;
       background: darken($thumb-color, 10%);
     }
   }
-  scrollbar-width: thin;
+  scrollbar-width: auto;
   scrollbar-color: $thumb-color $track-color;
 }

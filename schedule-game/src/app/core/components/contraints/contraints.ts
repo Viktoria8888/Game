@@ -1,4 +1,14 @@
-import { Component, computed, inject, input, output, Signal, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  ElementRef,
+  inject,
+  input,
+  output,
+  Signal,
+  signal,
+  viewChild,
+} from '@angular/core';
 import { RulesCount, RulesService } from '../../services/rules.service';
 import { Rule, ValidationContext, ValidationResultMap } from '../../models/rules.interface';
 import { MatTooltip } from '@angular/material/tooltip';
@@ -109,5 +119,13 @@ export class Contraints {
     }
 
     return '○';
+  }
+
+  scrollContainer = viewChild<ElementRef>('scrollContainer');
+  onWheel(event: WheelEvent) {
+    if (event.deltaY !== 0) {
+      event.preventDefault();
+      this.scrollContainer()!.nativeElement.scrollLeft += event.deltaY;
+    }
   }
 }

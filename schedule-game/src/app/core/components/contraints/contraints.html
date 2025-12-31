@@ -7,7 +7,7 @@
   }
 </div>
 
-<div class="constraints">
+<div class="constraints" #scrollContainer (wheel)="onWheel($event)">
   @for (constraint of activeConstraints(); track constraint.title) {
   <div
     class="constraint"

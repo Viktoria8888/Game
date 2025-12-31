@@ -75,7 +75,7 @@
   flex: 1;
   overflow: auto;
   min-height: 0;
-  @include custom-scrollbar();
+  @include custom-scrollbar($width: 6px);
 }
 
 .compact-view {
@@ -175,7 +175,6 @@
 
   &.first-slot {
     border-top: 2px solid $c-primary;
-
   }
 
   &.shake {
@@ -242,7 +241,6 @@
     padding: 8px;
   }
 }
-
 
 .slot-time {
   font-size: 10px;

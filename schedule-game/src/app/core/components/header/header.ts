@@ -44,8 +44,7 @@ export class HeaderComponent {
     const level = this.currentLevel();
     if (level <= 2) return 'beginner';
     if (level <= 4) return 'intermediate';
-    if (level <= 6) return 'advanced';
-    return 'master';
+    return 'advanced';
   });
 
   readonly formattedScore = computed((): string => {

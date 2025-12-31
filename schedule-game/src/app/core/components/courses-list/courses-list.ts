@@ -18,6 +18,9 @@ export class Courses {
   readonly selectedTags = signal<Set<Tag>>(new Set());
   readonly selectedTypes = signal<Set<string>>(new Set());
 
+  // NEW: Track dropdown visibility
+  readonly tagsDropdownOpen = signal(false);
+
   readonly courseConflict = output<string[]>();
 
   readonly availableTags = computed(() => {
@@ -51,6 +54,11 @@ export class Courses {
     return TAG_MAP[tag];
   };
 
+  // NEW: Toggle function
+  toggleTagsDropdown() {
+    this.tagsDropdownOpen.update((v) => !v);
+  }
+
   toggleTag(tag: Tag) {
     this.selectedTags.update((current) => {
       const newSet = new Set(current);
@@ -83,5 +91,8 @@ export class Courses {
     } catch (error: any) {
       alert(error.message);
     }
+  }
+  clearTags() {
+    this.selectedTags.set(new Set());
   }
 }

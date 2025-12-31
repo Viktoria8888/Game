@@ -28,18 +28,46 @@
     </div>
   </div>
 
-  <div class="filter-group">
+  <div class="filter-group dropdown-group">
     <span class="filter-label">Tags:</span>
-    <div class="chips">
-      @for (tag of availableTags(); track tag) {
+
+    <div class="dropdown-container">
       <button
-        class="chip-btn tag-chip"
-        [class.active]="selectedTags().has(tag)"
-        (click)="toggleTag(tag)"
-        [matTooltip]="getTagTitle(tag)"
+        class="dropdown-trigger"
+        (click)="toggleTagsDropdown()"
+        [class.active]="tagsDropdownOpen()"
       >
-        {{ tag }}
+        @if (selectedTags().size === 0) {
+        <span>Filter by Tag...</span>
+        } @else {
+        <span>{{ selectedTags().size }} Selected</span>
+        }
+        <span class="arrow">▼</span>
       </button>
+
+      @if (tagsDropdownOpen()) {
+      <div class="dropdown-menu">
+        <div class="menu-grid">
+          @for (tag of availableTags(); track tag) {
+          <button
+            class="chip-btn tag-chip"
+            [class.active]="selectedTags().has(tag)"
+            (click)="toggleTag(tag)"
+            [matTooltip]="getTagTitle(tag)"
+          >
+            {{ tag }}
+          </button>
+          }
+        </div>
+
+        @if (selectedTags().size > 0) {
+        <div class="menu-footer">
+          <button class="clear-btn" (click)="clearTags()">Clear All</button>
+        </div>
+        }
+      </div>
+
+      <div class="dropdown-backdrop" (click)="tagsDropdownOpen.set(false)"></div>
       }
     </div>
   </div>
