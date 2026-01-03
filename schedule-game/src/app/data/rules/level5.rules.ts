@@ -12,7 +12,7 @@ const WORD_CHAIN = createWordChainRule({
   id: 'l5-chain',
   level: 5,
   category: 'Mandatory',
-  scoreReward: 2000,
+  scoreReward: 500,
 });
 
 const TCS_MASTER = createTagSpecialistRule({ id: 'l5-tcs', level: 5 }, 'TCS', 12);
@@ -22,7 +22,7 @@ const ALLITERATION: Rule = {
   description: 'Select at least 3 distinct subjects that start with the same letter.',
   category: 'Goal',
   level: 5,
-  scoreReward: 1000,
+  scoreReward: 350,
   priority: 100,
   validate: (ctx) => {
     const letterToSubjects = new Map<string, Set<string>>();
@@ -55,7 +55,7 @@ const NO_NUMBERS: Rule = {
   description: 'Course names must not contain digits (0-9). Numbers are for mathematicians.',
   category: 'Goal',
   level: 5,
-  scoreReward: 600,
+  scoreReward: 100,
   priority: 100,
   validate: (ctx) => {
     const withNumbers = ctx.coursesSelected.filter((c) => /\d/.test(c.name));
@@ -70,11 +70,11 @@ const NO_NUMBERS: Rule = {
 };
 
 const NO_TOOLS = createTagBanRule(
-  { id: 'l5-pure', level: 5, category: 'Goal', scoreReward: 1200 },
+  { id: 'l5-pure', level: 5, category: 'Goal', scoreReward: 250 },
   'TOOLS'
 );
 
-const STANDARD_LOAD = createStandardLoadRule({ id: 'l5-standard', level: 5 }, 22);
+const STANDARD_LOAD = createStandardLoadRule({ id: 'l5-standard', level: 5, scoreReward: 250 }, 22);
 const PROGRESS_CHECK_2 = createCumulativeProgressRule({ id: 'l5-progress', level: 5 }, 105);
 
 export const LEVEL_5_RULES: ReadonlyArray<Rule> = [

@@ -20,8 +20,9 @@ export const LEVEL_3_RULES = [
     'AI',
     'OS'
   ),
-  createCumulativeProgressRule({ id: 'l3-progress', level: 3, category: 'Goal' }, 66),
-  createFreeDayRule({ id: 'l3-weekend', level: 3, category: 'Mandatory', scoreReward: 0 }, 'Fri'),
-  createVowelCountRule({ id: 'l3-vowel', level: 3 }, 3),
-  createStaircaseRule({ id: 'l3-stair', level: 3, category: 'Mandatory' }),
+
+  createCumulativeProgressRule({ id: 'l3-progress', level: 3, category: 'Goal', scoreReward:200 }, 66),
+  createFreeDayRule({ id: 'l3-weekend', level: 3, category: 'Mandatory', scoreReward: 300 }, 'Fri'),
+  createVowelCountRule({ id: 'l3-vowel', level: 3, scoreReward: 500 }, 3),
+  createStaircaseRule({ id: 'l3-stair', level: 3, category: 'Mandatory', scoreReward: 300 }),
 ];

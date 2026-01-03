@@ -13,7 +13,7 @@ const THESIS_DEFENSE: Rule = {
   category: 'Mandatory',
   level: 6,
   priority: 200,
-  scoreReward: 5000,
+  scoreReward: 500,
   validate: (ctx) => {
     const hasThesis = ctx.coursesSelected.some((c) => c.type === 'Project');
     return {
@@ -45,7 +45,6 @@ const TRIFECTA: Rule = {
   description: 'Focus. Take exactly 3 courses this semester.',
   category: 'Mandatory',
   level: 6,
-  scoreReward: 2000,
   priority: 100,
   validate: (ctx) => {
     const count = new Set(ctx.coursesSelected.map((course) => course.subjectId)).size;
@@ -66,7 +65,7 @@ const NO_FLUFF: Rule = {
     'Do not waste time on small courses. Every subject must be worth at least 4 ECTS total.',
   category: 'Goal',
   level: 6,
-  scoreReward: 1500,
+  scoreReward: 350,
   priority: 100,
   validate: (ctx) => {
     const ectsBySubject = getTotalEctsBySubject(ctx);
@@ -93,7 +92,7 @@ const BRIEFING_MODE: Rule = {
   description: 'Keep it short. Course names must be shorter than 15 characters.',
   category: 'Goal',
   level: 6,
-  scoreReward: 3000,
+  scoreReward: 350,
   priority: 100,
   validate: (ctx) => {
     const violations = ctx.coursesSelected.filter((c) => c.name.length >= 15);
@@ -108,7 +107,7 @@ const BRIEFING_MODE: Rule = {
 };
 
 const GHOST_MODE = createMaxContactHoursRule(
-  { id: 'l6-ghost', level: 6, category: 'Goal', scoreReward: 1000 },
+  { id: 'l6-ghost', level: 6, category: 'Goal', scoreReward: 300 },
   13
 );
 

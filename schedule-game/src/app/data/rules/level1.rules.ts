@@ -17,7 +17,7 @@ export const RECOMMENDED: Rule = {
   category: 'Goal',
   priority: 20,
   level: 1,
-  scoreReward: 250,
+  scoreReward: 300,
   validate: (ctx: ValidationContext) => {
     const userSubjectIds = new Set(ctx.coursesSelected.map((c) => c.subjectId));
     const recommendedIds = new Set(
@@ -44,22 +44,23 @@ export const LEVEL_1_RULES: ReadonlyArray<Rule> = [
       id: 'l1-no-gaps',
       level: 1,
       category: 'Goal',
-      scoreReward: 150,
+      scoreReward: 200,
       messages: ['', 'No gaps >3h allowed.'],
     },
     3
   ),
   createTagBanRule({ id: 'l1-no-advanced', level: 1, category: 'Mandatory' }, 'ADVANCED'),
-  createStandardLoadRule({ id: 'l1-standard', level: 1 }, 25),
+  createStandardLoadRule({ id: 'l1-standard', level: 1, scoreReward: 200 }, 25),
   createMaxDailyHoursRule(
     {
       id: 'l1-daily',
       level: 1,
       category: 'Goal',
+      scoreReward: 150,
       messages: ['Healthy work-life balance.', 'Warning: You have a day with >6 hours of classes!'],
     },
     6
   ),
-  createMinNameLengthRule({ id: 'l1-names', level: 1, category: 'Goal' }, 10),
+  createMinNameLengthRule({ id: 'l1-names', level: 1, category: 'Goal', scoreReward: 150 }, 10),
   RECOMMENDED,
 ];

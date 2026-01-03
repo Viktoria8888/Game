@@ -265,7 +265,7 @@ export const SUBJECTS: SubjectDef[] = [
     name: 'Intro to Programming in C',
     tags: ['CORE', 'TOOLS'],
     isFirstYearRecommended: true,
-    isMandatory: true,
+    isMandatory: false,
     hasExam: false,
     prerequisites: [],
     components: [
@@ -368,7 +368,7 @@ export const SUBJECTS: SubjectDef[] = [
     id: '4120',
     name: 'Concurrent Programming',
     tags: ['CS'],
-    isMandatory: true,
+    isMandatory: false,
     hasExam: true,
     prerequisites: ['3766', '4072'],
     components: [
@@ -407,7 +407,7 @@ export const SUBJECTS: SubjectDef[] = [
     id: '4070',
     name: 'Probability Theory for Computer Scientists',
     tags: ['STATS'],
-    isMandatory: true,
+    isMandatory: false,
     hasExam: true,
     prerequisites: ['4108'],
     components: [
@@ -458,7 +458,7 @@ export const SUBJECTS: SubjectDef[] = [
     id: '4084',
     name: 'Operating Systems',
     tags: ['OS'],
-    isMandatory: true,
+    isMandatory: false,
     hasExam: true,
     prerequisites: ['3766'],
     components: [
