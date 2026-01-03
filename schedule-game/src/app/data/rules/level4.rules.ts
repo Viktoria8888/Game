@@ -4,6 +4,9 @@ import {
   createMaxContactHoursRule,
   createPalindromeHoursRule,
   mandatorySubjectForLevel,
+  createNoGapsRule,
+  createOddStartTimesRule,
+  createBanTimeSlots,
 } from './common';
 
 const BLACKJACK: Rule = {
@@ -24,9 +27,42 @@ const BLACKJACK: Rule = {
 
 export const LEVEL_4_RULES = [
   BLACKJACK,
-  mandatorySubjectForLevel({ id: 'l4-mandatory', level: 4 }, ['41199']),
+  mandatorySubjectForLevel({ id: 'l4-mandatory', level: 4 }, ['41199']), // AiDS
+
+  createNoGapsRule(
+    {
+      id: 'l4-compact',
+      level: 4,
+      category: 'Goal',
+      scoreReward: 1200,
+      title: 'Defragmented Schedule',
+      description: 'Efficiency is paramount. Zero gaps allowed between classes on the same day.',
+    },
+    0
+  ),
+  createOddStartTimesRule({
+    id: 'l4-odd',
+    level: 4,
+    category: 'Mandatory',
+    scoreReward: 0,
+    title: 'Oddly Satisfying',
+    description: 'Start every class on an odd hour (9:00, 11:00, 13:00...).',
+  }),
+
+  createBanTimeSlots(
+    {
+      id: 'l4-lunch',
+      level: 4,
+      category: 'Mandatory',
+      priority: 50,
+      title: 'Mandatory Lunch',
+      description: 'You cannot study on an empty stomach. Keep 13:00-14:00 free.',
+    },
+    13,
+    14
+  ),
+
   createTypeSegregationRule({ id: 'l4-segregate', level: 4 }, 'Lecture', 'Laboratory'),
-  createTypeSegregationRule({ id: 'l4-segregate', level: 4 }, 'Lecture', 'Classes'),
   createPalindromeHoursRule({ id: 'l4-palindrome', level: 4, category: 'Goal' }),
   createMaxContactHoursRule(
     { id: 'l4-efficient', level: 4, category: 'Goal', scoreReward: 400 },

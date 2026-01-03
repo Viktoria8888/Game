@@ -198,14 +198,7 @@ export const createStandardLoadRule = (config: RuleConfig, target: number = 22):
 };
 
 export const createNoGapsRule = (config: RuleConfig, gap: number): Rule => {
-  const {
-    id,
-    level,
-    category = 'Goal',
-    scoreReward = 0,
-    priority = 80,
-    messages,
-  } = config;
+  const { id, level, category = 'Goal', scoreReward = 0, priority = 80, messages } = config;
 
   return {
     id,
@@ -233,14 +226,7 @@ export const createNoGapsRule = (config: RuleConfig, gap: number): Rule => {
 };
 
 export const createMaxContactHoursRule = (config: RuleConfig, maxHours: number): Rule => {
-  const {
-    id,
-    level,
-    category = 'Goal',
-    scoreReward = 500,
-    priority = 50,
-    messages,
-  } = config;
+  const { id, level, category = 'Goal', scoreReward = 500, priority = 50, messages } = config;
 
   return {
     id,
@@ -268,14 +254,7 @@ export const createMaxContactHoursRule = (config: RuleConfig, maxHours: number):
 };
 
 export const createTagDiversityRule = (config: RuleConfig, minUniqueTags: number): Rule => {
-  const {
-    id,
-    level,
-    category = 'Goal',
-    scoreReward = 400,
-    priority = 60,
-    messages,
-  } = config;
+  const { id, level, category = 'Goal', scoreReward = 400, priority = 60, messages } = config;
 
   return {
     id,
@@ -348,14 +327,7 @@ export const createTagSynergyRule = (
 };
 
 export const createTagBanRule = (config: RuleConfig, bannedTag: string): Rule => {
-  const {
-    id,
-    level,
-    category = 'Mandatory',
-    scoreReward,
-    priority = 70,
-    messages,
-  } = config;
+  const { id, level, category = 'Mandatory', scoreReward, priority = 70, messages } = config;
   return {
     id,
     title: config.title ?? `Anti-${bannedTag}`,
@@ -410,14 +382,7 @@ export const createTagSpecialistRule = (config: RuleConfig, tag: string, minEcts
 };
 
 export const createMinNameLengthRule = (config: RuleConfig, minLength: number): Rule => {
-  const {
-    id,
-    level,
-    category = 'Goal',
-    scoreReward = 300,
-    priority = 55,
-    messages,
-  } = config;
+  const { id, level, category = 'Goal', scoreReward = 300, priority = 55, messages } = config;
 
   return {
     id,
@@ -447,14 +412,7 @@ export const createMinNameLengthRule = (config: RuleConfig, minLength: number): 
 };
 
 export const createVowelCountRule = (config: RuleConfig, divisor: number): Rule => {
-  const {
-    id,
-    level,
-    category = 'Goal',
-    scoreReward = 800,
-    priority = 60,
-    messages,
-  } = config;
+  const { id, level, category = 'Goal', scoreReward = 800, priority = 60, messages } = config;
 
   return {
     id,
@@ -490,14 +448,7 @@ export const createVowelCountRule = (config: RuleConfig, divisor: number): Rule 
 };
 
 export const createOddStartTimesRule = (config: RuleConfig): Rule => {
-  const {
-    id,
-    level,
-    category = 'Goal',
-    scoreReward = 1000,
-    priority = 50,
-    messages,
-  } = config;
+  const { id, level, category = 'Goal', scoreReward = 1000, priority = 50, messages } = config;
 
   return {
     id,
@@ -511,7 +462,7 @@ export const createOddStartTimesRule = (config: RuleConfig): Rule => {
     scoreReward,
     solverHint: { type: 'ODD_HOURS', value: true },
     validate: (ctx) => {
-      const evenStarts = ctx.schedule.filter((s) => s.startTime % 2 === 0);
+      const evenStarts = ctx.coursesSelected.filter((c) => c.schedule.startTime % 2 === 0);
       const satisfied = evenStarts.length === 0 && ctx.coursesSelected.length > 0;
       return {
         satisfied,
@@ -527,13 +478,7 @@ export const createOddStartTimesRule = (config: RuleConfig): Rule => {
 };
 
 export const createBanTimeSlots = (config: RuleConfig, start: number, end: number): Rule => {
-  const {
-    id,
-    level,
-    category = 'Mandatory',
-    priority = 90,
-    messages,
-  } = config;
+  const { id, level, category = 'Mandatory', priority = 90, messages } = config;
 
   return {
     id,
@@ -617,14 +562,7 @@ export const createPrerequisiteRule = (config: RuleConfig): Rule => {
 };
 
 export const createNoEarlyMorningRule = (config: RuleConfig, hour: number = 10): Rule => {
-  const {
-    id,
-    level,
-    category = 'Goal',
-    scoreReward = 400,
-    priority = 50,
-    messages,
-  } = config;
+  const { id, level, category = 'Goal', scoreReward = 400, priority = 50, messages } = config;
 
   return {
     id,
@@ -652,14 +590,7 @@ export const createNoEarlyMorningRule = (config: RuleConfig, hour: number = 10):
 };
 
 export const createMaxDailyHoursRule = (config: RuleConfig, limit: number = 6): Rule => {
-  const {
-    id,
-    level,
-    category = 'Goal',
-    scoreReward = 250,
-    priority = 45,
-    messages,
-  } = config;
+  const { id, level, category = 'Goal', scoreReward = 250, priority = 45, messages } = config;
 
   return {
     id,
@@ -769,14 +700,7 @@ export const createMutuallyExclusiveTagsRule = (
 };
 
 export const createFreeDayRule = (config: RuleConfig, day: string): Rule => {
-  const {
-    id,
-    level,
-    category = 'Mandatory',
-    scoreReward = 600,
-    priority = 55,
-    messages,
-  } = config;
+  const { id, level, category = 'Mandatory', scoreReward = 600, priority = 55, messages } = config;
 
   return {
     id,
@@ -836,14 +760,7 @@ export const createPrimeEctsRule = (config: RuleConfig): Rule => {
 };
 
 export const createPalindromeHoursRule = (config: RuleConfig): Rule => {
-  const {
-    id,
-    level,
-    category = 'Goal',
-    scoreReward = 1000,
-    priority = 55,
-    messages,
-  } = config;
+  const { id, level, category = 'Goal', scoreReward = 1000, priority = 55, messages } = config;
 
   return {
     id,
@@ -906,14 +823,7 @@ export const createMinFreeDaysRule = (config: RuleConfig, minFreeDays: number): 
 };
 
 export const createWordChainRule = (config: RuleConfig): Rule => {
-  const {
-    id,
-    level,
-    category = 'Mandatory',
-    scoreReward = 1500,
-    priority = 60,
-    messages,
-  } = config;
+  const { id, level, category = 'Mandatory', scoreReward = 1500, priority = 60, messages } = config;
 
   return {
     id,
@@ -1045,14 +955,7 @@ export const createTypeSegregationRule = (
 };
 
 export const createStaircaseRule = (config: RuleConfig): Rule => {
-  const {
-    id,
-    level,
-    category = 'Goal',
-    scoreReward = 2000,
-    priority = 80,
-    messages,
-  } = config;
+  const { id, level, category = 'Goal', scoreReward = 2000, priority = 80, messages } = config;
 
   return {
     id,

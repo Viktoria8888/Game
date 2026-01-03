@@ -111,7 +111,7 @@ export class ScheduleService {
         const prevHours = hoursByDay[prevDay];
         if (prevHours.length > 0) {
           const prevEnd = prevHours[prevHours.length - 1] + 1;
-          if (prevEnd >= 20 && start <= 8) {
+          if (prevEnd >= 18 && start <= 8) {
             willpowerCost += WILLPOWER_PRICES.THE_CLOPEN;
             breakdown.push(`Clopen (${prevDay}-${day}): -${WILLPOWER_PRICES.THE_CLOPEN}`);
           }

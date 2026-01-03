@@ -15,31 +15,36 @@ const WORD_CHAIN = createWordChainRule({
   scoreReward: 2000,
 });
 
-
 const TCS_MASTER = createTagSpecialistRule({ id: 'l5-tcs', level: 5 }, 'TCS', 12);
 const ALLITERATION: Rule = {
   id: 'l5-alliteration',
   title: 'Poetic Alliteration',
-  description: 'Select at least 3 courses that start with the same letter.',
+  description: 'Select at least 3 distinct subjects that start with the same letter.',
   category: 'Goal',
   level: 5,
   scoreReward: 1000,
   priority: 100,
   validate: (ctx) => {
-    const counts: Record<string, number> = {};
+    const letterToSubjects = new Map<string, Set<string>>();
+
     ctx.coursesSelected.forEach((c) => {
       const char = c.name.trim().charAt(0).toUpperCase();
-      counts[char] = (counts[char] || 0) + 1;
+      if (!letterToSubjects.get(char)) {
+        letterToSubjects.set(char, new Set<string>());
+      }
+      letterToSubjects.get(char)!.add(c.subjectId);
     });
-    const max = Math.max(0, ...Object.values(counts));
-    const letter = Object.keys(counts).find((k) => counts[k] === max);
+
+    const counts = Object.values(letterToSubjects).map((set) => set.size);
+    const max = Math.max(0, ...counts);
+    const letter = Object.keys(letterToSubjects).find((k) => letterToSubjects.get(k)!.size === max);
 
     return {
       satisfied: max >= 3,
       message:
         max >= 3
-          ? `Beautiful alliteration on '${letter}'! (${max} courses).`
-          : `Poetry requires repetition. Max same-start: ${max}/3.`,
+          ? `Beautiful alliteration on '${letter}'! (${max} subjects).`
+          : `Poetry requires repetition. Max same-start subjects: ${max}/3.`,
     };
   },
 };
@@ -78,7 +83,7 @@ export const LEVEL_5_RULES: ReadonlyArray<Rule> = [
   TCS_MASTER,
   STANDARD_LOAD,
   PROGRESS_CHECK_2,
-  ALLITERATION, 
-  NO_NUMBERS, 
-  NO_TOOLS, 
+  ALLITERATION,
+  NO_NUMBERS,
+  NO_TOOLS,
 ];

@@ -1,293 +1,309 @@
 import seedrandom from 'seedrandom';
-import { Course, Day } from '../core/models/course.interface';
 import { SUBJECTS } from './subjects';
+import { Course, Day, SubjectDef } from '../core/models/course.interface';
 
-const rng = seedrandom('my-stable-seed');
+export interface RNG {
+  next(): number;
+}
 
-// Prevents these courses from being taken early, ensuring they are available
-// for the specific level.
-export const RESERVED_COURSES: Record<string, number> = {
-  // Level 3
-  '4077': 3, // Discrete Mathematics (Base)
-  '4239': 3, // Probabilistic Foundations of AI (AI Path)
-  '4070': 3, // Probability Theory (AI Path)
-  '4091': 3, // Language Models
-  '4107': 3, // Rust (OS Path)
-  '4084': 3, // Operating Systems (OS Path)
-  // Level 4 
-  '41199': 4, // Algorithms & Data Structures (Base)
-  '4094': 4, // Introduction to Linear Optimization
-  '4096': 4, // Game Programming in Unity
-  '4074': 4, // Combinatorics
-  '3785': 4, // Cryptography
-  '3791': 4, // Ethics for Thinkers
-  // Level 5
-  '4119': 5, // Functional Programming
-  '4127': 5, // Graph Neural Networks
-  '4081': 5, // Seminar: Generative AI
-  '4133': 5, // Intro to Lambda Calculus
-  '4238': 5, // Statistics with Linear Models
-  '4092': 5, // Scheduling Theory
-  // Level 6
-  '3825': 6, // Diploma Work
-  '4118': 6, // Planar Graphs
-  '4087': 6, // CUDA
+export class SeededRNG implements RNG {
+  private rng: seedrandom.PRNG;
+
+  constructor(seed: string) {
+    this.rng = seedrandom(seed);
+  }
+
+  next(): number {
+    return this.rng();
+  }
+}
+
+type ReservedSlot = {
+  day: Day;
+  start: number;
+  end: number;
+  level?: number;
 };
 
-export const COURSES = generateCourses();
+type OccupiedSlot = {
+  day: Day;
+  start: number;
+  end: number;
+};
 
-function generateCourses(): Course[] {
-  const gameCourses: Course[] = [];
+export const RESERVED_COURSES: Record<string, number> = {
+  '4077': 3, // DM
+  '4140': 3, // ML
+  '4239': 3, // PFAI
+  '4070': 3,
+  '4091': 3,
+  '4084': 3,
+  '3798': 3,
 
-  const goldenPathSlots: { day: Day; start: number; end: number; level?: number }[] = [];
+  '41199': 4,
+  '4094': 4,
+  '3791': 4,
 
-  const DAYS: Day[] = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
-  const START_HOUR = 8;
-  const END_HOUR = 20;
+  '4119': 5,
+  '4127': 5,
+  '4081': 5,
+  '4133': 5,
+  '4238': 5,
+  '4092': 5,
 
-  const GOLDEN_PATH: Record<string, { day: Day; startTime: number }> = {
+  '3825': 6,
+  '4118': 6,
+  '4087': 6,
+};
 
-    '4077': { day: 'Mon', startTime: 8 },
-    '4091': { day: 'Mon', startTime: 12 }, // Language Models (Backup)
-    '4239': { day: 'Tue', startTime: 10 }, // AI Path
-    '4084': { day: 'Tue', startTime: 10 }, // OS Path (Conflict Intended)
-    '4070': { day: 'Wed', startTime: 13 }, // Probability
-    '4107': { day: 'Thu', startTime: 15 }, // Rust (OS Path)
-   
-    '41199': { day: 'Mon', startTime: 8 },
-    '4094': { day: 'Tue', startTime: 8 },
-    '4096': { day: 'Wed', startTime: 8 },
-    '3791': { day: 'Thu', startTime: 8 },
-    '4074': { day: 'Fri', startTime: 8 }, // Combinatorics
-    '3785': { day: 'Fri', startTime: 12 }, // Cryptography
+type GoldenSlot = { day: Day; startTime: number };
 
-    '4119': { day: 'Mon', startTime: 10 }, // Functional Programming
-    '4127': { day: 'Tue', startTime: 10 }, // Graph Neural Networks
-    '4081': { day: 'Tue', startTime: 12 }, // Seminar: Generative AI
-    '4133': { day: 'Tue', startTime: 14 }, // Intro to Lambda
-    '4238': { day: 'Wed', startTime: 10 }, // Statistics
-    '4092': { day: 'Wed', startTime: 15 }, // Scheduling Theory
+const GOLDEN_PATH: Record<string, GoldenSlot | GoldenSlot[]> = {
+  '4077': { day: 'Mon', startTime: 8 },
+  '4140': { day: 'Mon', startTime: 14 },
 
-    '3825': { day: 'Mon', startTime: 10 }, // Diploma Work
-    '4118': { day: 'Mon', startTime: 16 }, // Planar Graphs
-    '4087': { day: 'Wed', startTime: 9 }, // CUDA
-  };
+  '4239': { day: 'Tue', startTime: 10 },
+  '4084': { day: 'Tue', startTime: 10 },
 
-  const isBlocked = (
-    start: number,
-    duration: number,
-    blockedTimes?: { start: number; end: number }[]
-  ): boolean => {
-    if (!blockedTimes || blockedTimes.length === 0) return false;
-    const end = start + duration;
-    return blockedTimes.some((block) => start < block.end && end > block.start);
-  };
+  '4070': { day: 'Wed', startTime: 13 },
+  '3798': { day: 'Wed', startTime: 13 },
 
-  const checkCollision = (day: Day, start: number, end: number, myLevel?: number): boolean => {
-    return goldenPathSlots.some((reserved) => {
-      if (reserved.day !== day) return false;
+  '41199': [
+    { day: 'Mon', startTime: 15 },
+    { day: 'Wed', startTime: 15 },
+  ],
+  '4094': { day: 'Tue', startTime: 9 },
+  '3791': { day: 'Thu', startTime: 15 },
 
-      const overlaps = !(start >= reserved.end || end <= reserved.start);
-      if (!overlaps) return false;
+  '4119': { day: 'Mon', startTime: 10 },
+  '4127': { day: 'Tue', startTime: 10 },
+  '4081': { day: 'Wed', startTime: 10 },
+  '4133': { day: 'Thu', startTime: 10 },
+  '4238': { day: 'Tue', startTime: 16 },
+  '4092': { day: 'Fri', startTime: 14 },
 
-      if (myLevel !== undefined && reserved.level !== undefined && myLevel !== reserved.level) {
+  '3825': { day: 'Mon', startTime: 10 },
+  '4118': { day: 'Mon', startTime: 16 },
+  '4087': { day: 'Wed', startTime: 9 },
+
+  '4096': { day: 'Wed', startTime: 8 },
+  '4074': { day: 'Fri', startTime: 8 },
+  '3785': { day: 'Fri', startTime: 12 },
+};
+
+const L3_MIN_STARTS: Record<Day, number> = {
+  Mon: 8,
+  Tue: 10,
+  Wed: 13,
+  Thu: 15,
+  Fri: 17,
+};
+
+function isValidTimeFornumber(day: Day, hour: number, duration: number, level?: number): boolean {
+  if (level === 3 && hour < L3_MIN_STARTS[day]) return false;
+
+  if (level === 4) {
+    if (hour % 2 === 0) return false;
+  }
+
+  return true;
+}
+
+class SchedulerContext {
+  readonly DAYS: Day[] = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
+  readonly START_HOUR = 8;
+  readonly END_HOUR = 20;
+  readonly rng: RNG;
+
+  constructor(rng: RNG) {
+    this.rng = rng;
+  }
+
+  private reserved: ReservedSlot[] = [];
+
+  reserve(slot: ReservedSlot) {
+    this.reserved.push(slot);
+  }
+
+  collides(day: Day, start: number, end: number, level?: number): boolean {
+    return this.reserved.some((r) => {
+      if (r.day !== day) return false;
+      const overlap = !(start >= r.end || end <= r.start);
+      if (!overlap) return false;
+
+      if (level !== undefined && r.level !== undefined && level !== r.level) {
         return false;
       }
-
-      return true; 
+      return true;
     });
-  };
+  }
+}
 
-  const checkSelfCollision = (
-    day: Day,
-    start: number,
-    end: number,
-    occupiedSlots: { day: Day; start: number; end: number }[]
-  ): boolean => {
-    return occupiedSlots.some(
-      (slot) => slot.day === day && !(start >= slot.end || end <= slot.start)
-    );
-  };
+function overlaps(day: Day, start: number, end: number, slots: OccupiedSlot[]): boolean {
+  return slots.some((s) => s.day === day && !(start >= s.end || end <= s.start));
+}
 
-  const getSafeSlot = (
-    duration: number,
-    blockedTimes: { start: number; end: number }[] | undefined,
-    subjectOccupiedSlots: { day: Day; start: number; end: number }[],
-    level?: number
-  ): { day: Day; startTime: number } => {
-    for (const day of DAYS) {
-      for (let hour = START_HOUR; hour <= END_HOUR - duration; hour++) {
-        if (isBlocked(hour, duration, blockedTimes)) continue;
+function isBlocked(
+  start: number,
+  duration: number,
+  blocked?: { start: number; end: number }[]
+): boolean {
+  if (!blocked) return false;
+  const end = start + duration;
+  return blocked.some((b) => start < b.end && end > b.start);
+}
 
-        if (
-          !checkCollision(day, hour, hour + duration, level) &&
-          !checkSelfCollision(day, hour, hour + duration, subjectOccupiedSlots)
-        ) {
-          goldenPathSlots.push({ day, start: hour, end: hour + duration, level });
-          return { day, startTime: hour };
-        }
-      }
+function findSafeSlot(
+  ctx: SchedulerContext,
+  duration: number,
+  blocked: { start: number; end: number }[] | undefined,
+  occupied: OccupiedSlot[],
+  level?: number
+): { day: Day; startTime: number } | null {
+  for (const day of ctx.DAYS) {
+    for (let h = ctx.START_HOUR; h <= ctx.END_HOUR - duration; h++) {
+      if (!isValidTimeFornumber(day, h, duration, level)) continue;
+      if (isBlocked(h, duration, blocked)) continue;
+      if (ctx.collides(day, h, h + duration, level)) continue;
+      if (overlaps(day, h, h + duration, occupied)) continue;
+      return { day, startTime: h };
     }
-    return getRandomSlot(duration, blockedTimes, subjectOccupiedSlots, level);
-  };
+  }
+  return null;
+}
 
-  const getStackedSlot = (
-    day: Day,
-    minStartTime: number,
-    duration: number,
-    blockedTimes: { start: number; end: number }[] | undefined,
-    subjectOccupiedSlots: { day: Day; start: number; end: number }[],
-    level?: number
-  ): { day: Day; startTime: number } => {
-    const gap = day === 'Mon' || day === 'Tue' ? 2 : 0;
+function findStackedSlot(
+  ctx: SchedulerContext,
+  day: Day,
+  minStart: number,
+  duration: number,
+  blocked: { start: number; end: number }[] | undefined,
+  occupied: OccupiedSlot[],
+  level?: number
+): { day: Day; startTime: number } | null {
+  for (let h = minStart; h <= ctx.END_HOUR - duration; h++) {
+    if (!isValidTimeFornumber(day, h, duration, level)) continue;
+    if (isBlocked(h, duration, blocked)) continue;
+    if (ctx.collides(day, h, h + duration, level)) continue;
+    if (overlaps(day, h, h + duration, occupied)) continue;
+    return { day, startTime: h };
+  }
+  return null;
+}
 
-    for (let hour = minStartTime + gap; hour <= END_HOUR - duration; hour++) {
-      if (isBlocked(hour, duration, blockedTimes)) continue;
+function findRandomSlot(
+  ctx: SchedulerContext,
+  duration: number,
+  blocked: { start: number; end: number }[] | undefined,
+  occupied: OccupiedSlot[],
+  level?: number
+): { day: Day; startTime: number } {
+  const day = ctx.DAYS[Math.floor(ctx.rng.next() * ctx.DAYS.length)];
+  const maxStart = ctx.END_HOUR - duration;
 
-      if (
-        !checkCollision(day, hour, hour + duration, level) &&
-        !checkSelfCollision(day, hour, hour + duration, subjectOccupiedSlots)
-      ) {
-        goldenPathSlots.push({ day, start: hour, end: hour + duration, level });
-        return { day, startTime: hour };
-      }
+  let attempts = 0;
+  while (attempts < 50) {
+    const startTime = Math.floor(ctx.rng.next() * (maxStart - ctx.START_HOUR + 1)) + ctx.START_HOUR;
+
+    if (
+      isValidTimeFornumber(day, startTime, duration, level) &&
+      !isBlocked(startTime, duration, blocked) &&
+      !overlaps(day, startTime, startTime + duration, occupied)
+    ) {
+      return { day, startTime };
     }
-    return getProximateSlot(day, duration, blockedTimes, subjectOccupiedSlots, level);
-  };
+    attempts++;
+  }
 
-  const getProximateSlot = (
-    targetDay: Day,
-    duration: number,
-    blockedTimes: { start: number; end: number }[] | undefined,
-    subjectOccupiedSlots: { day: Day; start: number; end: number }[],
-    level?: number
-  ): { day: Day; startTime: number } => {
-    const startIdx = DAYS.indexOf(targetDay);
+  return { day, startTime: ctx.START_HOUR };
+}
 
-    for (let i = startIdx; i < DAYS.length; i++) {
-      const day = DAYS[i];
-      for (let hour = START_HOUR; hour <= END_HOUR - duration; hour++) {
-        if (isBlocked(hour, duration, blockedTimes)) continue;
-        if (
-          !checkCollision(day, hour, hour + duration, level) &&
-          !checkSelfCollision(day, hour, hour + duration, subjectOccupiedSlots)
-        ) {
-          return { day, startTime: hour };
-        }
-      }
-    }
+export function generateCourses(rngProvider?: RNG): Course[] {
+  const rng = rngProvider || new SeededRNG('my-stable-seed');
+  const ctx = new SchedulerContext(rng);
+  const courses: Course[] = [];
 
-    for (let i = DAYS.length - 1; i >= 0; i--) {
-      const day = DAYS[i];
-      for (let hour = START_HOUR; hour <= END_HOUR - duration; hour++) {
-        if (isBlocked(hour, duration, blockedTimes)) continue;
-        if (
-          !checkCollision(day, hour, hour + duration, level) &&
-          !checkSelfCollision(day, hour, hour + duration, subjectOccupiedSlots)
-        ) {
-          return { day, startTime: hour };
-        }
-      }
-    }
-
-    return getRandomSlot(duration, blockedTimes, subjectOccupiedSlots, level);
-  };
-
-  const getRandomSlot = (
-    duration: number,
-    blockedTimes: { start: number; end: number }[] | undefined,
-    subjectOccupiedSlots: { day: Day; start: number; end: number }[],
-    level?: number
-  ): { day: Day; startTime: number } => {
-    const day = DAYS[Math.floor(rng() * DAYS.length)];
-    const maxStart = END_HOUR - duration;
-    let attempts = 0;
-    while (attempts < 50) {
-      const startTime = Math.floor(rng() * (maxStart - START_HOUR + 1) + START_HOUR);
-      if (
-        !isBlocked(startTime, duration, blockedTimes) &&
-        !checkSelfCollision(day, startTime, startTime + duration, subjectOccupiedSlots)
-      ) {
-        return { day, startTime };
-      }
-      attempts++;
-    }
-    return { day, startTime: START_HOUR };
-  };
-
-  SUBJECTS.forEach((subject) => {
+  SUBJECTS.forEach((subject: SubjectDef) => {
     const useGoldenPath =
       subject.scheduling?.useGoldenPath || subject.isFirstYearRecommended || subject.isMandatory;
+
     const blockedTimes = subject.scheduling?.blockedTimes;
-    const fixedSlot = GOLDEN_PATH[subject.id];
-    const subjectLevel = RESERVED_COURSES[subject.id];
+    const level = RESERVED_COURSES[subject.id];
 
-    let fixedSlotUsed = false;
-    let lastGoldenEndTime = 0;
+    const fixed = GOLDEN_PATH[subject.id];
+    const fixedSlots = fixed ? (Array.isArray(fixed) ? fixed : [fixed]) : [];
 
-    const subjectOccupiedSlots: { day: Day; start: number; end: number }[] = [];
+    let fixedIndex = 0;
+    let lastEnd = 0;
+
+    const occupied: OccupiedSlot[] = [];
 
     subject.components.forEach((comp) => {
-      const groupsCount = comp.count || 1;
+      const count = comp.count ?? 1;
 
-      for (let i = 1; i <= groupsCount; i++) {
-        let schedule: { day: Day; startTime: number };
+      for (let i = 1; i <= count; i++) {
+        let slot: { day: Day; startTime: number } | null = null;
 
-        if (fixedSlot) {
-          if (i === 1 && !fixedSlotUsed) {
-            schedule = fixedSlot;
-            fixedSlotUsed = true;
-            lastGoldenEndTime = fixedSlot.startTime + comp.duration;
-            goldenPathSlots.push({
-              day: fixedSlot.day,
-              start: fixedSlot.startTime,
-              end: lastGoldenEndTime,
-              level: subjectLevel,
+        if (i === 1 && fixedSlots.length > 0) {
+          if (fixedIndex < fixedSlots.length) {
+            slot = fixedSlots[fixedIndex++];
+            lastEnd = slot.startTime + comp.duration;
+
+            ctx.reserve({
+              day: slot.day,
+              start: slot.startTime,
+              end: lastEnd,
+              level,
             });
-          } else if (i === 1) {
-            schedule = getStackedSlot(
-              fixedSlot.day,
-              lastGoldenEndTime,
-              comp.duration,
-              blockedTimes,
-              subjectOccupiedSlots,
-              subjectLevel
-            );
-            lastGoldenEndTime = schedule.startTime + comp.duration;
           } else {
-            schedule = getProximateSlot(
-              fixedSlot.day,
+            slot = findStackedSlot(
+              ctx,
+              fixedSlots[0].day,
+              lastEnd,
               comp.duration,
               blockedTimes,
-              subjectOccupiedSlots,
-              subjectLevel
+              occupied,
+              level
             );
           }
-        } else if (useGoldenPath && i === 1) {
-          schedule = getSafeSlot(comp.duration, blockedTimes, subjectOccupiedSlots, subjectLevel);
+        } else if (i === 1 && useGoldenPath) {
+          slot =
+            findSafeSlot(ctx, comp.duration, blockedTimes, occupied, level) ??
+            findRandomSlot(ctx, comp.duration, blockedTimes, occupied, level);
         } else {
-          schedule = getRandomSlot(comp.duration, blockedTimes, subjectOccupiedSlots, subjectLevel);
+          slot = findRandomSlot(ctx, comp.duration, blockedTimes, occupied, level);
         }
 
-        subjectOccupiedSlots.push({
-          day: schedule.day,
-          start: schedule.startTime,
-          end: schedule.startTime + comp.duration,
+        if (!slot) {
+          slot = findRandomSlot(ctx, comp.duration, blockedTimes, occupied, level);
+        }
+
+        ctx.reserve({
+          day: slot.day,
+          start: slot.startTime,
+          end: slot.startTime + comp.duration,
+          level,
         });
 
-        gameCourses.push({
+        occupied.push({
+          day: slot.day,
+          start: slot.startTime,
+          end: slot.startTime + comp.duration,
+        });
+
+        courses.push({
           id: `${subject.id}-${comp.type}-${i}`,
           subjectId: subject.id,
           name: subject.name,
+          ects: comp.ects,
           type: comp.type,
           tags: subject.tags,
           isMandatory: subject.isMandatory,
           hasExam: subject.hasExam,
-          prerequisites: subject.prerequisites || [],
-          ects: comp.ects,
+          prerequisites: subject.prerequisites,
           schedule: {
-            day: schedule.day,
-            startTime: schedule.startTime,
+            day: slot.day,
+            startTime: slot.startTime,
             durationHours: comp.duration,
           },
           isFirstYearRecommended: subject.isFirstYearRecommended,
@@ -297,5 +313,6 @@ function generateCourses(): Course[] {
     });
   });
 
-  return gameCourses;
+  return courses;
 }
+export const COURSES = generateCourses();

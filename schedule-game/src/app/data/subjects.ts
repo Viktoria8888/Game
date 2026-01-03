@@ -31,6 +31,9 @@ export const SUBJECTS: SubjectDef[] = [
     tags: ['CORE'],
     isMandatory: true,
     hasExam: true,
+    scheduling: {
+      blockedTimes: [{ start: 13, end: 14 }],
+    },
     prerequisites: ['4072', '4077', '4141'], // C Programming, Discrete Math, Logic
     components: [
       { type: 'Lecture', ects: 6, duration: 3, count: 1 },
@@ -66,7 +69,7 @@ export const SUBJECTS: SubjectDef[] = [
     id: '4090',
     name: 'Numerical Analysis',
     tags: ['CS'],
-    isMandatory: true,
+    isMandatory: false,
     hasExam: true,
     prerequisites: ['4108', '3805'], // Math Analysis and Algebra
     components: [
@@ -138,9 +141,9 @@ export const SUBJECTS: SubjectDef[] = [
     id: '4105',
     name: 'Software Engineering',
     tags: ['SE'],
-    isMandatory: true,
+    isMandatory: false,
     hasExam: true,
-    prerequisites: ['3818'], // OOP
+    prerequisites: [],
     components: [
       { type: 'Lecture', ects: 3, duration: 2, count: 1 },
       { type: 'Laboratory', ects: 3, duration: 2, count: 4 },
@@ -659,7 +662,7 @@ export const SUBJECTS: SubjectDef[] = [
     tags: ['DB'],
     isMandatory: true,
     hasExam: true,
-    prerequisites: ['41199'],
+    prerequisites: [],
     components: [
       { type: 'Lecture', ects: 3, duration: 2, count: 1 },
       { type: 'Laboratory', ects: 3, duration: 2, count: 4 },
@@ -966,5 +969,55 @@ export const SUBJECTS: SubjectDef[] = [
       { type: 'Lecture', ects: 3, duration: 2, count: 1 },
       { type: 'Laboratory', ects: 3, duration: 2, count: 2 },
     ],
+  },
+  {
+    id: '5002',
+    name: 'Introduction to Bioethics',
+    tags: ['HUM'],
+    isMandatory: false,
+    isFirstYearRecommended: false,
+    hasExam: false,
+    prerequisites: [],
+    components: [{ type: 'Lecture', ects: 3, duration: 2, count: 1 }],
+  },
+  {
+    id: '5003',
+    name: 'History of Modern Art',
+    tags: ['HUM'],
+    isMandatory: false,
+    isFirstYearRecommended: false,
+    hasExam: false,
+    prerequisites: [],
+    components: [{ type: 'Lecture', ects: 3, duration: 2, count: 1 }],
+  },
+  {
+    id: '5004',
+    name: 'Digital Humanities',
+    tags: ['HUM'],
+    isMandatory: false,
+    isFirstYearRecommended: false,
+    hasExam: false,
+    prerequisites: [],
+    components: [{ type: 'Lecture', ects: 3, duration: 2, count: 2 }],
+  },
+  {
+    id: '5005',
+    name: 'Philosophy of Science',
+    tags: ['HUM'],
+    isMandatory: false,
+    isFirstYearRecommended: false,
+    hasExam: false,
+    prerequisites: [],
+    components: [{ type: 'Lecture', ects: 3, duration: 2, count: 1 }],
+  },
+  {
+    id: '5006',
+    name: 'Intercultural Communication',
+    tags: ['HUM'],
+    isMandatory: false,
+    isFirstYearRecommended: false,
+    hasExam: false,
+    prerequisites: [],
+    components: [{ type: 'Lecture', ects: 2, duration: 2, count: 2 }],
   },
 ];
