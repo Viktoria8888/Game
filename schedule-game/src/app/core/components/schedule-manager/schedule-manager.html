@@ -2,6 +2,7 @@
   [currentLevel]="currentLevel()"
   [willpowerCost]="gameService.currentSemesterOutcome().willpowerCost"
   [willpowerBudget]="gameService.currentSemesterOutcome().willpowerBudget"
+  [willpowerBreakdown]="gameService.currentSemesterOutcome().costBreakdown"
   [totalScore]="this.gameService.currentSemesterOutcome().predictedTotalScore"
   [userName]="authService.username()"
 />

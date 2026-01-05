@@ -1,9 +1,11 @@
 import { Component, input, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-header',
   standalone: true,
+  imports: [CommonModule, MatTooltipModule],
   templateUrl: './header.html',
   styleUrl: './header.scss',
 })
@@ -13,6 +15,13 @@ export class HeaderComponent {
 
   readonly willpowerCost = input.required<number>();
   readonly willpowerBudget = input.required<number>();
+
+  readonly willpowerBreakdown = input<string[]>([]);
+
+  readonly formattedBreakdown = computed(() => {
+    const list = this.willpowerBreakdown();
+    return list.length > 0 ? list.join('\n') : 'No penalties yet!';
+  });
 
   readonly userName = input('Player');
   readonly userAvatar = input<string | undefined>(undefined);

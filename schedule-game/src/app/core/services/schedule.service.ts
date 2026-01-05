@@ -1,6 +1,6 @@
 import { Injectable, Signal, computed, inject } from '@angular/core';
 import { ScheduleSlot, Course, Day } from '../models/course.interface';
-import { ComplexGameMetadata, GameStateDTO, SimpleGameMetadata } from '../models/game_state.dto';
+import { ComplexGameMetadata, SimpleGameMetadata } from '../models/game_state.dto';
 import { CourseSelectionService } from './courses-selection';
 
 export const WILLPOWER_PRICES = {
@@ -15,8 +15,8 @@ export const WILLPOWER_PRICES = {
   EXAM_STRESS: 1, // Cost per exam
 };
 
-/**Single source of truth for the SCHEDULE
- * Takes care of metadata
+/**
+ * Takes care of schedule metadata and willpower calculations
  */
 @Injectable({ providedIn: 'root' })
 export class ScheduleService {
@@ -60,6 +60,10 @@ export class ScheduleService {
     return meta;
   });
 
+  private formatWPEntry(label: string, cost: number): string {
+    return `${label.padEnd(22, ' ')} -${cost} WP`;
+  }
+
   calculateComplexMetadata(schedule: ScheduleSlot[]): ComplexGameMetadata {
     const hoursByDay: Record<string, number[]> = { Mon: [], Tue: [], Wed: [], Thu: [], Fri: [] };
     schedule.forEach((slot) => hoursByDay[slot.day].push(slot.startTime));
@@ -68,44 +72,56 @@ export class ScheduleService {
     let willpowerCost = 0;
     const breakdown: string[] = [];
 
-    // Exam Cost
+    // 1. Exam Cost
     const uniqueExams = new Set(schedule.filter((s) => s.course?.hasExam).map((s) => s.course!.id))
       .size;
     if (uniqueExams > 0) {
-      willpowerCost += uniqueExams * WILLPOWER_PRICES.EXAM_STRESS;
-      breakdown.push(`Exams (${uniqueExams}): -${uniqueExams * WILLPOWER_PRICES.EXAM_STRESS}`);
+      const cost = uniqueExams * WILLPOWER_PRICES.EXAM_STRESS;
+      willpowerCost += cost;
+      breakdown.push(this.formatWPEntry(`Exams (${uniqueExams})`, cost));
     }
 
     let totalGapTime = 0;
     let maxGapInAnyDay = 0;
     let startHourSum = 0;
     let activeDaysCount = 0;
-    let morningSlots = 0;
 
-    const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
+    const days: Day[] = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
 
     days.forEach((day, index) => {
       const hours = hoursByDay[day];
       if (!hours || hours.length === 0) return;
 
       activeDaysCount++;
-      startHourSum += hours[0];
       const start = hours[0];
       const end = hours[hours.length - 1] + 1;
+      startHourSum += start;
 
-      hours.forEach((h) => {
-        if (h < 12) morningSlots++;
-      });
+      // 2. Willpower: Commuter Tax
+      if (hours.length <= 2) {
+        willpowerCost += WILLPOWER_PRICES.COMMUTER_TAX;
+        breakdown.push(this.formatWPEntry(`${day}: Commuter Tax`, WILLPOWER_PRICES.COMMUTER_TAX));
+      }
 
-      // Willpower: Commuter Tax
-      if (hours.length <= 2) willpowerCost += WILLPOWER_PRICES.COMMUTER_TAX;
+      // 3. Willpower: Early Start
+      if (start === 8) {
+        willpowerCost += WILLPOWER_PRICES.EARLY_RISER;
+        breakdown.push(this.formatWPEntry(`${day}: Early Riser`, WILLPOWER_PRICES.EARLY_RISER));
+      }
 
-      // Willpower: Early/Late
-      if (start === 8) willpowerCost += WILLPOWER_PRICES.EARLY_RISER;
-      if (end > 18) willpowerCost += WILLPOWER_PRICES.NIGHT_SHIFT;
-      if (day === 'Fri' && end > 16) willpowerCost += WILLPOWER_PRICES.FRIDAY_DRAG;
+      // 4. Willpower: Night Shift
+      if (end > 18) {
+        willpowerCost += WILLPOWER_PRICES.NIGHT_SHIFT;
+        breakdown.push(this.formatWPEntry(`${day}: Night Shift`, WILLPOWER_PRICES.NIGHT_SHIFT));
+      }
 
-      // Willpower: Clopen
+      // 5. Willpower: Friday Drag
+      if (day === 'Fri' && end > 16) {
+        willpowerCost += WILLPOWER_PRICES.FRIDAY_DRAG;
+        breakdown.push(this.formatWPEntry(`Friday Drag`, WILLPOWER_PRICES.FRIDAY_DRAG));
+      }
+
+      // 6. Willpower: Clopen
       if (index > 0) {
         const prevDay = days[index - 1];
         const prevHours = hoursByDay[prevDay];
@@ -113,7 +129,7 @@ export class ScheduleService {
           const prevEnd = prevHours[prevHours.length - 1] + 1;
           if (prevEnd >= 18 && start <= 8) {
             willpowerCost += WILLPOWER_PRICES.THE_CLOPEN;
-            breakdown.push(`Clopen (${prevDay}-${day}): -${WILLPOWER_PRICES.THE_CLOPEN}`);
+            breakdown.push(this.formatWPEntry(`The Clopen`, WILLPOWER_PRICES.THE_CLOPEN));
           }
         }
       }
@@ -130,31 +146,41 @@ export class ScheduleService {
           totalGapTime += gap;
           dailyMaxGap = Math.max(dailyMaxGap, gap);
 
-          if (gap === 1) willpowerCost += WILLPOWER_PRICES.AWKWARD_GAP;
-          if (gap >= 3) willpowerCost += WILLPOWER_PRICES.HUGE_GAP;
+          // 7. Willpower: Awkward Gaps (1h)
+          if (gap === 1) {
+            willpowerCost += WILLPOWER_PRICES.AWKWARD_GAP;
+            breakdown.push(this.formatWPEntry(`${day}: Awkward Gap`, WILLPOWER_PRICES.AWKWARD_GAP));
+          }
+          // 8. Willpower: Huge Gaps (3h+)
+          else if (gap >= 3) {
+            willpowerCost += WILLPOWER_PRICES.HUGE_GAP;
+            breakdown.push(this.formatWPEntry(`${day}: Huge Gap`, WILLPOWER_PRICES.HUGE_GAP));
+          }
 
-          const blockDuration = consecutive + 1;
-          if (blockDuration >= 6) willpowerCost += WILLPOWER_PRICES.STARVATION;
+          // 9. Willpower: Starvation (6+ hours of consecutive classes)
+          if (consecutive + 1 >= 6) {
+            willpowerCost += WILLPOWER_PRICES.STARVATION;
+            breakdown.push(this.formatWPEntry(`${day}: Starvation`, WILLPOWER_PRICES.STARVATION));
+          }
 
           consecutive = 0;
         }
       }
-      const lastBlockDuration = consecutive + 1;
-      if (lastBlockDuration >= 6) willpowerCost += WILLPOWER_PRICES.STARVATION;
+
+      if (consecutive + 1 >= 6) {
+        willpowerCost += WILLPOWER_PRICES.STARVATION;
+        breakdown.push(this.formatWPEntry(`${day}: Starvation`, WILLPOWER_PRICES.STARVATION));
+      }
 
       maxGapInAnyDay = Math.max(maxGapInAnyDay, dailyMaxGap);
     });
 
-    const totalContactHours = schedule.length;
-    const averageStartTime = activeDaysCount > 0 ? startHourSum / activeDaysCount : 0;
-    const freeDaysCount = 5 - activeDaysCount;
-
     return {
-      totalContactHours,
+      totalContactHours: schedule.length,
       totalGapTime,
       maxGapInAnyDay,
-      averageStartTime,
-      freeDaysCount,
+      averageStartTime: activeDaysCount > 0 ? startHourSum / activeDaysCount : 0,
+      freeDaysCount: 5 - activeDaysCount,
       willpowerCost,
       costBreakdown: breakdown,
     };

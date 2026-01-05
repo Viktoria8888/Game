@@ -162,3 +162,15 @@ $c-danger-dark: #b71c1c;
     color: rgba(255, 255, 255, 0.6);
   }
 }
+
+::ng-deep .breakdown-tooltip {
+  background-color: rgba(20, 20, 25, 0.98) !important;
+  color: #efefef !important;
+  border-radius: 4px !important;
+  border: 1px solid #444 !important;
+  line-height: 1.5 !important;
+  white-space: pre-wrap !important;
+  width: max-content !important;
+  max-width: 90vw !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5) !important;
+}

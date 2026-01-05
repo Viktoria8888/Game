@@ -22,7 +22,8 @@
 
 .header {
   @include flex($justify: space-between, $align: center);
-  margin-bottom: 16px;
+  // margin-bottom: 16px;
+  padding: 5px;
   flex-shrink: 0;
 
   h3 {

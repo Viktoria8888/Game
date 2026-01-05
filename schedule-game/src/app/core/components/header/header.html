@@ -12,7 +12,13 @@
       </div>
     </div>
 
-    <div class="stat-item willpower" [class]="willpowerState()">
+    <div
+      class="stat-item willpower"
+      [class]="willpowerState()"
+      [matTooltip]="formattedBreakdown()"
+      matTooltipClass="breakdown-tooltip"
+      matTooltipPosition="below"
+    >
       <div class="stat-icon">{{ willpowerEmoji() }}</div>
       <div class="stat-content">
         <div class="stat-label">Willpower</div>
@@ -20,6 +26,7 @@
           {{ willpowerCost() }} <span class="divider">/</span> {{ willpowerBudget() }}
         </div>
       </div>
+      <span class="info-icon">ⓘ</span>
     </div>
 
     <div class="stat-item score">
