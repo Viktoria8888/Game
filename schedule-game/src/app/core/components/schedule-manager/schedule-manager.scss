@@ -1,14 +1,30 @@
 @use 'shared' as *;
+
 :host {
   display: flex;
   flex-direction: column;
+  height: 100vh;
+  overflow: hidden; 
+}
+
+
+app-header,
+app-contraints {
+  flex-shrink: 0;
 }
 
 .grid-courses {
+  flex: 1; 
+  min-height: 0;
   display: grid;
-  grid-template-columns: 2.7fr 1.3fr;
-  gap: 10px;
+  grid-template-columns: minmax(0, 3fr) minmax(320px, 1.2fr);
+  gap: 5px;
+  align-items: stretch; 
+
   @include mobile {
     grid-template-columns: 1fr;
+    padding: 0 8px 8px 8px;
+    gap: 10px;
+    overflow-y: auto;
   }
 }

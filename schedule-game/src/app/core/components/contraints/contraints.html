@@ -22,7 +22,13 @@
 
     <div class="content">
       <div class="title-row">
-        <h4>{{ constraint.title }}</h4>
+        <div class="title-group">
+          <h4>{{ constraint.title }}</h4>
+
+          @if (constraint.scoreReward) {
+          <span class="mini-score">⭐{{ constraint.scoreReward }}</span>
+          }
+        </div>
 
         @if (constraint.currentValue !== undefined) {
         <div class="value">
@@ -34,14 +40,6 @@
       </div>
 
       <p>{{ constraint.description }}</p>
-
-      @if (constraint.scoreReward) {
-      <div class="rewards">
-        @if (constraint.scoreReward) {
-        <span class="reward-tag score"> ⭐ +{{ constraint.scoreReward }} </span>
-        }
-      </div>
-      }
     </div>
   </div>
   }

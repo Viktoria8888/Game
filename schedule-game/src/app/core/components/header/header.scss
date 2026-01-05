@@ -8,7 +8,7 @@ $c-danger-dark: #b71c1c;
 }
 
 .game-header {
-  padding-bottom: 16px;
+  padding-bottom: 10px;
   @include flex($justify: space-between, $gap: 20px);
 
   @include mobile {
@@ -96,7 +96,7 @@ $c-danger-dark: #b71c1c;
   }
 
   &.caution {
-    border-left-color: $c-warning; 
+    border-left-color: $c-warning;
     .stat-value {
       color: lighten($c-warning, 10%);
     }
@@ -110,8 +110,8 @@ $c-danger-dark: #b71c1c;
   }
 
   &.critical {
-    border-left-color: $c-danger-dark; 
-    background: rgba($c-danger-dark, 0.15); 
+    border-left-color: $c-danger-dark;
+    background: rgba($c-danger-dark, 0.15);
     border-color: rgba($c-danger-dark, 0.5);
 
     .stat-value {

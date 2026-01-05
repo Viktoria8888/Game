@@ -3,6 +3,10 @@
 </div>
 
 <div class="grid-view">
+  @if (walkerPos()) {
+  <div class="walker" [ngStyle]="{ top: walkerPos()?.top, left: walkerPos()?.left }">🏃🏻‍➡️</div>
+  }
+
   <table class="schedule-table">
     <thead>
       <tr>
@@ -14,9 +18,8 @@
     </thead>
     <tbody>
       @for (hour of hours; track hour) {
-      <tr class="time-row">
+      <tr>
         <td class="time-cell">{{ formatHour(hour) }}</td>
-
         @for (day of days; track day) {
         <td
           class="slot-cell"

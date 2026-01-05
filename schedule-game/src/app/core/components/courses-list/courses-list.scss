@@ -4,21 +4,12 @@
   @include card-base;
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 200px);
-  max-height: 900px;
-  min-height: 500px;
-  overflow: hidden;
+  height: 100%; 
+  min-height: 0; 
+  max-height: 100%; 
   padding: 2px 10px;
   gap: 5px;
-
-  @include mobile {
-    margin-left: 0;
-    margin-top: 10px;
-    height: auto;
-    min-height: 300px;
-    max-height: calc(100vh - 100px);
-    padding: 12px;
-  }
+  overflow: hidden;
 }
 
 .header {
@@ -41,16 +32,22 @@
   }
 }
 
+.filters {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex-shrink: 0; 
+}
+
 .list-scroll-area {
-  flex: 1;
-  overflow-y: auto;
+  flex: 1; 
+  min-height: 0; 
+  overflow-y: auto; 
   display: flex;
   flex-direction: column;
   gap: 10px;
-  min-height: 0;
   @include custom-scrollbar($width: 6px);
 }
-
 .course-card {
   position: relative;
   background: white;
@@ -152,27 +149,6 @@
     background: #a7f072;
     color: #00a025;
     border-color: #65e42a;
-  }
-
-  &.type-lecture {
-    background: #e3f2fd;
-    color: #1565c0;
-  }
-
-  &.type-lab {
-    background: #f3e5f5;
-    color: #7b1fa2;
-  }
-
-  &.type-project {
-    background: #e8f5e9;
-    color: #2e7d32;
-  }
-
-  &.type-default {
-    background: #fafafa;
-    color: $c-text-muted;
-    border-color: $c-border;
   }
 }
 

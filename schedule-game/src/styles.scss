@@ -6,6 +6,7 @@
 @use '@angular/material' as mat;
 
 html {
+  -webkit-text-size-adjust: 100%;
   @include mat.theme(
     (
       color: (
@@ -50,4 +51,7 @@ body {
     padding: 8px 12px !important;
     border-radius: 6px !important;
   }
+}
+* {
+  box-sizing: border-box;
 }
