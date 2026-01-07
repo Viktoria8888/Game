@@ -10,11 +10,10 @@ import { ValidationContext } from '../../models/rules.interface';
 import { Courses } from '../courses-list/courses-list';
 import { GameService } from '../../services/game.service';
 import { PersistenceService } from '../../services/persistence.service';
-import { LevelSummary } from '../level-summary/level-summary';
 
 @Component({
   selector: 'app-schedule-manager',
-  imports: [ScheduleGrid, HeaderComponent, Contraints, Courses, LevelSummary],
+  imports: [ScheduleGrid, HeaderComponent, Contraints, Courses],
   templateUrl: './schedule-manager.html',
   styleUrl: './schedule-manager.scss',
 })
@@ -31,8 +30,6 @@ export class ScheduleManagerComponent {
   protected readonly metadata = this.schedule.simpleMetadata;
   protected readonly currentLevel = this.gameService.currentLevel;
   protected readonly availableCourses = this.gameService.availableCourses;
-
-  protected showLevelSummary = signal(false);
 
   protected readonly shakingCourseIds = signal<Set<string>>(new Set());
 
@@ -52,13 +49,8 @@ export class ScheduleManagerComponent {
   });
 
   handleNextLevel() {
-    this.showLevelSummary.set(true);
-  }
-
-  proceedToNextLevel() {
     this.gameService.completeLevel();
     this.persistency.saveImmediately();
-    this.showLevelSummary.set(false);
   }
 
   triggerConflictShake(ids: string[]) {

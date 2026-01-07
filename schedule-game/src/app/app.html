@@ -1,6 +1,41 @@
-@if (gameService.isInitialized()) {
-<app-schedule-manager />
+@if (gameService.isInitialized()) { @if (gameService.isGameFinished()) {
+<div class="victory-overlay">
+  <div class="diploma-container">
+    <div class="diploma-header">
+      <h1>🎓 Congrats! 🎓</h1>
+      <h2>You finished uni :)</h2>
+    </div>
+
+    <div class="diploma-body">
+      <p>You survived bureaucracy, exams, and strange rules.</p>
+
+      <div class="final-score-box">
+        <span>Your final score:</span>
+        <strong>{{ gameService.totalScore() }} points</strong>
+      </div>
+
+      <p class="flavor-text">
+        Now you can collect your diploma and face unemployment... <br />
+        or start your Master's degree! Choose wisely.
+      </p>
+    </div>
+
+    <div class="diploma-actions">
+      <button class="btn-primary" (click)="gameService.restartGame()">Start Over</button>
+    </div>
+  </div>
+</div>
+} @else { @if (!gameService.showNextLevel()) {
+<app-schedule-manager></app-schedule-manager>
 } @else {
+<app-level-summary
+  [outcome]="gameService.currentSemesterOutcome()"
+  [complexMeta]="gameService.currentSemesterOutcome().complexMeta || {}"
+  [level]="gameService.currentLevel() - 1"
+  (onProceed)="gameService.startNextLevel()"
+  (onClose)="gameService.startNextLevel()"
+></app-level-summary>
+} } } @else {
 <div class="loading-screen">
   <h1>Loading</h1>
   <div class="spinner">⏳</div>

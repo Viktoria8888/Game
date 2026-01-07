@@ -1,7 +1,7 @@
 import { Injectable, inject, signal, computed } from '@angular/core';
 import { HistoryService } from './history.service';
 import { CourseSelectionService } from './courses-selection';
-import { GameStateDTO, GameStateMetadata } from '../models/game_state.dto';
+import { ComplexGameMetadata, GameStateDTO, GameStateMetadata } from '../models/game_state.dto';
 import { ScheduleService } from './schedule.service';
 import { RulesService } from './rules.service';
 import { ValidationContext, ValidationResultMap } from '../models/rules.interface';
@@ -15,6 +15,7 @@ export type SemesterOutcome = {
   willpowerCost: number;
   willpowerBudget: number;
   isBudgetExceeded: boolean;
+  complexMeta: ComplexGameMetadata;
   costBreakdown: string[];
 };
 
@@ -29,7 +30,12 @@ export class GameService {
   readonly isInitialized = signal(false);
   readonly totalScore = signal(0);
 
+  readonly showNextLevel = signal(false);
+
   readonly SEMESTER_BUDGET = 20;
+  private readonly MAX_LEVEL = 6;
+
+  public readonly isGameFinished = computed(() => this.currentLevel() > this.MAX_LEVEL);
 
   readonly availableCourses = computed(() => {
     const selected = this.courseSelection.selectedCourses();
@@ -90,9 +96,30 @@ export class GameService {
       willpowerCost: cost,
       willpowerBudget: this.SEMESTER_BUDGET,
       isBudgetExceeded: cost > this.SEMESTER_BUDGET,
+      complexMeta,
       costBreakdown: complexMeta.costBreakdown,
     };
   });
+
+  readonly canPassLevel = computed(() => {
+    const outcome = this.currentSemesterOutcome();
+    return (
+      this.rulesService.areRequiredRulesSatisfied(outcome.validation) && !outcome.isBudgetExceeded
+    );
+  });
+
+  readonly gameStateSnapshot = computed<GameStateDTO>(() => {
+    return {
+      level: this.currentLevel(),
+      history: this.history.history(),
+      score: this.totalScore(),
+      coursesSelected: this.courseSelection.selectedCourses(),
+    };
+  });
+
+  checkCompleteness() {
+    return this.canPassLevel();
+  }
 
   completeLevel() {
     const outcome = this.currentSemesterOutcome();
@@ -117,23 +144,26 @@ export class GameService {
 
     this.totalScore.set(outcome.predictedTotalScore);
 
-    if (this.currentLevel() === 6) {
-      console.log(`VICTORY! Final Score: ${this.totalScore()}`);
-      return;
-    }
-
     this.currentLevel.update((l) => l + 1);
+
     this.courseSelection.clearAll();
+
+    if (!this.isGameFinished()) {
+      this.showNextLevel.set(true);
+    }
   }
 
-  readonly gameStateSnapshot = computed<GameStateDTO>(() => {
-    return {
-      level: this.currentLevel(),
-      history: this.history.history(),
-      score: this.totalScore(),
-      coursesSelected: this.courseSelection.selectedCourses(),
-    };
-  });
+  startNextLevel() {
+    this.showNextLevel.set(false);
+  }
+
+  restartGame() {
+    this.currentLevel.set(1);
+    this.totalScore.set(0);
+    this.history.clear();
+    this.courseSelection.clearAll();
+    this.showNextLevel.set(false);
+  }
 
   markAsInitialized() {
     this.isInitialized.set(true);

@@ -14,6 +14,7 @@ const MOCK_OUTCOME: SemesterOutcome = {
   willpowerBudget: 20,
   isBudgetExceeded: false,
   costBreakdown: [],
+  complexMeta: {} as ComplexGameMetadata,
 };
 
 const MOCK_COMPLEX_META: ComplexGameMetadata = {
