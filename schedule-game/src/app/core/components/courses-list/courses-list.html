@@ -14,6 +14,29 @@
 
 <div class="filters">
   <div class="filter-group">
+    <span class="filter-label">Start:</span>
+    <input
+      type="text"
+      class="letter-input"
+      maxlength="1"
+      [ngModel]="nameStartChar()"
+      (ngModelChange)="nameStartChar.set($event)"
+      placeholder="A-Z"
+    />
+  </div>
+
+  <div class="filter-group">
+    <label class="checkbox-label">
+      <input
+        type="checkbox"
+        [ngModel]="onlyMetPrerequisites()"
+        (ngModelChange)="onlyMetPrerequisites.set($event)"
+      />
+      <span>Prereqs Met Only</span>
+    </label>
+  </div>
+
+  <div class="filter-group">
     <span class="filter-label">Type:</span>
     <div class="chips">
       @for (type of availableTypes(); track type) {

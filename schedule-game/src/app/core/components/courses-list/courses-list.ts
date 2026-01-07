@@ -1,6 +1,7 @@
 import { Component, computed, inject, input, output, signal } from '@angular/core';
 import { Course, Tag, TAG_MAP } from '../../models/course.interface';
 import { CourseSelectionService } from '../../services/courses-selection';
+import { HistoryService } from '../../services/history.service';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { FormsModule } from '@angular/forms';
 
@@ -12,13 +13,16 @@ import { FormsModule } from '@angular/forms';
 })
 export class Courses {
   private readonly courseSelection = inject(CourseSelectionService);
+  private readonly historyService = inject(HistoryService);
   readonly availableCourses = input.required<Course[]>();
 
   readonly searchTerm = signal('');
+  readonly nameStartChar = signal('');
+  readonly onlyMetPrerequisites = signal(false);
+
   readonly selectedTags = signal<Set<Tag>>(new Set());
   readonly selectedTypes = signal<Set<string>>(new Set());
 
-  // NEW: Track dropdown visibility
   readonly tagsDropdownOpen = signal(false);
 
   readonly courseConflict = output<string[]>();
@@ -41,12 +45,25 @@ export class Courses {
     const tags = this.selectedTags();
     const types = this.selectedTypes();
 
+    const startChar = this.nameStartChar().toLowerCase();
+    const checkPrereqs = this.onlyMetPrerequisites();
+    const takenIds = this.historyService.previouslyTakenCourseIds();
+
     return courses.filter((course) => {
       const matchesSearch = course.name.toLowerCase().includes(search);
       const matchesTags = tags.size === 0 || (course.tags?.some((t) => tags.has(t)) ?? false);
       const matchesType = types.size === 0 || types.has(course.type);
 
-      return matchesSearch && matchesTags && matchesType;
+      const matchesStartChar = !startChar || course.name.toLowerCase().startsWith(startChar);
+
+      let matchesPrereqs = true;
+      if (checkPrereqs) {
+        if (course.prerequisites && course.prerequisites.length > 0) {
+          matchesPrereqs = course.prerequisites.every((id) => takenIds.has(id));
+        }
+      }
+
+      return matchesSearch && matchesTags && matchesType && matchesStartChar && matchesPrereqs;
     });
   });
 
@@ -54,7 +71,6 @@ export class Courses {
     return TAG_MAP[tag];
   };
 
-  // NEW: Toggle function
   toggleTagsDropdown() {
     this.tagsDropdownOpen.update((v) => !v);
   }

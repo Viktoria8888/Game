@@ -9,7 +9,14 @@
   max-height: 100%;
   padding: 2px 10px;
   gap: 5px;
-  overflow: hidden;
+  // overflow: hidden;
+
+  @include mobile {
+    height: 600px;
+    max-height: 80vh;
+    padding: 10px;
+    overflow: visible;
+  }
 }
 
 .header {
@@ -48,6 +55,10 @@
   flex-direction: column;
   gap: 10px;
   @include custom-scrollbar($width: 6px);
+
+  @include mobile {
+    padding-bottom: 20px;
+  }
 }
 .course-card {
   position: relative;
@@ -340,5 +351,38 @@
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+.letter-input {
+  width: 40px;
+  padding: 4px;
+  border: 1px solid $c-border;
+  border-radius: 4px;
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 12px;
+  outline: none;
+
+  &:focus {
+    border-color: $c-primary;
+  }
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  color: $c-text-muted;
+  cursor: pointer;
+  user-select: none;
+
+  input {
+    cursor: pointer;
+  }
+
+  &:hover {
+    color: $c-text-main;
   }
 }
