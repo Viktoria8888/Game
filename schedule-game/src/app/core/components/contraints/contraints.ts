@@ -5,7 +5,6 @@ import {
   inject,
   input,
   output,
-  Signal,
   signal,
   viewChild,
 } from '@angular/core';
@@ -18,6 +17,7 @@ interface ConstraintDisplay extends Rule {
   currentValue?: number;
   targetValue?: number;
   hint?: string;
+  showHint?: boolean;
 }
 
 @Component({
@@ -29,9 +29,12 @@ interface ConstraintDisplay extends Rule {
 export class Contraints {
   private readonly rulesService = inject(RulesService);
 
+  readonly isTouch = window.matchMedia('(pointer: coarse)').matches; // TEST !!!
+
   readonly validationContext = input.required<ValidationContext>();
   readonly validationResults = input.required<ValidationResultMap>();
-
+  readonly isWillpower = input.required<boolean>();
+  readonly canPassLevel = input.required<boolean>();
   readonly onClickNextLevel = output();
 
   protected readonly activeTab = signal<'Mandatory' | 'Goal'>('Mandatory');
@@ -47,8 +50,6 @@ export class Contraints {
           ...item.rule,
           isSatisfied: true,
           hint: item.result.message,
-          currentValue: undefined,
-          targetValue: undefined,
         })),
 
       ...results.violated
@@ -98,31 +99,29 @@ export class Contraints {
     ];
   });
 
-  protected readonly canPassLevel = computed(() => {
-    const results = this.validationResults();
-    return this.rulesService.areRequiredRulesSatisfied(results);
-  });
+  switchTab(category: 'Mandatory' | 'Goal') {
+    this.activeTab.set(category);
+  }
 
   goNextLevel() {
     this.onClickNextLevel.emit();
   }
 
-  switchTab(category: 'Mandatory' | 'Goal') {
-    this.activeTab.set(category);
-  }
-
   getConstraintIcon(constraint: ConstraintDisplay): string {
     if (constraint.isSatisfied) return '✓';
-
-    if (constraint.category === 'Mandatory') {
-      return '✗';
-    }
-
+    if (constraint.category === 'Mandatory') return '✗';
     return '○';
   }
 
-  scrollContainer = viewChild<ElementRef>('scrollContainer');
+  toggleHint(constraint: ConstraintDisplay) { // test
+    if (!this.isTouch || !constraint.hint) return;
+    constraint.showHint = !constraint.showHint;
+  }
+
+  scrollContainer = viewChild<ElementRef>('scrollContainer'); //test
   onWheel(event: WheelEvent) {
+    if (this.isTouch) return;
+
     if (event.deltaY !== 0) {
       event.preventDefault();
       this.scrollContainer()!.nativeElement.scrollLeft += event.deltaY;

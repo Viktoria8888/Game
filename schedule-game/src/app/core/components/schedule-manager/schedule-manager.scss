@@ -3,10 +3,20 @@
 :host {
   display: flex;
   flex-direction: column;
-  height: 100vh;
-  overflow: hidden; 
-}
+  height: 97vh;
+  overflow: hidden;
 
+  @include mobile {
+    height: auto;
+    min-height: 100vh;
+    overflow-y: visible;
+    overflow-x: hidden;
+    // :host {
+    //   height: auto;
+    //   overflow: visible;
+    // }
+  }
+}
 
 app-header,
 app-contraints {
@@ -14,17 +24,18 @@ app-contraints {
 }
 
 .grid-courses {
-  flex: 1; 
+  flex: 1;
   min-height: 0;
   display: grid;
   grid-template-columns: minmax(0, 3fr) minmax(320px, 1.2fr);
   gap: 5px;
-  align-items: stretch; 
+  align-items: stretch;
 
   @include mobile {
-    grid-template-columns: 1fr;
-    padding: 0 8px 8px 8px;
-    gap: 10px;
-    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    height: auto;
+    overflow: visible;
   }
 }

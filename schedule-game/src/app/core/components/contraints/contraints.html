@@ -13,10 +13,9 @@
     class="constraint"
     [class.satisfied]="constraint.isSatisfied"
     [class.required]="constraint.category !== 'Goal'"
-    [matTooltip]="constraint.hint || ''"
-    [matTooltipDisabled]="!constraint.hint"
-    matTooltipPosition="above"
-    matTooltipClass="tooltip"
+    [matTooltip]="constraint.hint"
+    [matTooltipDisabled]="isTouch || !constraint.hint"
+    (click)="toggleHint(constraint)"
   >
     <span class="icon">{{ getConstraintIcon(constraint) }}</span>
 
@@ -40,6 +39,12 @@
       </div>
 
       <p>{{ constraint.description }}</p>
+
+      @if (isTouch && constraint.showHint) {
+      <div class="mobile-hint">
+        {{ constraint.hint }}
+      </div>
+      }
     </div>
   </div>
   }
@@ -47,6 +52,6 @@
 
 @if (canPassLevel()) {
 <button class="action-btn" (click)="goNextLevel()">
-  All Requirements Met - Go to the next level →
+  All Requirements Met – Go to the next level →
 </button>
 }
