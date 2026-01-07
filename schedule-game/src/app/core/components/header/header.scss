@@ -8,32 +8,29 @@ $c-danger-dark: #b71c1c;
 }
 
 .game-header {
-  padding-bottom: 10px;
+  padding-bottom: 5px;
   @include flex($justify: space-between, $gap: 20px);
 
   @include mobile {
     flex-direction: column;
     align-items: stretch;
-    padding: 16px;
-    gap: 16px;
+    padding: 10px;
+    gap: 10px;
   }
 }
 
 .game-title {
   @include flex($gap: 12px);
 
-  .title-icon {
-    font-size: 28px;
-    color: rgba(255, 255, 255, 0.9);
-  }
-
   h1 {
     margin: 0;
-    @include text(32px, 700, white);
+    @include text(28px, 700, white);
     letter-spacing: 0.5px;
 
     @include mobile {
       font-size: 20px;
+      text-align: center;
+      width: 100%;
     }
   }
 }
@@ -43,8 +40,10 @@ $c-danger-dark: #b71c1c;
   flex-wrap: wrap;
 
   @include mobile {
-    gap: 12px;
-    justify-content: flex-start;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    justify-content: stretch;
   }
 }
 
@@ -57,15 +56,20 @@ $c-danger-dark: #b71c1c;
   @include flex($gap: 12px);
 
   @include mobile {
-    min-width: 110px;
-    padding: 8px 12px;
-    flex: 1;
+    min-width: 0;
+    padding: 6px 8px;
+    gap: 6px;
+    justify-content: center;
   }
 
   .stat-icon {
     font-size: 24px;
     opacity: 0.9;
     color: white;
+
+    @include mobile {
+      font-size: 20px;
+    }
   }
 
   .stat-content {
@@ -77,11 +81,19 @@ $c-danger-dark: #b71c1c;
     @include text(11px, 600, rgba(255, 255, 255, 0.7));
     text-transform: uppercase;
     letter-spacing: 0.5px;
+
+    @include mobile {
+      font-size: 9px;
+    }
   }
 
   .stat-value {
     @include text(16px, 700, white);
     line-height: 1.2;
+
+    @include mobile {
+      font-size: 14px;
+    }
   }
 }
 

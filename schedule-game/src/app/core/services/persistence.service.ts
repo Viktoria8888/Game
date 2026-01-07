@@ -22,6 +22,8 @@ export class PersistenceService {
   private readonly gameState$ = toObservable(this.gameService.gameStateSnapshot);
   constructor() {
     effect((onCleanup) => {
+      if (!this.authService.isAuthLoaded()) return;
+
       const userId = this.authService.userId;
 
       if (!userId) {

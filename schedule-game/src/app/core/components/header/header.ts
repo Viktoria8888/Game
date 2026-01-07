@@ -1,17 +1,23 @@
-import { Component, input, computed } from '@angular/core';
+import { Component, input, computed, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { LoginModal } from '../login-modal/login-modal';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, MatTooltipModule],
+  imports: [CommonModule, MatTooltipModule, LoginModal],
   templateUrl: './header.html',
   styleUrl: './header.scss',
 })
 export class HeaderComponent {
   readonly currentLevel = input.required<number>();
   readonly totalScore = input.required<number>();
+  readonly authService = inject(AuthService);
+
+  readonly showLogin = signal(false);
+  readonly isAnonymous = this.authService.isAnonymous;
 
   readonly willpowerCost = input.required<number>();
   readonly willpowerBudget = input.required<number>();
@@ -68,4 +74,14 @@ export class HeaderComponent {
       .toUpperCase()
       .slice(0, 2);
   });
+
+  toggleLoginModal() {
+    this.showLogin.set(true);
+  }
+
+  doLogout() {
+    if (confirm('Are you sure you want to log out?')) {
+      this.authService.logout();
+    }
+  }
 }

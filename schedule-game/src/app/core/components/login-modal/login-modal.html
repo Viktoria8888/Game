@@ -1,0 +1,54 @@
+<div class="modal-backdrop" (click)="close.emit()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>@if (mode() === 'link') { Save Progress } @else { Welcome Back }</h2>
+      <button class="close-btn" (click)="close.emit()">×</button>
+    </div>
+
+    <div class="modal-body">
+      @if (mode() === 'link') {
+      <p class="hint">Create an account to save your current game history forever.</p>
+      } @else {
+      <p class="hint">Log in to load your saved progress.</p>
+      }
+
+      <div class="input-group">
+        <label>Email</label>
+        <input
+          type="email"
+          [ngModel]="email()"
+          (ngModelChange)="email.set($event)"
+          placeholder="student@university.edu"
+        />
+      </div>
+
+      <div class="input-group">
+        <label>Password</label>
+        <input
+          type="password"
+          [ngModel]="password()"
+          (ngModelChange)="password.set($event)"
+          placeholder="••••••••"
+        />
+      </div>
+
+      @if (errorMsg()) {
+      <div class="error-banner">{{ errorMsg() }}</div>
+      }
+
+      <button class="submit-btn" (click)="handleSubmit()">
+        @if (mode() === 'link') { Save & Sign Up } @else { Log In }
+      </button>
+
+      <div class="toggle-link">
+        @if (mode() === 'link') {
+        <span>Already have an account? </span>
+        <a (click)="toggleMode('login')">Log In</a>
+        } @else {
+        <span>New here? </span>
+        <a (click)="toggleMode('link')">Sign Up</a>
+        }
+      </div>
+    </div>
+  </div>
+</div>

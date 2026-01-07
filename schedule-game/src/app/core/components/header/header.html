@@ -37,22 +37,33 @@
       </div>
     </div>
 
-    <div class="stat-item user-account">
+    <button
+      class="stat-item user-account"
+      (click)="isAnonymous() ? toggleLoginModal() : doLogout()"
+      [matTooltip]="isAnonymous() ? 'Click to Save Progress' : 'Click to Logout'"
+    >
       @if (userAvatar()) {
       <div class="user-avatar">
         <img [src]="userAvatar()" [alt]="userName()" />
       </div>
       } @else {
-      <div class="user-avatar initials">
+      <div class="user-avatar initials" [class.guest]="isAnonymous()">
         {{ userInitials() }}
       </div>
       }
 
       <div class="stat-content">
-        <div class="stat-label">Player</div>
+        <div class="stat-label">{{ isAnonymous() ? 'Guest (Unsaved)' : 'Player' }}</div>
         <div class="stat-value">{{ userName() }}</div>
       </div>
-      <div class="dropdown-icon">▼</div>
-    </div>
+
+      @if (isAnonymous()) {
+      <div class="warning-dot" title="Unsaved Progress">!</div>
+      }
+    </button>
   </div>
 </header>
+
+@if (showLogin()) {
+<app-login-modal (close)="showLogin.set(false)" />
+}
