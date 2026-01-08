@@ -25,19 +25,11 @@
     </div>
   </div>
 </div>
-} @else { @if (!gameService.showNextLevel()) {
+}
 <app-schedule-manager></app-schedule-manager>
 } @else {
-<app-level-summary
-  [outcome]="gameService.currentSemesterOutcome()"
-  [complexMeta]="gameService.currentSemesterOutcome().complexMeta || {}"
-  [level]="gameService.currentLevel() - 1"
-  (onProceed)="gameService.startNextLevel()"
-  (onClose)="gameService.startNextLevel()"
-></app-level-summary>
-} } } @else {
 <div class="loading-screen">
   <h1>Loading</h1>
   <div class="spinner">⏳</div>
 </div>
-}
+} `

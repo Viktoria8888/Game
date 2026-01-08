@@ -5,11 +5,11 @@
   [willpowerBreakdown]="gameService.currentSemesterOutcome().costBreakdown"
   [totalScore]="this.gameService.currentSemesterOutcome().predictedTotalScore"
   [userName]="authService.username()"
+  (openTutorial)="toggleTutorial(true)"
 />
 <app-contraints
   [validationContext]="validationContext()"
   [validationResults]="validationResults()"
-  [isWillpower]="false"
   [canPassLevel]="gameService.canPassLevel()"
   (onClickNextLevel)="handleNextLevel()"
 />
@@ -25,3 +25,15 @@
     (courseConflict)="triggerConflictShake($event)"
   />
 </div>
+
+@if (showTutorial()) {
+<app-tutorial (close)="toggleTutorial(false)" />
+} @if (gameService.showLevelSummaryModal()) {
+
+<app-level-summary
+  [outcome]="gameService.currentSemesterOutcome()"
+  [level]="gameService.currentLevel()"
+  (onProceed)="proceedToNextLevel()"
+  (onClose)="gameService.closeLevelSummary()"
+></app-level-summary>
+}

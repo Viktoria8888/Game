@@ -1,7 +1,6 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { CourseSelectionService } from '../../services/courses-selection';
 import { ScheduleService } from '../../services/schedule.service';
-import { Course } from '../../models/course.interface';
 import { ScheduleGrid } from '../schedule-grid/schedule-grid';
 import { HeaderComponent } from '../header/header';
 import { AuthService } from '../../services/auth.service';
@@ -10,10 +9,13 @@ import { ValidationContext } from '../../models/rules.interface';
 import { Courses } from '../courses-list/courses-list';
 import { GameService } from '../../services/game.service';
 import { PersistenceService } from '../../services/persistence.service';
+import { TutorialComponent } from '../tutorial/tutorial';
+import { LevelSummary } from '../level-summary/level-summary';
+import { SoundService } from '../../services/sounds.service';
 
 @Component({
   selector: 'app-schedule-manager',
-  imports: [ScheduleGrid, HeaderComponent, Contraints, Courses],
+  imports: [ScheduleGrid, HeaderComponent, Contraints, Courses, TutorialComponent, LevelSummary],
   templateUrl: './schedule-manager.html',
   styleUrl: './schedule-manager.scss',
 })
@@ -23,6 +25,7 @@ export class ScheduleManagerComponent {
   protected readonly schedule = inject(ScheduleService);
   protected readonly authService = inject(AuthService);
   private readonly persistency = inject(PersistenceService);
+  private readonly soundService = inject(SoundService);
 
   protected readonly selectedCourses = this.courseSelection.selectedCourses;
   protected readonly collisions = this.courseSelection.collisions;
@@ -49,15 +52,28 @@ export class ScheduleManagerComponent {
   });
 
   handleNextLevel() {
+    this.gameService.showLevelSummaryModal.set(true);
+    this.soundService.play('success');
+  }
+
+  proceedToNextLevel() {
     this.gameService.completeLevel();
     this.persistency.saveImmediately();
+    this.gameService.showLevelSummaryModal.set(false);
   }
 
   triggerConflictShake(ids: string[]) {
+    this.soundService.play('collisions');
     this.shakingCourseIds.set(new Set(ids));
 
     setTimeout(() => {
       this.shakingCourseIds.set(new Set());
     }, 500);
+  }
+
+  protected readonly showTutorial = signal(false);
+
+  toggleTutorial(show: boolean) {
+    this.showTutorial.set(show);
   }
 }
