@@ -9,7 +9,7 @@ import { LEVEL_6_RULES } from './level6.rules';
 
 export const PAIRING: Rule = {
   id: 'pairing',
-  title: 'Incomplete Subjects',
+  title: "Very sad 😔 Some subjects don't have their pair!",
   description: 'You must take all components of a subject.',
   category: 'Mandatory',
   level: null,

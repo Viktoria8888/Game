@@ -13,9 +13,16 @@ const WORD_CHAIN = createWordChainRule({
   level: 5,
   category: 'Mandatory',
   scoreReward: 500,
+  title: 'The Ouroboros',
+  description:
+    'The snake eats its tail. The last letter of a course must match the first letter of the next.',
 });
 
-const TCS_MASTER = createTagSpecialistRule({ id: 'l5-tcs', level: 5 }, 'TCS', 12);
+const TCS_MASTER = createTagSpecialistRule(
+  { id: 'l5-tcs', level: 5, title: 'Now you are ready for some theory' },
+  'TCS',
+  12
+);
 const ALLITERATION: Rule = {
   id: 'l5-alliteration',
   title: 'Poetic Alliteration',
@@ -25,19 +32,17 @@ const ALLITERATION: Rule = {
   scoreReward: 350,
   priority: 100,
   validate: (ctx) => {
-    const letterToSubjects = new Map<string, Set<string>>();
+    const letterToSubjects = new Map<string, number>();
 
     ctx.coursesSelected.forEach((c) => {
       const char = c.name.trim().charAt(0).toUpperCase();
-      if (!letterToSubjects.get(char)) {
-        letterToSubjects.set(char, new Set<string>());
-      }
-      letterToSubjects.get(char)!.add(c.subjectId);
+      const currentCount = letterToSubjects.get(char) || 0;
+      letterToSubjects.set(char, currentCount + 1);
     });
 
-    const counts = Object.values(letterToSubjects).map((set) => set.size);
-    const max = Math.max(0, ...counts);
-    const letter = Object.keys(letterToSubjects).find((k) => letterToSubjects.get(k)!.size === max);
+    const max = Math.max(0, ...letterToSubjects.values());
+
+    const letter = [...letterToSubjects.entries()].find(([k, v]) => v === max)?.[0] || '?';
 
     return {
       satisfied: max >= 3,
@@ -51,8 +56,8 @@ const ALLITERATION: Rule = {
 
 const NO_NUMBERS: Rule = {
   id: 'l5-no-numbers',
-  title: 'Pure Prose',
-  description: 'Course names must not contain digits (0-9). Numbers are for mathematicians.',
+  title: 'Digit Allergic',
+  description: 'You prefer only pure math. No numbers! Course names must not contain digits (0-9).',
   category: 'Goal',
   level: 5,
   scoreReward: 100,
@@ -70,19 +75,29 @@ const NO_NUMBERS: Rule = {
 };
 
 const NO_TOOLS = createTagBanRule(
-  { id: 'l5-pure', level: 5, category: 'Goal', scoreReward: 250 },
+  {
+    id: 'l5-pure',
+    level: 5,
+    category: 'Goal',
+    title: 'Pure theory. Zero practice',
+    scoreReward: 250,
+  },
   'TOOLS'
 );
 
-const STANDARD_LOAD = createStandardLoadRule({ id: 'l5-standard', level: 5, scoreReward: 250 }, 22);
-const PROGRESS_CHECK_2 = createCumulativeProgressRule({ id: 'l5-progress', level: 5 }, 105);
+const STANDARD_LOAD = createStandardLoadRule(
+  { id: 'l5-standard', level: 5, scoreReward: 250, title: 'Your grandma will be proud of you!' },
+  22
+);
 
 export const LEVEL_5_RULES: ReadonlyArray<Rule> = [
-  createMinEctsRule({ id: 'l5-min', level: 5, category: 'Mandatory' }, 16),
+  createMinEctsRule(
+    { id: 'l5-min', level: 5, category: 'Mandatory', title: 'x<sup>y</sup> = y<sup>x</sup>=16' },
+    16
+  ),
   WORD_CHAIN,
   TCS_MASTER,
   STANDARD_LOAD,
-  PROGRESS_CHECK_2,
   ALLITERATION,
   NO_NUMBERS,
   NO_TOOLS,

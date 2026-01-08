@@ -12,7 +12,7 @@ import {
 const BLACKJACK: Rule = {
   id: 'l4-blackjack',
   title: 'Blackjack',
-  description: 'Your total ECTS must be exactly 21. Do not bust!',
+  description: 'Your total ECTS must be exactly 21.',
   category: 'Mandatory',
   level: 4,
   priority: 10,
@@ -27,14 +27,22 @@ const BLACKJACK: Rule = {
 
 export const LEVEL_4_RULES = [
   BLACKJACK,
-  mandatorySubjectForLevel({ id: 'l4-mandatory', level: 4 }, ['41199']), // AiDS
+  mandatorySubjectForLevel(
+    {
+      id: 'l4-mandatory',
+      level: 4,
+      title: 'Death & Taxes',
+      description: "Failing algorithm's exam is even more certain in life",
+    },
+    ['41199']
+  ), // AiDS
   createOddStartTimesRule({
     id: 'l4-odd',
     level: 4,
     category: 'Mandatory',
     scoreReward: 200,
     title: 'Oddly Satisfying',
-    description: 'Start every class on an odd hour (9:00, 11:00, 13:00...).',
+    description: 'Even start time may bring bad luck!',
   }),
   createBanTimeSlots(
     {
@@ -43,13 +51,19 @@ export const LEVEL_4_RULES = [
       category: 'Mandatory',
       priority: 50,
       title: 'Mandatory Lunch',
-      description: 'You cannot study on an empty stomach. Keep 13:00-14:00 free.',
+      description: 'More food! Keep 13:00-14:00 free.',
     },
     13,
     14
   ),
   createTypeSegregationRule(
-    { id: 'l4-segregate', level: 4, category: 'Mandatory' },
+    {
+      id: 'l4-segregate',
+      level: 4,
+      category: 'Mandatory',
+      title: 'Final fight: Lectures vs Labs',
+      description: 'One hour between lectures and labs.',
+    },
     'Lecture',
     'Laboratory'
   ),
@@ -60,8 +74,8 @@ export const LEVEL_4_RULES = [
       level: 4,
       category: 'Goal',
       scoreReward: 300,
-      title: 'Defragmented Schedule',
-      description: 'Efficiency is paramount. Zero gaps allowed between classes on the same day.',
+      title: 'Just Efficiency',
+      description: 'Zero gaps allowed between classes on the same day.',
     },
     0
   ),

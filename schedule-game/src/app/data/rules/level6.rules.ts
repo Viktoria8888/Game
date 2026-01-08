@@ -8,41 +8,44 @@ import {
 
 const THESIS_DEFENSE: Rule = {
   id: 'l6-thesis',
-  title: 'Diploma Thesis',
-  description: 'Register for a "Project" type course (The Thesis).',
+  title: 'The Final Boss',
+  description: 'Register for Diploma Work course.',
   category: 'Mandatory',
   level: 6,
   priority: 200,
-  scoreReward: 500,
+  scoreReward: 0,
   validate: (ctx) => {
     const hasThesis = ctx.coursesSelected.some((c) => c.type === 'Project');
     return {
       satisfied: hasThesis,
       severity: 'error',
       message: hasThesis
-        ? 'Thesis registered. Good luck!'
-        : 'You cannot graduate without a Thesis Project!',
+        ? 'Boss fight initiated. Good luck.'
+        : 'You cannot beat the game without fighting the Final Boss (Thesis)!',
     };
   },
 };
 
-const DEGREE_REQUIREMENT = createCumulativeProgressRule({ id: 'l6-degree', level: 6 }, 140);
+const DEGREE_REQUIREMENT = createCumulativeProgressRule(
+  { id: 'l6-progress', level: 6, title: 'Progress: Not great, not terrible ' },
+  105
+);
 
 const MANDATORY_INTERNSHIP = createMinFreeDaysRule(
   {
     id: 'l6-intern',
     level: 6,
     category: 'Mandatory',
-    title: 'Full-Time Job Offer',
-    description: 'You have a job. Keep at least 3 days completely free for work.',
+    title: 'Corporate Sellout',
+    description: 'Finally, you are not unemployed. Keep at least 3 days completely free for work.',
   },
   3
 );
 
 const TRIFECTA: Rule = {
   id: 'l6-trifecta',
-  title: 'The Trifecta',
-  description: 'Focus. Take exactly 3 courses this semester.',
+  title: 'Minimalism',
+  description: 'Your motivation is at 0%. You physically cannot handle more than 3 courses.',
   category: 'Mandatory',
   level: 6,
   priority: 100,
@@ -52,8 +55,8 @@ const TRIFECTA: Rule = {
       satisfied: count === 3,
       message:
         count === 3
-          ? 'Perfect focus (3 courses).'
-          : `Too scattered! You have ${count} courses. Aim for exactly 3.`,
+          ? 'Maximum laziness achieved (3 courses).'
+          : `Too much effort! You have ${count} courses. Aim for exactly 3.`,
     };
   },
 };
@@ -88,8 +91,8 @@ const NO_FLUFF: Rule = {
 };
 const BRIEFING_MODE: Rule = {
   id: 'l6-briefing',
-  title: 'Briefing Mode',
-  description: 'Keep it short. Course names must be shorter than 15 characters.',
+  title: 'TL;DR',
+  description: 'No time for this. Course names must be shorter than 15 characters.',
   category: 'Goal',
   level: 6,
   scoreReward: 350,
@@ -100,14 +103,20 @@ const BRIEFING_MODE: Rule = {
       satisfied: violations.length === 0 && ctx.coursesSelected.length > 0,
       message:
         violations.length === 0
-          ? 'Briefing received. Short and sweet.'
-          : `Too verbose: ${violations.map((c) => c.name).join(', ')}.`,
+          ? 'Short and sweet.'
+          : `I ain't reading all that: ${violations.map((c) => c.name).join(', ')}.`,
     };
   },
 };
 
 const GHOST_MODE = createMaxContactHoursRule(
-  { id: 'l6-ghost', level: 6, category: 'Goal', scoreReward: 300 },
+  {
+    id: 'l6-ghost',
+    level: 6,
+    category: 'Goal',
+    scoreReward: 300,
+    description: 'You are a myth on campus. Be seen for less than 13 hours a week.',
+  },
   13
 );
 
