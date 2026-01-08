@@ -11,6 +11,7 @@ import {
 import { RulesCount, RulesService } from '../../services/rules.service';
 import { Rule, ValidationContext, ValidationResultMap } from '../../models/rules.interface';
 import { MatTooltip } from '@angular/material/tooltip';
+import { SoundService } from '../../services/sounds.service';
 
 interface ConstraintDisplay extends Rule {
   isSatisfied: boolean;
@@ -28,12 +29,12 @@ interface ConstraintDisplay extends Rule {
 })
 export class Contraints {
   private readonly rulesService = inject(RulesService);
+  private readonly soundsService = inject(SoundService);
 
   readonly isTouch = window.matchMedia('(pointer: coarse)').matches; // TEST !!!
 
   readonly validationContext = input.required<ValidationContext>();
   readonly validationResults = input.required<ValidationResultMap>();
-  readonly isWillpower = input.required<boolean>();
   readonly canPassLevel = input.required<boolean>();
   readonly onClickNextLevel = output();
 
@@ -100,6 +101,7 @@ export class Contraints {
   });
 
   switchTab(category: 'Mandatory' | 'Goal') {
+    this.soundsService.play('tab');
     this.activeTab.set(category);
   }
 
@@ -113,7 +115,8 @@ export class Contraints {
     return '○';
   }
 
-  toggleHint(constraint: ConstraintDisplay) { // test
+  toggleHint(constraint: ConstraintDisplay) {
+    // test
     if (!this.isTouch || !constraint.hint) return;
     constraint.showHint = !constraint.showHint;
   }

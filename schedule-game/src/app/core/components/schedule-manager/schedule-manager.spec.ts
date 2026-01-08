@@ -27,6 +27,7 @@ interface MockGameService {
   };
   currentSemesterOutcome: WritableSignal<SemesterOutcome>;
   completeLevel: jasmine.Spy<() => void>;
+  canPassLevel: WritableSignal<boolean>;
 }
 
 interface MockCourseSelectionService {
@@ -42,6 +43,7 @@ interface MockScheduleService {
 
 interface MockAuthService {
   username: WritableSignal<string>;
+  isAnonymous: WritableSignal<boolean>;
 }
 
 describe('ScheduleManagerComponent', () => {
@@ -56,7 +58,7 @@ describe('ScheduleManagerComponent', () => {
   let mockRulesService: jasmine.SpyObj<RulesService>;
 
   let selectedCoursesSig: WritableSignal<Course[]>;
-  let availableCoursesSig: WritableSignal<Course[]>; 
+  let availableCoursesSig: WritableSignal<Course[]>;
   let collisionsSig: WritableSignal<Array<{ course1: Course; course2: Course }>>;
   let historyIdsSig: WritableSignal<Set<string>>;
   let currentLevelSig: WritableSignal<number>;
@@ -72,11 +74,12 @@ describe('ScheduleManagerComponent', () => {
     willpowerBudget: 20,
     isBudgetExceeded: false,
     costBreakdown: [],
+    complexMeta: {} as ComplexGameMetadata,
   };
 
   beforeEach(async () => {
     selectedCoursesSig = signal<Course[]>([]);
-    availableCoursesSig = signal<Course[]>([]); 
+    availableCoursesSig = signal<Course[]>([]);
     collisionsSig = signal<Array<{ course1: Course; course2: Course }>>([]);
     historyIdsSig = signal<Set<string>>(new Set());
     currentLevelSig = signal<number>(1);
@@ -85,13 +88,14 @@ describe('ScheduleManagerComponent', () => {
 
     mockGameService = {
       currentLevel: currentLevelSig,
-      availableCourses: availableCoursesSig, 
+      availableCourses: availableCoursesSig,
       history: {
         history: signal<SemesterHistory[]>([]),
         previouslyTakenCourseIds: historyIdsSig,
       },
       currentSemesterOutcome: signal<SemesterOutcome>(defaultSemesterOutcome),
       completeLevel: jasmine.createSpy('completeLevel'),
+      canPassLevel: signal(false),
     };
 
     mockSelectionService = {
@@ -107,6 +111,7 @@ describe('ScheduleManagerComponent', () => {
 
     mockAuthService = {
       username: usernameSig,
+      isAnonymous: signal(false),
     };
 
     mockPersistenceService = jasmine.createSpyObj<PersistenceService>('PersistenceService', [
@@ -144,40 +149,6 @@ describe('ScheduleManagerComponent', () => {
   });
 
   describe('Interactions', () => {
-    it('shows the level summary modal when handleNextLevel is called', () => {
-      component.handleNextLevel();
-      fixture.detectChanges();
-
-      const summaryDe = fixture.debugElement.query(By.directive(LevelSummary));
-      expect(summaryDe).toBeTruthy();
-    });
-
-    it('calls services and closes modal when proceedToNextLevel is invoked', () => {
-      component.handleNextLevel();
-      fixture.detectChanges();
-
-      component.proceedToNextLevel();
-      fixture.detectChanges();
-
-      expect(mockGameService.completeLevel).toHaveBeenCalled();
-      expect(mockPersistenceService.saveImmediately).toHaveBeenCalled();
-
-      const summaryDe = fixture.debugElement.query(By.directive(LevelSummary));
-      expect(summaryDe).toBeNull();
-    });
-
-    it('closes level summary when onClose is emitted', () => {
-      component.handleNextLevel();
-      fixture.detectChanges();
-
-      const summaryDe = fixture.debugElement.query(By.directive(LevelSummary));
-      summaryDe.triggerEventHandler('onClose');
-
-      fixture.detectChanges();
-
-      expect(fixture.debugElement.query(By.directive(LevelSummary))).toBeNull();
-    });
-
     it('temporarily sets shakingCourseIds and clears them after 500ms', fakeAsync(() => {
       component.triggerConflictShake(['101', '102']);
       fixture.detectChanges();
@@ -191,7 +162,7 @@ describe('ScheduleManagerComponent', () => {
       tick(500);
       fixture.detectChanges();
 
-      expect(gridCmp.shakingIds.length).toBe(0); 
+      expect(gridCmp.shakingIds.length).toBe(0);
     }));
   });
 

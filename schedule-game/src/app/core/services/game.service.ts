@@ -30,7 +30,7 @@ export class GameService {
   readonly isInitialized = signal(false);
   readonly totalScore = signal(0);
 
-  readonly showNextLevel = signal(false);
+  readonly showLevelSummaryModal = signal(false);
 
   readonly SEMESTER_BUDGET = 20;
   private readonly MAX_LEVEL = 6;
@@ -149,12 +149,12 @@ export class GameService {
     this.courseSelection.clearAll();
 
     if (!this.isGameFinished()) {
-      this.showNextLevel.set(true);
+      this.showLevelSummaryModal.set(true);
     }
   }
 
-  startNextLevel() {
-    this.showNextLevel.set(false);
+  closeLevelSummary() {
+    this.showLevelSummaryModal.set(false);
   }
 
   restartGame() {
@@ -162,7 +162,7 @@ export class GameService {
     this.totalScore.set(0);
     this.history.clear();
     this.courseSelection.clearAll();
-    this.showNextLevel.set(false);
+    this.showLevelSummaryModal.set(false);
   }
 
   markAsInitialized() {

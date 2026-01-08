@@ -16,13 +16,14 @@
     [matTooltip]="constraint.hint"
     [matTooltipDisabled]="isTouch || !constraint.hint"
     (click)="toggleHint(constraint)"
+    matTooltipClass="tooltip"
   >
     <span class="icon">{{ getConstraintIcon(constraint) }}</span>
 
     <div class="content">
       <div class="title-row">
         <div class="title-group">
-          <h4>{{ constraint.title }}</h4>
+          <h4 [innerHTML]="constraint.title"></h4>
 
           @if (constraint.scoreReward) {
           <span class="mini-score">⭐{{ constraint.scoreReward }}</span>

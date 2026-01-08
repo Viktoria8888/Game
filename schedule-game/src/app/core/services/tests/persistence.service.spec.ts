@@ -1,10 +1,16 @@
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { PersistenceService } from '../persistence.service';
-import { provideZonelessChangeDetection, signal, Signal } from '@angular/core';
+import {
+  provideZonelessChangeDetection,
+  signal,
+  Signal,
+  ɵunwrapWritableSignal,
+} from '@angular/core';
 import { GameStateDTO } from '../../models/game_state.dto';
 import { GameService } from '../game.service';
 import { FirestoreService } from '../firestore.service';
 import { AuthService } from '../auth.service';
+import { WriteBatch } from 'firebase/firestore';
 
 describe('PersistenceService', () => {
   let service: PersistenceService;
@@ -27,6 +33,7 @@ describe('PersistenceService', () => {
         return 'test-user-id';
       },
       signInAnonymously: jasmine.createSpy('signInAnonymously'),
+      isAuthLoaded: signal(true),
     };
 
     mockFirestoreService = jasmine.createSpyObj('FirestoreService', [

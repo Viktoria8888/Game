@@ -1,14 +1,23 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HeaderComponent } from './header';
 import { By } from '@angular/platform-browser';
+import { AuthService } from '../../services/auth.service';
+import { signal } from '@angular/core';
 
 describe('HeaderComponent', () => {
   let component: HeaderComponent;
   let fixture: ComponentFixture<HeaderComponent>;
 
   beforeEach(async () => {
+    const mockAuthService = {
+      isAnonymous: signal(false),
+      logout: jasmine.createSpy('logout'),
+      userId: 'test-user',
+    };
+
     await TestBed.configureTestingModule({
       imports: [HeaderComponent],
+      providers: [{ provide: AuthService, useValue: mockAuthService }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(HeaderComponent);

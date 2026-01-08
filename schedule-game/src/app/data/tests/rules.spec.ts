@@ -140,6 +140,36 @@ describe('Unit Tests: All Level Rules', () => {
 
       expect(rule.validate(ctx).satisfied).toBeFalse();
     });
+
+    it('l5-alliteration: requires at least 3 subjects starting with the same letter', () => {
+      const rule = getRule(LEVEL_5_RULES, 'l5-alliteration')!;
+
+      // Satisfied Case: 3 subjects starting with 'A'
+      const validCtx = createMockContext({
+        coursesSelected: [
+          { name: 'Algorithms' },
+          { name: 'Architecture' },
+          { name: 'Artificial Intelligence' },
+        ] as any,
+      });
+
+      const resultValid = rule.validate(validCtx);
+      expect(resultValid.satisfied).toBeTrue();
+      expect(resultValid.message).toContain('Beautiful alliteration');
+
+      // Failed Case: Only 2 subjects starting with 'A'
+      const invalidCtx = createMockContext({
+        coursesSelected: [
+          { name: 'Algorithms' },
+          { name: 'Architecture' },
+          { name: 'Biology' },
+        ] as any,
+      });
+
+      const resultInvalid = rule.validate(invalidCtx);
+      expect(resultInvalid.satisfied).toBeFalse();
+      expect(resultInvalid.message).toContain('Poetry requires repetition');
+    });
   });
 
   describe('Level 6: Graduation', () => {

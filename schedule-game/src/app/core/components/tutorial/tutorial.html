@@ -1,0 +1,32 @@
+<div class="overlay-backdrop" (click)="skip()"></div>
+
+<div class="tutorial-card">
+  <button class="close-btn" (click)="skip()">×</button>
+
+  <div class="step-content">
+    <div class="icon-area">
+      {{ steps[currentStep()].icon }}
+    </div>
+
+    <h2>{{ steps[currentStep()].title }}</h2>
+    <p [innerHTML]="steps[currentStep()].content"></p>
+  </div>
+
+  <div class="footer">
+    <div class="dots">
+      @for (step of steps; track $index) {
+      <span class="dot" [class.active]="$index === currentStep()"></span>
+      }
+    </div>
+
+    <div class="actions">
+      @if (currentStep() > 0) {
+      <button class="secondary" (click)="prev()">Back</button>
+      }
+
+      <button class="primary" (click)="next()">
+        {{ currentStep() === steps.length - 1 ? 'Finish' : 'Next' }}
+      </button>
+    </div>
+  </div>
+</div>

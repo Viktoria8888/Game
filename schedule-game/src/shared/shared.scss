@@ -44,7 +44,7 @@ $trans-fast: all 0.2s;
 
 @mixin status-variant($color, $bg-color, $border-color: $color) {
   border-color: $border-color;
-  background: $bg-color; // mild background if needed
+  background: $bg-color;
   color: $color;
 
   .icon {

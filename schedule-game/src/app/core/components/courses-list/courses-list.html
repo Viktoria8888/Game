@@ -9,6 +9,7 @@
     placeholder="Search course name..."
     [ngModel]="searchTerm()"
     (ngModelChange)="searchTerm.set($event)"
+    (keydown)="playTypingSound()"
   />
 </div>
 
@@ -23,9 +24,16 @@
       (ngModelChange)="nameStartChar.set($event)"
       placeholder="A-Z"
     />
-  </div>
-
-  <div class="filter-group">
+    <div class="filter-group">
+      <span class="filter-label">ECTS:</span>
+      <input
+        type="number"
+        class="number-input"
+        [ngModel]="ectsFilter()"
+        (ngModelChange)="ectsFilter.set($event)"
+        min="0"
+      />
+    </div>
     <label class="checkbox-label">
       <input
         type="checkbox"

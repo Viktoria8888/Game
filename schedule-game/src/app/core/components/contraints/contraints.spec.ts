@@ -68,6 +68,7 @@ describe('Contraints', () => {
 
     fixture.componentRef.setInput('validationContext', MOCK_CONTEXT);
     fixture.componentRef.setInput('validationResults', MOCK_RESULTS);
+    fixture.componentRef.setInput('canPassLevel', false);
 
     fixture.detectChanges();
   });
@@ -110,7 +111,8 @@ describe('Contraints', () => {
       expect(title).toBe('Mandatory Rule');
 
       const values = items[0].query(By.css('.value'));
-      expect(values.nativeElement.textContent).toContain('0/10');
+
+      expect(values.nativeElement.textContent.replace(/\s/g, '')).toContain('0/10');
     });
 
     it('renders satisfied goal rules when on Goal tab', () => {
@@ -123,26 +125,24 @@ describe('Contraints', () => {
       const title = items[0].query(By.css('h4')).nativeElement.textContent;
       expect(title).toBe('Goal Rule');
 
-      const reward = items[0].query(By.css('.reward-tag'));
-      expect(reward.nativeElement.textContent).toContain('+100');
+      const reward = items[0].query(By.css('.mini-score'));
+
+      expect(reward.nativeElement.textContent).toContain('⭐100');
     });
   });
 
   describe('Level Progression', () => {
-    it('shows "Next Level" button only when required rules are satisfied', () => {
+    it('shows "Next Level" button only when canPassLevel signal is true', () => {
       expect(fixture.debugElement.query(By.css('.action-btn'))).toBeNull();
 
-      mockRulesService.areRequiredRulesSatisfied.and.returnValue(true);
-
-      fixture.componentRef.setInput('validationResults', { ...MOCK_RESULTS });
+      fixture.componentRef.setInput('canPassLevel', true);
       fixture.detectChanges();
 
       expect(fixture.debugElement.query(By.css('.action-btn'))).toBeTruthy();
     });
 
     it('emits onClickNextLevel when button is clicked', () => {
-      mockRulesService.areRequiredRulesSatisfied.and.returnValue(true);
-      fixture.componentRef.setInput('validationResults', { ...MOCK_RESULTS });
+      fixture.componentRef.setInput('canPassLevel', true);
       fixture.detectChanges();
 
       let emitted = false;

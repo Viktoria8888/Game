@@ -127,7 +127,7 @@ export const SUBJECTS: SubjectDef[] = [
   },
   {
     id: '4094',
-    name: 'Introduction to Linear Optimization',
+    name: 'Intro to Linear Optimization',
     tags: ['CS'],
     isMandatory: false,
     hasExam: true,
@@ -169,8 +169,8 @@ export const SUBJECTS: SubjectDef[] = [
     hasExam: false,
     prerequisites: ['3785', '4072'], // Cryptography and Programming
     components: [
-      { type: 'Lecture', ects: 3, duration: 2, count: 1 },
-      { type: 'Laboratory', ects: 3, duration: 2, count: 2 },
+      { type: 'Lecture', ects: 5, duration: 2, count: 1 },
+      { type: 'Laboratory', ects: 2, duration: 2, count: 2 },
     ],
   },
   {
@@ -487,7 +487,7 @@ export const SUBJECTS: SubjectDef[] = [
     prerequisites: ['4077', '4141'],
     components: [
       { type: 'Lecture', ects: 3, duration: 2, count: 1 },
-      { type: 'Classes', ects: 3, duration: 2, count: 2 },
+      { type: 'Classes', ects: 4, duration: 2, count: 2 },
     ],
   },
   {
@@ -513,7 +513,7 @@ export const SUBJECTS: SubjectDef[] = [
   },
   {
     id: '4133',
-    name: 'Introduction to Lambda Calculus',
+    name: 'Intro to Lambda Calculus',
     tags: ['TCS'],
     isMandatory: false,
     hasExam: true,
@@ -525,7 +525,7 @@ export const SUBJECTS: SubjectDef[] = [
   },
   {
     id: '4079',
-    name: 'Introduction to Computer Science',
+    name: 'Intro to Computer Science',
     tags: ['CORE'],
     isMandatory: true,
     isFirstYearRecommended: true,
@@ -691,7 +691,7 @@ export const SUBJECTS: SubjectDef[] = [
   },
   {
     id: '3781',
-    name: 'Introduction to Linear Optimization',
+    name: 'Intro to Linear Optimization',
     tags: ['CS'],
     isMandatory: false,
     hasExam: true,
@@ -960,7 +960,7 @@ export const SUBJECTS: SubjectDef[] = [
   },
   {
     id: '3779',
-    name: 'Introduction to Computer Security',
+    name: 'Intro to Computer Security',
     tags: ['CS', 'TOOLS'],
     isMandatory: false,
     hasExam: true,
@@ -972,7 +972,7 @@ export const SUBJECTS: SubjectDef[] = [
   },
   {
     id: '5002',
-    name: 'Introduction to Bioethics',
+    name: 'Intro to Bioethics',
     tags: ['HUM'],
     isMandatory: false,
     isFirstYearRecommended: false,

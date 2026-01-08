@@ -119,6 +119,9 @@ export const mandatorySubjectForLevel = (
       const missingIds = requiredSubjectIds.filter(
         (reqSubId) => !selectedIds.has(reqSubId) && !passedIds.has(reqSubId)
       );
+      const missingNames = missingIds
+        .map((id) => SUBJECTS.find((s) => s.id === id)?.name || id)
+        .join(', ');
       const satisfied = missingIds.length === 0;
 
       return {
@@ -128,7 +131,7 @@ export const mandatorySubjectForLevel = (
           satisfied,
           messages,
           'All mandatory subjects selected.',
-          `Missing required subjects.`
+          `Missing: ${missingNames}.`
         ),
       };
     },
@@ -989,7 +992,7 @@ export const createStaircaseRule = (config: RuleConfig): Rule => {
         satisfied: !brokenDay,
         message: !brokenDay
           ? 'Perfect ascending schedule.'
-          : `Staircase broken on ${brokenDay}. Must start after ${previousStart}:00.`,
+          : `The sheer weight of knowledge pulls your schedule downwards! Broken on ${brokenDay}. Must start after ${previousStart}:00. Duplicates are not counted :)`,
       };
     },
   };

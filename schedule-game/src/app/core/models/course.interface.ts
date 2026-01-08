@@ -85,4 +85,5 @@ export interface SubjectDef {
     duration: number;
     count?: number;
   }[];
+  description?: string;
 }

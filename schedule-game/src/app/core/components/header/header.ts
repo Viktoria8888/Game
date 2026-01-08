@@ -1,8 +1,9 @@
-import { Component, input, computed, signal, inject } from '@angular/core';
+import { Component, input, computed, signal, inject, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { LoginModal } from '../login-modal/login-modal';
 import { AuthService } from '../../services/auth.service';
+import { SoundService } from '../../services/sounds.service';
 
 @Component({
   selector: 'app-header',
@@ -15,9 +16,17 @@ export class HeaderComponent {
   readonly currentLevel = input.required<number>();
   readonly totalScore = input.required<number>();
   readonly authService = inject(AuthService);
+  readonly soundsService = inject(SoundService);
 
   readonly showLogin = signal(false);
   readonly isAnonymous = this.authService.isAnonymous;
+
+  readonly openTutorial = output();
+
+  onHelpClick() {
+    this.soundsService.play('tab');
+    this.openTutorial.emit();
+  }
 
   readonly willpowerCost = input.required<number>();
   readonly willpowerBudget = input.required<number>();

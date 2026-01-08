@@ -1,7 +1,8 @@
 <div class="card report-card">
   <div class="header">
-    <h2>Semester {{ level() }} Complete</h2>
     <div class="grade-badge" [class]="grade()">{{ grade() }}</div>
+    <h2>Semester {{ level() }} Complete</h2>
+    <button class="close-btn" (click)="skip()">×</button>
   </div>
 
   <div class="stats-grid">

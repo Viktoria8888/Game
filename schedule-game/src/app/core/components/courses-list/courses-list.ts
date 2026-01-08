@@ -4,6 +4,8 @@ import { CourseSelectionService } from '../../services/courses-selection';
 import { HistoryService } from '../../services/history.service';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { FormsModule } from '@angular/forms';
+import { SUBJECTS } from '../../../data/subjects';
+import { SoundService } from '../../services/sounds.service';
 
 @Component({
   selector: 'app-courses',
@@ -14,6 +16,7 @@ import { FormsModule } from '@angular/forms';
 export class Courses {
   private readonly courseSelection = inject(CourseSelectionService);
   private readonly historyService = inject(HistoryService);
+  private readonly soundService = inject(SoundService);
   readonly availableCourses = input.required<Course[]>();
 
   readonly searchTerm = signal('');
@@ -22,6 +25,8 @@ export class Courses {
 
   readonly selectedTags = signal<Set<Tag>>(new Set());
   readonly selectedTypes = signal<Set<string>>(new Set());
+
+  readonly ectsFilter = signal<number | null>(null);
 
   readonly tagsDropdownOpen = signal(false);
 
@@ -44,6 +49,7 @@ export class Courses {
     const search = this.searchTerm().toLowerCase();
     const tags = this.selectedTags();
     const types = this.selectedTypes();
+    const ectsInput = this.ectsFilter();
 
     const startChar = this.nameStartChar().toLowerCase();
     const checkPrereqs = this.onlyMetPrerequisites();
@@ -53,8 +59,18 @@ export class Courses {
       const matchesSearch = course.name.toLowerCase().includes(search);
       const matchesTags = tags.size === 0 || (course.tags?.some((t) => tags.has(t)) ?? false);
       const matchesType = types.size === 0 || types.has(course.type);
-
       const matchesStartChar = !startChar || course.name.toLowerCase().startsWith(startChar);
+
+      let totalSubjectEcts = 0;
+      SUBJECTS.find((c) => c.id === course.subjectId)?.components.forEach(
+        (comp) => (totalSubjectEcts += comp.ects)
+      );
+
+      const matchesEcts =
+        ectsInput === null ||
+        ectsInput === undefined ||
+        String(ectsInput) === '' ||
+        totalSubjectEcts === Number(ectsInput);
 
       let matchesPrereqs = true;
       if (checkPrereqs) {
@@ -63,7 +79,14 @@ export class Courses {
         }
       }
 
-      return matchesSearch && matchesTags && matchesType && matchesStartChar && matchesPrereqs;
+      return (
+        matchesSearch &&
+        matchesTags &&
+        matchesType &&
+        matchesEcts &&
+        matchesStartChar &&
+        matchesPrereqs
+      );
     });
   });
 
@@ -103,12 +126,18 @@ export class Courses {
     }
 
     try {
+      this.soundService.play('add');
       this.courseSelection.addCourse(course);
     } catch (error: any) {
       alert(error.message);
     }
   }
+
   clearTags() {
     this.selectedTags.set(new Set());
+  }
+
+  playTypingSound() {
+    this.soundService.play('typing')
   }
 }

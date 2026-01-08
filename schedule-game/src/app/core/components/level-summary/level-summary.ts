@@ -10,7 +10,6 @@ import { ComplexGameMetadata } from '../../models/game_state.dto';
 })
 export class LevelSummary {
   readonly outcome = input.required<SemesterOutcome>();
-  readonly complexMeta = input.required<ComplexGameMetadata>();
   readonly level = input.required<number>();
 
   readonly onProceed = output<void>();
@@ -27,6 +26,9 @@ export class LevelSummary {
 
   @HostListener('window:keydown.escape')
   handleEscKey() {
+    this.onClose.emit();
+  }
+  skip() {
     this.onClose.emit();
   }
 }

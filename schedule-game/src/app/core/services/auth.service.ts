@@ -14,7 +14,8 @@ import {
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly auth = inject(Auth);
-  readonly user = signal<User | null>(null);
+  // readonly user = signal<User | null>(null)
+  readonly user = signal<User | null>(null, { equal: (a, b) => false });
   readonly isAuthLoaded = signal(false); // test race condition
   readonly isAnonymous = computed(() => this.user()?.isAnonymous ?? false);
 
@@ -66,6 +67,7 @@ export class AuthService {
     if (!currentUser) throw new Error('No user to upgrade'); // TEST IT !!!
 
     const credential = EmailAuthProvider.credential(email, password);
-    await linkWithCredential(currentUser, credential);
+    const result = await linkWithCredential(currentUser, credential);
+    this.user.set(result.user);
   }
 }

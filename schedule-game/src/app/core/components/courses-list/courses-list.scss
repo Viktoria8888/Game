@@ -368,6 +368,20 @@
   }
 }
 
+.number-input {
+  width: 60px;
+  padding: 4px 8px;
+  border: 1px solid $c-border;
+  border-radius: 4px;
+  font-size: 12px;
+  outline: none;
+  transition: border-color 0.2s;
+
+  &:focus {
+    border-color: $c-primary;
+  }
+}
+
 .checkbox-label {
   display: flex;
   align-items: center;
