@@ -8,9 +8,9 @@ $c-danger-dark: #b71c1c;
 }
 
 .game-header {
-  padding-bottom: 5px;
+  padding: 10px;
   @include flex($justify: space-between, $gap: 20px);
-
+  flex-wrap: wrap;
   @include mobile {
     flex-direction: column;
     align-items: stretch;
@@ -38,6 +38,11 @@ $c-danger-dark: #b71c1c;
 .stats-bar {
   @include flex($gap: 16px);
   flex-wrap: wrap;
+
+  @media (max-width: 1000px) {
+    justify-content: center;
+    flex: 1;
+  }
 
   @include mobile {
     display: grid;

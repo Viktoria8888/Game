@@ -51,10 +51,15 @@
   flex: 1;
   min-height: 0;
   overflow-y: auto;
+  overflow-x: hidden;
   display: flex;
   flex-direction: column;
   gap: 10px;
   @include custom-scrollbar($width: 6px);
+
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
 }
 .course-card {
   position: relative;
@@ -67,12 +72,14 @@
   padding-left: 6px;
   user-select: none;
   flex-shrink: 0;
+  touch-action: pan-y;
 
   &:hover {
     border-color: $c-primary;
     transform: translateX(2px);
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
   }
+  
 
   &.selected {
     background: $c-success-bg;

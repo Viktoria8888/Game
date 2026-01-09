@@ -18,8 +18,7 @@ export const LEVEL_2_RULES: Rule[] = [
       level: 2,
       category: 'Mandatory',
       title: 'Min ECTS',
-      description:
-        'Did you know that 19 is a "happy" number? Even happier than you on your first year 😝',
+      description: 'Did you know that 19 is a "happy" number?',
     },
     19
   ),

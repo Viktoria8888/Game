@@ -776,7 +776,7 @@ export const SUBJECTS: SubjectDef[] = [
     isMandatory: false,
     hasExam: false,
     prerequisites: ['4120', '3801'],
-    components: [{ type: 'Laboratory', ects: 4, duration: 2, count: 1 }],
+    components: [{ type: 'Laboratory', ects: 4, duration: 2, count: 3 }],
   },
   {
     id: '3792',
@@ -1024,4 +1024,3 @@ export const SUBJECTS: SubjectDef[] = [
 export const SUBJECT_ID_MAP = new Map(SUBJECTS.map((s) => [s.id, s.name]));
 
 export const getSubjectName = (id: string) => SUBJECT_ID_MAP.get(id) || id;
-  

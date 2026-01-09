@@ -57,39 +57,53 @@ export class Courses {
     const checkPrereqs = this.onlyMetPrerequisites();
     const takenIds = this.historyService.previouslyTakenCourseIds();
 
-    return courses.filter((course) => {
-      const matchesSearch = course.name.toLowerCase().includes(search);
-      const matchesTags = tags.size === 0 || (course.tags?.some((t) => tags.has(t)) ?? false);
-      const matchesType = types.size === 0 || types.has(course.type);
-      const matchesStartChar = !startChar || course.name.toLowerCase().startsWith(startChar);
+    return courses
+      .filter((course) => {
+        const matchesSearch = course.name.toLowerCase().includes(search);
+        const matchesTags = tags.size === 0 || (course.tags?.some((t) => tags.has(t)) ?? false);
+        const matchesType = types.size === 0 || types.has(course.type);
+        const matchesStartChar = !startChar || course.name.toLowerCase().startsWith(startChar);
 
-      let totalSubjectEcts = 0;
-      SUBJECTS.find((c) => c.id === course.subjectId)?.components.forEach(
-        (comp) => (totalSubjectEcts += comp.ects)
-      );
+        let totalSubjectEcts = 0;
+        SUBJECTS.find((c) => c.id === course.subjectId)?.components.forEach(
+          (comp) => (totalSubjectEcts += comp.ects)
+        );
 
-      const matchesEcts =
-        ectsInput === null ||
-        ectsInput === undefined ||
-        String(ectsInput) === '' ||
-        totalSubjectEcts === Number(ectsInput);
+        const matchesEcts =
+          ectsInput === null ||
+          ectsInput === undefined ||
+          String(ectsInput) === '' ||
+          totalSubjectEcts === Number(ectsInput);
 
-      let matchesPrereqs = true;
-      if (checkPrereqs) {
-        if (course.prerequisites && course.prerequisites.length > 0) {
-          matchesPrereqs = course.prerequisites.every((id) => takenIds.has(id));
+        let matchesPrereqs = true;
+        if (checkPrereqs) {
+          if (course.prerequisites && course.prerequisites.length > 0) {
+            matchesPrereqs = course.prerequisites.every((id) => takenIds.has(id));
+          }
         }
-      }
 
-      return (
-        matchesSearch &&
-        matchesTags &&
-        matchesType &&
-        matchesEcts &&
-        matchesStartChar &&
-        matchesPrereqs
-      );
-    });
+        return (
+          matchesSearch &&
+          matchesTags &&
+          matchesType &&
+          matchesEcts &&
+          matchesStartChar &&
+          matchesPrereqs
+        );
+      })
+      .sort((a, b) => {
+        const nameComparison = a.name.localeCompare(b.name);
+        if (nameComparison !== 0) {
+          return nameComparison;
+        }
+
+        const isALecture = a.type === 'Lecture';
+        const isBLecture = b.type === 'Lecture';
+
+        if (isALecture && !isBLecture) return -1;
+        if (!isALecture && isBLecture) return 1;
+        return a.schedule.startTime - b.schedule.startTime;
+      });
   });
 
   protected readonly getTagTitle = (tag: Tag) => {
