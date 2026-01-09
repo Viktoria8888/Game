@@ -8,7 +8,7 @@
 </div>
 
 <div class="constraints" #scrollContainer (wheel)="onWheel($event)">
-  @for (constraint of activeConstraints(); track constraint.title) {
+  @for (constraint of activeConstraints(); track constraint.title; let i = $index) {
   <div
     class="constraint"
     [class.satisfied]="constraint.isSatisfied"
@@ -17,6 +17,7 @@
     [matTooltipDisabled]="isTouch || !constraint.hint"
     (click)="toggleHint(constraint)"
     matTooltipClass="tooltip"
+    [style.animation-delay]="i * 100 + 'ms'"
   >
     <span class="icon">{{ getConstraintIcon(constraint) }}</span>
 

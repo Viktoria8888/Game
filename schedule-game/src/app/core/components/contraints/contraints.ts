@@ -1,6 +1,7 @@
 import {
   Component,
   computed,
+  effect,
   ElementRef,
   inject,
   input,
@@ -38,6 +39,15 @@ export class Contraints {
   readonly canPassLevel = input.required<boolean>();
   readonly onClickNextLevel = output();
 
+  constructor() {
+    effect(() => {
+      const passed = this.canPassLevel();
+
+      if (passed) {
+        this.soundsService.play('success');
+      }
+    });
+  }
   protected readonly activeTab = signal<'Mandatory' | 'Goal'>('Mandatory');
 
   protected readonly activeConstraints = computed(() => {
