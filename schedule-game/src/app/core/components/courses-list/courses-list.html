@@ -103,40 +103,48 @@
     </div>
   </div>
 </div>
-
 <div class="list-scroll-area">
   @for (course of filteredCourses(); track course.id) {
-  <div class="course-card" (click)="handleCourse(course)">
+  <div
+    class="course-card"
+    (click)="handleCourse(course)"
+    [matTooltip]="
+      'Prerequisites: ' +
+      (course.prerequisites?.length ? (course.prerequisites | subjectName) : 'None')
+    "
+    [matTooltipDisabled]="currentLevel() > 3"
+    matTooltipClass="tooltip"
+  >
     <div class="status-strip"></div>
 
     <div class="card-content">
       <div class="card-top">
         <span class="course-name">{{ course.name }}</span>
-        <span class="course-name">{{
-          course.schedule.day +
-            ' ' +
-            course.schedule.startTime +
-            '-' +
-            (course.schedule.startTime + course.schedule.durationHours)
-        }}</span>
+        <span class="course-name">
+          {{ course.schedule.day }}
+          {{ course.schedule.startTime }}-{{
+            course.schedule.startTime + course.schedule.durationHours
+          }}
+        </span>
       </div>
 
       <div class="card-details">
         <span class="badge ects">{{ course.ects }} ECTS</span>
-        <span class="badge type">
-          {{ course.type }}
-        </span>
-        @if (course.isMandatory) {
+        <span class="badge type">{{ course.type }}</span>
+
+        @if (course.hasExam) {
+        <span class="badge exam">Exam</span>
+        } @if (course.isMandatory) {
         <span class="badge mandatory">Mandatory</span>
         } @if (course.isFirstYearRecommended){
-        <span class="badge recommended">First year recommended</span>
+        <span class="badge recommended">1st Year Rec.</span>
         }
       </div>
 
       @if (course.tags && course.tags.length > 0) {
       <div class="tags">
         @for (tag of course.tags; track tag) {
-        <span class="tag" matTooltipClass="tooltip" [matTooltip]="getTagTitle(tag)">{{ tag }}</span>
+        <span class="tag" [matTooltip]="getTagTitle(tag)">{{ tag }}</span>
         }
       </div>
       }

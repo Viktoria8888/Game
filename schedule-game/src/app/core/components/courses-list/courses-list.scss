@@ -55,10 +55,6 @@
   flex-direction: column;
   gap: 10px;
   @include custom-scrollbar($width: 6px);
-
-  @include mobile {
-    padding-bottom: 20px;
-  }
 }
 .course-card {
   position: relative;

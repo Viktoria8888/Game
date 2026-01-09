@@ -4,17 +4,13 @@
   display: flex;
   flex-direction: column;
   height: 98vh;
-  overflow: hidden;
+  // overflow: hidden;
 
   @include mobile {
     height: auto;
-    min-height: 100vh;
-    overflow-y: visible;
+    // min-height: 100vh;
+    // overflow-y: visible;
     overflow-x: hidden;
-    // :host {
-    //   height: auto;
-    //   overflow: visible;
-    // }
   }
 }
 

@@ -41,7 +41,12 @@ body {
   padding: 10px;
   min-height: 100vh;
   margin: 0;
-  overflow: hidden;
+  // overflow: hidden;
+}
+@media (min-width: 768px) {
+  body {
+    overflow: hidden;
+  }
 }
 .tooltip {
   .mdc-tooltip__surface {

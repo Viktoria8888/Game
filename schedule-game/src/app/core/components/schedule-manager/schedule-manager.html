@@ -19,9 +19,11 @@
     [schedule]="scheduleSlots()"
     [conflictingCourseIds]="collisions()"
     [shakingIds]="shakingCourseIds()"
+    [currentLevel]="gameService.currentLevel()"
   />
   <app-courses
     [availableCourses]="availableCourses()"
+    [currentLevel]="gameService.currentLevel()"
     (courseConflict)="triggerConflictShake($event)"
   />
 </div>
