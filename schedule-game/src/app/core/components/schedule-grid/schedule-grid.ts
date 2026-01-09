@@ -1,7 +1,7 @@
 import { Component, computed, inject, input, signal, effect } from '@angular/core';
-import { ScheduleSlot, Day } from '../../models/course.interface'; // Import Day
+import { ScheduleSlot, Day } from '../../models/course.interface';
 import { CourseSelectionService } from '../../services/courses-selection';
-import { CommonModule } from '@angular/common'; // Import for ngStyle
+import { CommonModule } from '@angular/common';
 import { SoundService } from '../../services/sounds.service';
 
 @Component({
@@ -13,10 +13,11 @@ import { SoundService } from '../../services/sounds.service';
 })
 export class ScheduleGrid {
   private courseSelection = inject(CourseSelectionService);
+  private readonly soundsService = inject(SoundService);
   readonly schedule = input.required<ScheduleSlot[]>();
   readonly conflictingCourseIds = input.required<Set<string>>();
   readonly shakingIds = input<Set<string>>(new Set());
-  private readonly soundsService = inject(SoundService);
+  readonly currentLevel = input.required<number>();
   readonly isWalking = signal(false);
   readonly walkerPos = signal<{ top: string; left: string } | null>(null);
 
@@ -25,7 +26,9 @@ export class ScheduleGrid {
 
   constructor() {
     effect(() => {
-      // this.checkAndAnimateStaircase();
+      if (this.currentLevel() === 5) {
+        this.checkAndAnimateStaircase();
+      }
     });
   }
 
@@ -112,7 +115,7 @@ export class ScheduleGrid {
     for (const step of steps) {
       const dayWidthPercent = (100 - 12) / 5;
 
-      const topPos = (step.hour - 8) * 30 + 35;
+      const topPos = (step.hour - 8) * 30 + 38;
 
       this.walkerPos.set({
         top: `${topPos}px`,

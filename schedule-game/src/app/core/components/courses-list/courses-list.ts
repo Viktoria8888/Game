@@ -6,10 +6,11 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { FormsModule } from '@angular/forms';
 import { SUBJECTS } from '../../../data/subjects';
 import { SoundService } from '../../services/sounds.service';
+import { SubjectNamePipe } from '../../pipes/subject-pipe';
 
 @Component({
   selector: 'app-courses',
-  imports: [MatTooltipModule, FormsModule],
+  imports: [MatTooltipModule, FormsModule, SubjectNamePipe],
   templateUrl: './courses-list.html',
   styleUrl: './courses-list.scss',
 })
@@ -18,6 +19,7 @@ export class Courses {
   private readonly historyService = inject(HistoryService);
   private readonly soundService = inject(SoundService);
   readonly availableCourses = input.required<Course[]>();
+  readonly currentLevel = input.required<number>();
 
   readonly searchTerm = signal('');
   readonly nameStartChar = signal('');
@@ -138,6 +140,6 @@ export class Courses {
   }
 
   playTypingSound() {
-    this.soundService.play('typing')
+    this.soundService.play('typing');
   }
 }
