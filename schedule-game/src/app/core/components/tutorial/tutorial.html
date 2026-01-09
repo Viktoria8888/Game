@@ -1,32 +1,73 @@
-<div class="overlay-backdrop" (click)="skip()"></div>
-
-<div class="tutorial-card">
-  <button class="close-btn" (click)="skip()">×</button>
-
-  <div class="step-content">
-    <div class="icon-area">
-      {{ steps[currentStep()].icon }}
+<div class="tutorial-overlay">
+  <div class="tutorial-card" (touchstart)="onTouchStart($event)" (touchend)="onTouchEnd($event)">
+    <div class="tutorial-header">
+      <!-- <span class="icon">{{ steps[currentStep()].icon }}</span> -->
+      <h2>{{ steps[currentStep()].title }}</h2>
     </div>
 
-    <h2>{{ steps[currentStep()].title }}</h2>
-    <p [innerHTML]="steps[currentStep()].content"></p>
-  </div>
+    <div class="tutorial-body">
+      @switch (currentStep()) { @case (3) {
+      <div class="cost-grid">
+        <div class="item">
+          <div><strong>Early Riser</strong><br /><small>Starts at 8:00</small></div>
+          <span class="val">{{ WP.EARLY_RISER }}</span>
+        </div>
+        <div class="item">
+          <div><strong>Night Shift</strong><br /><small>Ends after 18:00</small></div>
+          <span class="val">{{ WP.NIGHT_SHIFT }}</span>
+        </div>
+        <div class="item">
+          <div><strong>Friday Drag</strong><br /><small>Late Friday classes</small></div>
+          <span class="val">{{ WP.FRIDAY_DRAG }}</span>
+        </div>
+        <div class="item">
+          <div><strong>Commuter Tax</strong><br /><small>Trip for 1 class</small></div>
+          <span class="val">{{ WP.COMMUTER_TAX }}</span>
+        </div>
+        <div class="item">
+          <div><strong>Starvation</strong><br /><small>6+ hours no break</small></div>
+          <span class="val">{{ WP.STARVATION }}</span>
+        </div>
+        <div class="item">
+          <div><strong>Awkward Gap</strong><br /><small>1 hour gap</small></div>
+          <span class="val">{{ WP.AWKWARD_GAP }}</span>
+        </div>
+        <div class="item">
+          <div><strong>Huge Gap</strong><br /><small>3+ hour gap</small></div>
+          <span class="val">{{ WP.HUGE_GAP }}</span>
+        </div>
+        <div class="item">
+          <div><strong>The Clopen</strong><br /><small>Late &rarr; Early</small></div>
+          <span class="val">{{ WP.THE_CLOPEN }}</span>
+        </div>
+        <div class="item">
+          <div><strong>Exam Stress</strong><br /><small>Cost per exam</small></div>
+          <span class="val">{{ WP.EXAM_STRESS }}</span>
+        </div>
+      </div>
+      } @default {
+      <p [innerHTML]="steps[currentStep()].content"></p>
+      } }
+    </div>
 
-  <div class="footer">
-    <div class="dots">
+    <div class="tutorial-dots">
       @for (step of steps; track $index) {
       <span class="dot" [class.active]="$index === currentStep()"></span>
       }
     </div>
 
-    <div class="actions">
+    <div class="tutorial-actions">
       @if (currentStep() > 0) {
-      <button class="secondary" (click)="prev()">Back</button>
+      <button class="btn-secondary" (click)="prev()">Back</button>
+      } @else {
+      <button class="btn-text" (click)="skip()">Skip</button>
       }
 
-      <button class="primary" (click)="next()">
-        {{ currentStep() === steps.length - 1 ? 'Finish' : 'Next' }}
+      <button class="btn-primary" (click)="next()">
+        {{ currentStep() === steps.length - 1 ? 'Start Game' : 'Next' }}
       </button>
     </div>
+
+    <button class="close-btn" (click)="skip()">×</button>
   </div>
 </div>

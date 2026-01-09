@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 import { CourseSelectionService } from '../../services/courses-selection';
 import { ScheduleService } from '../../services/schedule.service';
 import { ScheduleGrid } from '../schedule-grid/schedule-grid';
@@ -73,7 +73,20 @@ export class ScheduleManagerComponent {
 
   protected readonly showTutorial = signal(false);
 
+  constructor() {
+    effect(() => {
+      if (this.gameService.currentLevel() === 1) {
+        this.showTutorial.set(true);
+      }
+    });
+  }
+
   toggleTutorial(show: boolean) {
     this.showTutorial.set(show);
+  }
+
+  canTransfer() {
+    this.soundService.play('success');
+    this.gameService.canPassLevel();
   }
 }

@@ -1,5 +1,6 @@
 import { Component, HostListener, output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { WILLPOWER_PRICES } from '../../services/schedule.service';
 
 @Component({
   selector: 'app-tutorial',
@@ -10,21 +11,24 @@ import { CommonModule } from '@angular/common';
 })
 export class TutorialComponent {
   readonly close = output();
+  protected readonly WP = WILLPOWER_PRICES;
 
   protected currentStep = signal(0);
 
+  private touchStartX = 0;
+  private touchEndX = 0;
+  private readonly minSwipeDistance = 50;
+
   protected readonly steps = [
     {
-      title: 'Welcome to The Schedule Game',
-      icon: '🎓',
+      title: 'Welcome!',
       content:
-        'Your goal is to survive 6 semesters (Levels) by creating the perfect class schedule. You must balance <strong>Academic Requirements</strong> with your <strong>Mental Health (Willpower)</strong> by picking courses. <br> Each course has set time, so do not even try to drag them :0 <br> ',
+        'Your goal is to survive 6 semesters (Levels) by creating the perfect class schedule. You must balance <strong>Academic Requirements</strong> with your <strong>Mental Health (Willpower)</strong>.<br><br>Each course has a set time—no dragging allowed!',
     },
     {
       title: 'Rules & Constraints',
-      icon: '📋',
       content:
-        'Each level has <strong>Mandatory</strong> rules you MUST satisfy to pass.<br>There are also <strong>Goal</strong> rules (optional) that give you huge score bonuses. Try to solve them all! <br> To delete the course, just double click on it',
+        'Each level has <strong>Mandatory</strong> rules you MUST satisfy to pass.<br>There are also <strong>Goal</strong> rules (optional) that give you huge score bonuses.<br><br>To delete a course, just <strong>double-click</strong> on it in the grid.',
     },
     {
       title: 'Willpower Budget',
@@ -34,53 +38,14 @@ export class TutorialComponent {
     },
     {
       title: 'The Cost of Stress',
-      icon: '⚡',
-      content: `
-        <div class="cost-grid">
-          <div class="item">
-            <div><strong>Early Riser</strong><br><small>Classes starting at 8:00</small></div>
-            <span class="val">2</span>
-          </div>
-          <div class="item">
-            <div><strong>Night Shift</strong><br><small>Classes ending after 18:00</small></div>
-            <span class="val">3</span>
-          </div>
-          <div class="item">
-            <div><strong>Friday Drag</strong><br><small>Late classes on Friday</small></div>
-            <span class="val">4</span>
-          </div>
-          <div class="item">
-            <div><strong>Commuter Tax</strong><br><small>Campus trip for just 1 class</small></div>
-            <span class="val">1</span>
-          </div>
-          <div class="item">
-            <div><strong>Starvation</strong><br><small>6+ hours without a break</small></div>
-            <span class="val">5</span>
-          </div>
-          <div class="item">
-            <div><strong>Awkward Gap</strong><br><small>Useless 1 hour gap</small></div>
-            <span class="val">1</span>
-          </div>
-          <div class="item">
-            <div><strong>Huge Gap</strong><br><small>Boring 3+ hour gap</small></div>
-            <span class="val">2</span>
-          </div>
-          <div class="item">
-            <div><strong>The Clopen</strong><br><small>Late night then early morning</small></div>
-            <span class="val">3</span>
-          </div>
-          <div class="item">
-            <div><strong>Exam Stress</strong><br><small>Cost per exam taken</small></div>
-            <span class="val">1</span>
-          </div>
-        </div>
-      `,
+      icon: '💸',
+      content: '',
     },
     {
       title: 'How to Play',
       icon: '🖱️',
       content:
-        '1. <strong>Click</strong> courses in the list to add them.<br>2. <strong>Watch</strong> the Schedule Grid for conflicts and if any of your constraints are satisfied.<br>3. <strong>Check</strong> the Header for your Willpower status.<br>4. Click <strong>"Go to next level"</strong> when satisfied.',
+        '1. <strong>Click</strong> courses in the list to add them.<br>2. <strong>Watch</strong> the Grid for conflicts and rule progress.<br>3. <strong>Check</strong> the Header for your Willpower status.<br>4. Click <strong>"Go to next level"</strong> when ready.',
     },
   ];
 
@@ -105,5 +70,34 @@ export class TutorialComponent {
   @HostListener('window:keydown.escape')
   handleEscKey() {
     this.close.emit();
+  }
+
+  @HostListener('window:keydown.arrowright')
+  handleRightKey() {
+    this.next();
+  }
+
+  @HostListener('window:keydown.arrowleft')
+  handleLeftKey() {
+    this.prev();
+  }
+
+  onTouchStart(e: TouchEvent) {
+    this.touchStartX = e.changedTouches[0].screenX;
+  }
+
+  onTouchEnd(e: TouchEvent) {
+    this.touchEndX = e.changedTouches[0].screenX;
+    this.handleSwipe();
+  }
+
+  private handleSwipe() {
+    if (this.touchStartX - this.touchEndX > this.minSwipeDistance) {
+      this.next();
+    }
+
+    if (this.touchEndX - this.touchStartX > this.minSwipeDistance) {
+      this.prev();
+    }
   }
 }
