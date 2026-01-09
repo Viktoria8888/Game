@@ -1,7 +1,7 @@
 import { Course } from '../../core/models/course.interface';
 import { Rule, ValidationContext } from '../../core/models/rules.interface';
 import { COURSES } from '../courses';
-import { SUBJECTS } from '../subjects';
+import { getSubjectName, SUBJECTS } from '../subjects';
 
 export interface RuleConfig {
   id: string;
@@ -119,9 +119,7 @@ export const mandatorySubjectForLevel = (
       const missingIds = requiredSubjectIds.filter(
         (reqSubId) => !selectedIds.has(reqSubId) && !passedIds.has(reqSubId)
       );
-      const missingNames = missingIds
-        .map((id) => SUBJECTS.find((s) => s.id === id)?.name || id)
-        .join(', ');
+      const missingNames = missingIds.map((id) => getSubjectName(id)).join(', ');
       const satisfied = missingIds.length === 0;
 
       return {
@@ -278,8 +276,10 @@ export const createTagDiversityRule = (config: RuleConfig, minUniqueTags: number
         message: resolveMessage(
           satisfied,
           messages,
-          `Diversity achieved! (${uniqueTags.size} tags).`,
-          `Expand your horizons! You have ${uniqueTags.size}/${minUniqueTags} unique tags.`
+          `Diversity achieved!`,
+          `Expand your horizons! You have ${uniqueTags.size}/${minUniqueTags} unique tags. (${[
+            ...uniqueTags,
+          ]})`
         ),
       };
     },
@@ -540,9 +540,7 @@ export const createPrerequisiteRule = (config: RuleConfig): Rule => {
           );
 
           if (missingIds.length > 0) {
-            const missingNames = missingIds
-              .map((id) => SUBJECTS.find((s) => s.id === id)?.name || id)
-              .join(', ');
+            const missingNames = missingIds.map((id) => getSubjectName(id)).join(', ');
             violations.push(`${course.name} (Missing: ${missingNames})`);
           }
         }

@@ -22,6 +22,7 @@ $trans-fast: all 0.2s;
   padding: 20px;
   box-shadow: $shadow-sm;
   display: block;
+  
 }
 
 @mixin flex($align: center, $justify: flex-start, $gap: 0, $dir: row) {

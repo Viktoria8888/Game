@@ -1021,3 +1021,7 @@ export const SUBJECTS: SubjectDef[] = [
     components: [{ type: 'Lecture', ects: 2, duration: 2, count: 2 }],
   },
 ];
+export const SUBJECT_ID_MAP = new Map(SUBJECTS.map((s) => [s.id, s.name]));
+
+export const getSubjectName = (id: string) => SUBJECT_ID_MAP.get(id) || id;
+  

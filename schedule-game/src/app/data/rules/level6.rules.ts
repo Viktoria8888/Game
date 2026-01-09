@@ -28,7 +28,7 @@ const THESIS_DEFENSE: Rule = {
 
 const DEGREE_REQUIREMENT = createCumulativeProgressRule(
   { id: 'l6-progress', level: 6, title: 'Progress: Not great, not terrible ' },
-  105
+  120
 );
 
 const MANDATORY_INTERNSHIP = createMinFreeDaysRule(

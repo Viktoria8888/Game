@@ -92,7 +92,13 @@ const STANDARD_LOAD = createStandardLoadRule(
 
 export const LEVEL_5_RULES: ReadonlyArray<Rule> = [
   createMinEctsRule(
-    { id: 'l5-min', level: 5, category: 'Mandatory', title: 'x<sup>y</sup> = y<sup>x</sup>=16' },
+    {
+      id: 'l5-min',
+      level: 5,
+      category: 'Mandatory',
+      title: 'x<sup>y</sup> = y<sup>x</sup>?',
+      description: 'Guess which min number of ECTS is required!',
+    },
     16
   ),
   WORD_CHAIN,

@@ -17,6 +17,7 @@ export const LEVEL_2_RULES: Rule[] = [
       id: 'l2-min',
       level: 2,
       category: 'Mandatory',
+      title: 'Min ECTS',
       description:
         'Did you know that 19 is a "happy" number? Even happier than you on your first year 😝',
     },
@@ -33,7 +34,7 @@ export const LEVEL_2_RULES: Rule[] = [
     {
       id: 'l2-mandatory',
       level: 2,
-      title: 'Algebraic trauma',
+      title: 'Algebraic Trauma',
       description: 'You can run, you can hide, but matrix multiplication is by your side!',
     },
     ['3805']
@@ -44,23 +45,70 @@ export const LEVEL_2_RULES: Rule[] = [
       level: 2,
       category: 'Mandatory',
       title: 'Hangover Cure',
-      description: 'Cafeteria is closed. You MUST take a break 13-14 to recover.',
+      description: 'You MUST take a break 13-14 to recover.',
       messages: ['Yum! Lunch secured.', 'Starvation detected! You need a break 13-14.'],
     },
     13,
     14
   ),
   createTagDiversityRule(
-    { id: 'l2-diversity', level: 2, category: 'Mandatory', scoreReward: 100 },
+    {
+      id: 'l2-diversity',
+      level: 2,
+      category: 'Mandatory',
+      scoreReward: 100,
+      title: 'Identity Crisis',
+      description: 'Are you a coder? A manager? A philosopher? Yes. Pick 4 different tags.',
+    },
     4
   ),
 
-  createStandardLoadRule({ id: 'l2-standard', level: 2, scoreReward: 250 }, 22),
-  createTagRequirementRule({ id: 'l2-hum', level: 2, category: 'Goal', scoreReward: 150 }, 'HUM'),
-  createPrerequisiteRule({ id: 'l2-prereqs', level: 2, title: 'Still too weak!' }),
+  createStandardLoadRule(
+    {
+      id: 'l2-standard',
+      level: 2,
+      scoreReward: 250,
+      title: 'On track',
+      description: '22 ECTS. The amount recommended by 9 out of 10 sleep-deprived students.',
+    },
+    22
+  ),
   createTagRequirementRule(
-    { id: 'l2-tools', level: 2, category: 'Goal', scoreReward: 300 },
+    {
+      id: 'l2-hum',
+      level: 2,
+      category: 'Goal',
+      scoreReward: 150,
+      title: 'Less Screen',
+      description: 'Take a HUM course. Computers are cool, but people are... interesting.',
+    },
+    'HUM'
+  ),
+  createPrerequisiteRule({
+    id: 'l2-prereqs',
+    level: 2,
+    title: "Rome wasn't build in a day...",
+    description: '...so is your basic knowledge. Watch out for prerequsities!',
+  }),
+  createTagRequirementRule(
+    {
+      id: 'l2-tools',
+      level: 2,
+      category: 'Goal',
+      scoreReward: 300,
+      title: 'Anti-Corpo-Unemployment Protocol',
+      description: 'Take a TOOLS course!',
+    },
     'TOOLS'
   ),
-  createMaxDailyHoursRule({ id: 'l2-daily-limit', level: 2, scoreReward: 300 }, 6),
+  createMaxDailyHoursRule(
+    {
+      id: 'l2-daily-limit',
+      level: 2,
+      scoreReward: 300,
+      title: 'Anti-Zombie Protocol',
+      description: "More than 6 hours of class in one day? Do you hate yourself? Don't do it.",
+    },
+    6
+  ),
 ];

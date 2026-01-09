@@ -18,6 +18,7 @@ export const LEVEL_3_RULES = [
       category: 'Mandatory',
       level: 3,
       title: 'Your mom will be proud of you!',
+      scoreReward: 100,
     },
     22
   ),
