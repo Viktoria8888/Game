@@ -53,6 +53,7 @@ describe('ScheduleGrid', () => {
     fixture.componentRef.setInput('schedule', []);
     fixture.componentRef.setInput('conflictingCourseIds', new Set());
     fixture.componentRef.setInput('shakingIds', new Set());
+    fixture.componentRef.setInput('currentLevel', 1);
 
     fixture.detectChanges();
   });

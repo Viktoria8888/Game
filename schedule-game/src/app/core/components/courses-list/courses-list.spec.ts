@@ -57,6 +57,7 @@ describe('Courses (CoursesList)', () => {
     component = fixture.componentInstance;
 
     fixture.componentRef.setInput('availableCourses', [MOCK_COURSE_1, MOCK_COURSE_2]);
+    fixture.componentRef.setInput('currentLevel', 1);
     fixture.detectChanges();
   });
 
@@ -66,7 +67,6 @@ describe('Courses (CoursesList)', () => {
 
   describe('Filtering Logic', () => {
     it('filters by search term', () => {
-
       component.searchTerm.set('math');
       fixture.detectChanges();
 
@@ -94,9 +94,9 @@ describe('Courses (CoursesList)', () => {
     });
 
     it('filters using combination of search, type, and tag', () => {
-      component.searchTerm.set('Web'); 
-      component.toggleType('Laboratory'); 
-      component.toggleTag('SE'); 
+      component.searchTerm.set('Web');
+      component.toggleType('Laboratory');
+      component.toggleTag('SE');
       fixture.detectChanges();
 
       const filtered = component.filteredCourses();
@@ -172,7 +172,7 @@ describe('Courses (CoursesList)', () => {
         conflicts: [MOCK_COURSE_2],
       });
 
-      const card = fixture.debugElement.query(By.css('.course-card')); 
+      const card = fixture.debugElement.query(By.css('.course-card'));
       card.triggerEventHandler('click');
 
       expect(mockCourseSelectionService.addCourse).not.toHaveBeenCalled();

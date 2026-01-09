@@ -28,6 +28,7 @@ interface MockGameService {
   currentSemesterOutcome: WritableSignal<SemesterOutcome>;
   completeLevel: jasmine.Spy<() => void>;
   canPassLevel: WritableSignal<boolean>;
+  showLevelSummaryModal: WritableSignal<boolean>;
 }
 
 interface MockCourseSelectionService {
@@ -96,6 +97,7 @@ describe('ScheduleManagerComponent', () => {
       currentSemesterOutcome: signal<SemesterOutcome>(defaultSemesterOutcome),
       completeLevel: jasmine.createSpy('completeLevel'),
       canPassLevel: signal(false),
+      showLevelSummaryModal: signal(false), // Added this
     };
 
     mockSelectionService = {

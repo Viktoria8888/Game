@@ -201,13 +201,13 @@ describe('GameService', () => {
       expect(mockHistory.addRecord).not.toHaveBeenCalled();
     });
 
-    it('VICTORY: does not increment level after level 6', () => {
+    it('VICTORY: does not increment level after level 7', () => {
       service.currentLevel.set(6);
       selectedCoursesSignal.set([{ id: 'c1' }]);
 
       service.completeLevel();
 
-      expect(service.currentLevel()).toBe(6);
+      expect(service.currentLevel()).toBe(7);
     });
   });
 

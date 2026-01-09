@@ -17,16 +17,6 @@ const MOCK_OUTCOME: SemesterOutcome = {
   complexMeta: {} as ComplexGameMetadata,
 };
 
-const MOCK_COMPLEX_META: ComplexGameMetadata = {
-  totalContactHours: 10,
-  totalGapTime: 2,
-  maxGapInAnyDay: 1,
-  averageStartTime: 9,
-  freeDaysCount: 2,
-  willpowerCost: 10,
-  costBreakdown: [],
-};
-
 describe('LevelSummary', () => {
   let component: LevelSummary;
   let fixture: ComponentFixture<LevelSummary>;
@@ -41,7 +31,6 @@ describe('LevelSummary', () => {
     component = fixture.componentInstance;
 
     fixture.componentRef.setInput('outcome', MOCK_OUTCOME);
-    fixture.componentRef.setInput('complexMeta', MOCK_COMPLEX_META);
     fixture.componentRef.setInput('level', 2);
 
     fixture.detectChanges();

@@ -30,7 +30,8 @@
 
   @include mobile {
     padding: 24px;
-    min-height: 450px; 
+    min-height: 450px;
+  }
 }
 
 .tutorial-header {
@@ -62,7 +63,6 @@
   flex-direction: column;
 }
 
-/* Cost Grid Styles */
 .cost-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -126,7 +126,6 @@
   }
 }
 
-/* Actions Bar */
 .tutorial-actions {
   display: flex;
   justify-content: space-between;
