@@ -15,7 +15,7 @@ import { SubjectNamePipe } from '../../pipes/subject-pipe';
   styleUrl: './courses-list.scss',
 })
 export class Courses {
-  private readonly courseSelection = inject(CourseSelectionService);
+  protected readonly courseSelection = inject(CourseSelectionService);
   private readonly historyService = inject(HistoryService);
   private readonly soundService = inject(SoundService);
   readonly availableCourses = input.required<Course[]>();
@@ -153,7 +153,13 @@ export class Courses {
     this.selectedTags.set(new Set());
   }
 
-  playTypingSound() {
-    this.soundService.play('typing');
+  onMouseEnter(course: Course) {
+    if (window.matchMedia('(hover: hover)').matches) {
+      this.courseSelection.setPreview(course);
+    }
+  }
+
+  onMouseLeave() {
+    this.courseSelection.setPreview(null);
   }
 }

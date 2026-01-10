@@ -86,4 +86,9 @@ export class CourseSelectionService {
 
     return block1.startTime < block2End && block2.startTime < block1End;
   }
+
+  readonly previewCourse = signal<Course | null>(null);
+  setPreview(course: Course | null) {
+    this.previewCourse.set(course);
+  }
 }

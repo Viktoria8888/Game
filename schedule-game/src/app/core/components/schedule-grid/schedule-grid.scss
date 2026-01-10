@@ -163,6 +163,8 @@
   padding: 2px;
   vertical-align: top;
 
+  touch-action: manipulation;
+
   @include mobile {
     padding: 1px;
   }
@@ -185,6 +187,23 @@
     background: #ffebee;
     border-color: $c-error;
   }
+
+  // Mobile doesn't work
+  @media (hover: hover) {
+    &.preview-slot {
+      background-color: rgba(33, 150, 243, 0.2);
+      border: 1px dashed #2196f3;
+      pointer-events: auto;
+    }
+  }
+}
+
+.preview-content {
+  font-size: 9px;
+  color: #1565c0;
+  padding: 2px;
+  font-style: italic;
+  opacity: 0.8;
 }
 
 .slot-content {
@@ -227,7 +246,6 @@
 
 .day-section {
   border: 1px solid $c-border;
-  // border-radius: $radius;
   overflow: hidden;
   height: fit-content;
 

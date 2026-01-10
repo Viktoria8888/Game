@@ -9,7 +9,6 @@
     placeholder="Search course name..."
     [ngModel]="searchTerm()"
     (ngModelChange)="searchTerm.set($event)"
-    (keydown)="playTypingSound()"
   />
 </div>
 
@@ -107,6 +106,8 @@
   @for (course of filteredCourses(); track course.id) {
   <div
     class="course-card"
+    (mouseenter)="onMouseEnter(course)"
+    (mouseleave)="onMouseLeave()"
     (click)="handleCourse(course)"
     [matTooltip]="
       'Prerequisites: ' +
@@ -135,8 +136,8 @@
 
         @if (course.hasExam) {
         <span class="badge exam">Exam</span>
-        } @if (course.isMandatory) {
-        <span class="badge mandatory">Mandatory</span>
+        <!-- } @if (course.isMandatory) {
+        <span class="badge mandatory">Mandatory</span> -->
         } @if (course.isFirstYearRecommended){
         <span class="badge recommended">1st Year Rec.</span>
         }

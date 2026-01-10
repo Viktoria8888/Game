@@ -12,7 +12,7 @@ import { SoundService } from '../../services/sounds.service';
   standalone: true,
 })
 export class ScheduleGrid {
-  private courseSelection = inject(CourseSelectionService);
+  protected courseSelection = inject(CourseSelectionService);
   private readonly soundsService = inject(SoundService);
   readonly schedule = input.required<ScheduleSlot[]>();
   readonly conflictingCourseIds = input.required<Set<string>>();
@@ -26,7 +26,7 @@ export class ScheduleGrid {
 
   constructor() {
     effect(() => {
-      if (this.currentLevel() === 5) {
+      if (this.currentLevel() === 3) {
         this.checkAndAnimateStaircase();
       }
     });
@@ -122,7 +122,7 @@ export class ScheduleGrid {
     for (const step of steps) {
       const dayWidthPercent = (100 - 12) / 5;
 
-      const topPos = (step.hour - 8) * 30 + 38;
+      const topPos = (step.hour - 8) * 30 + 39;
 
       this.walkerPos.set({
         top: `${topPos}px`,
@@ -135,5 +135,14 @@ export class ScheduleGrid {
     await new Promise((resolve) => setTimeout(resolve, 1000));
     this.isWalking.set(false);
     this.walkerPos.set(null);
+  }
+  isPreview(day: string, hour: number): boolean {
+    const preview = this.courseSelection.previewCourse();
+    if (!preview) return false;
+
+    if (preview.schedule.day !== day) return false;
+    const start = preview.schedule.startTime;
+    const end = start + preview.schedule.durationHours;
+    return hour >= start && hour < end;
   }
 }

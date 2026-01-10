@@ -2,7 +2,7 @@
   <h3>Weekly Schedule</h3>
   @if (schedule().length > 0) {
   <button class="clear-btn" (click)="clearSchedule()">Clear Schedule</button>
-  }   
+  }
 </div>
 
 <div class="grid-view">
@@ -29,6 +29,7 @@
           [class.occupied]="hasSlot(day, hour)"
           [class.first-slot]="isFirstSlot(day, hour)"
           [class.shake]="isShaking(day, hour)"
+          [class.preview-slot]="isPreview(day, hour)"
           (dblclick)="onSlotDoubleClick(day, hour)"
         >
           @if (isFirstSlot(day, hour)) {
