@@ -4,14 +4,14 @@ import { ComplexGameMetadata, SimpleGameMetadata } from '../models/game_state.dt
 import { CourseSelectionService } from './courses-selection';
 
 export const WILLPOWER_PRICES = {
-  EARLY_RISER: 2, // 8:00 start
+  EARLY_RISER: 3, // 8:00 start
   NIGHT_SHIFT: 3, // Ends after 18:00
   FRIDAY_DRAG: 4, // Friday late classes
-  COMMUTER_TAX: 1, // Coming to campus for only 1 class
+  COMMUTER_TAX: 3, // Coming to campus for only 1 class
   STARVATION: 5, // 6+ consecutive hours (No Lunch)
   HUGE_GAP: 2, // >3h gap
   THE_CLOPEN: 3, // Late night -> Early morning
-  EXAM_STRESS: 1, // Cost per exam
+  EXAM_STRESS: 2, // Cost per exam
 };
 
 /**
@@ -72,8 +72,9 @@ export class ScheduleService {
     const breakdown: string[] = [];
 
     // 1. Exam Cost
-    const uniqueExams = new Set(schedule.filter((s) => s.course?.hasExam).map((s) => s.course!.id))
-      .size;
+    const uniqueExams = new Set(
+      schedule.filter((s) => s.course?.hasExam).map((s) => s.course!.subjectId)
+    ).size;
     if (uniqueExams > 0) {
       const cost = uniqueExams * WILLPOWER_PRICES.EXAM_STRESS;
       willpowerCost += cost;
@@ -126,7 +127,7 @@ export class ScheduleService {
         const prevHours = hoursByDay[prevDay];
         if (prevHours.length > 0) {
           const prevEnd = prevHours[prevHours.length - 1] + 1;
-          if (prevEnd >= 18 && start <= 8) {
+          if (prevEnd >= 18 && start <= 10) {
             willpowerCost += WILLPOWER_PRICES.THE_CLOPEN;
             breakdown.push(this.formatWPEntry(`The Clopen`, WILLPOWER_PRICES.THE_CLOPEN));
           }
