@@ -71,12 +71,19 @@ export class ScheduleGrid {
 
   onSlotDoubleClick(day: string, hour: number) {
     const slot = this.getSlot(day, hour);
+    this.soundsService.play('add');
     if (slot?.course) {
-      this.soundsService.play('delete');
       this.courseSelection.removeCourse(slot.course.id);
     }
   }
+  clearSchedule() {
+    if (this.schedule().length === 0) return;
 
+    if (confirm('Are you sure you want to clear the entire schedule?')) {
+      this.soundsService.play('delete');
+      this.courseSelection.clearAll();
+    }
+  }
   isShaking(day: string, hour: number): boolean {
     const slot = this.getSlot(day, hour);
     return slot?.course ? this.shakingIds().has(slot.course.id) : false;

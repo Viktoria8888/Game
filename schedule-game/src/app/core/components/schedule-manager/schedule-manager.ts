@@ -63,7 +63,7 @@ export class ScheduleManagerComponent {
   }
 
   triggerConflictShake(ids: string[]) {
-    this.soundService.play('collisions');
+    this.soundService.play('delete');
     this.shakingCourseIds.set(new Set(ids));
 
     setTimeout(() => {

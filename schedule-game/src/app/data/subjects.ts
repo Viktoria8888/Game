@@ -618,7 +618,7 @@ export const SUBJECTS: SubjectDef[] = [
     isMandatory: false,
     hasExam: false,
     prerequisites: ['41199', '4072'],
-    components: [{ type: 'Laboratory', ects: 4, duration: 2, count: 2 }],
+    components: [{ type: 'Laboratory', ects: 4, duration: 2, count: 3 }],
   },
   {
     id: '3780',

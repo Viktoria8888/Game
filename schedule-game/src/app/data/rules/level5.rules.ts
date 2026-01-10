@@ -1,6 +1,5 @@
 import { Rule } from '../../core/models/rules.interface';
 import {
-  createCumulativeProgressRule,
   createMinEctsRule,
   createStandardLoadRule,
   createTagBanRule,
@@ -97,8 +96,8 @@ export const LEVEL_5_RULES: ReadonlyArray<Rule> = [
       level: 5,
       category: 'Mandatory',
       title: 'x<sup>y</sup> = y<sup>x</sup>?',
-      description: 'Guess which min number of ECTS is required!',
-    },
+      description: "Guess which min number of ECTS is required! (don't cheat)",
+    },  
     16
   ),
   WORD_CHAIN,

@@ -9,7 +9,6 @@ export const WILLPOWER_PRICES = {
   FRIDAY_DRAG: 4, // Friday late classes
   COMMUTER_TAX: 1, // Coming to campus for only 1 class
   STARVATION: 5, // 6+ consecutive hours (No Lunch)
-  AWKWARD_GAP: 1, // 1h gap
   HUGE_GAP: 2, // >3h gap
   THE_CLOPEN: 3, // Late night -> Early morning
   EXAM_STRESS: 1, // Cost per exam
@@ -146,13 +145,7 @@ export class ScheduleService {
           totalGapTime += gap;
           dailyMaxGap = Math.max(dailyMaxGap, gap);
 
-          // 7. Willpower: Awkward Gaps (1h)
-          if (gap === 1) {
-            willpowerCost += WILLPOWER_PRICES.AWKWARD_GAP;
-            breakdown.push(this.formatWPEntry(`${day}: Awkward Gap`, WILLPOWER_PRICES.AWKWARD_GAP));
-          }
-          // 8. Willpower: Huge Gaps (3h+)
-          else if (gap >= 3) {
+          if (gap >= 3) {
             willpowerCost += WILLPOWER_PRICES.HUGE_GAP;
             breakdown.push(this.formatWPEntry(`${day}: Huge Gap`, WILLPOWER_PRICES.HUGE_GAP));
           }

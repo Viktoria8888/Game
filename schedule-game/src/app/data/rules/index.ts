@@ -45,7 +45,7 @@ export const PAIRING: Rule = {
         violations.push(`${definition?.name}: Missing ${missing?.join(', ')}`);
       }
     }
-    const isSatisfied = violations.length === 0 && context.coursesSelected.length > 0;
+    const isSatisfied = violations.length === 0;
 
     return {
       satisfied: isSatisfied,

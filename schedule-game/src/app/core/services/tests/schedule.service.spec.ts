@@ -194,18 +194,6 @@ describe('ScheduleService', () => {
       );
     });
 
-    it('penalizes awkward gaps', () => {
-      setCourses(
-        createCourse({ schedule: { day: 'Wed', startTime: 10, durationHours: 2 } }),
-        createCourse({ schedule: { day: 'Wed', startTime: 13, durationHours: 2 } })
-      );
-
-      const meta = service.complexMetadata();
-
-      expect(meta.totalGapTime).toBe(1);
-      expect(meta.willpowerCost).toBeGreaterThan(0);
-    });
-
     it('penalizes starvation blocks (6+ hours)', () => {
       setCourses(createCourse({ schedule: { day: 'Thu', startTime: 8, durationHours: 6 } }));
 

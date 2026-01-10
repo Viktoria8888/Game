@@ -65,6 +65,11 @@ export class PersistenceService {
     }
   }
 
+  async getScorePercentile(score: number): Promise<number> {
+    await this.saveImmediately();
+    return this.firestoreService.getPercentile('score', score);
+  }
+
   private async loadState(userId: string): Promise<void> {
     try {
       const savedState = await this.firestoreService.get(userId);

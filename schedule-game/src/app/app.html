@@ -9,7 +9,7 @@
 <div class="victory-overlay">
   <div class="diploma-container">
     <div class="diploma-header">
-      <h1>🎓 Congrats! 🎓</h1>
+      <h1>Congrats!</h1>
       <h2>You finished uni :)</h2>
     </div>
 
@@ -20,6 +20,12 @@
         <span>Your final score:</span>
         <strong>{{ gameService.totalScore() }} points</strong>
       </div>
+
+      @if (percentile() !== null) {
+      <p class="percentile-text">
+        You did better than {{ percentile() | number : '1.0-0' }}% of players!
+      </p>
+      }
 
       <p class="flavor-text">
         Now you can collect your diploma and face unemployment... <br />
@@ -39,4 +45,4 @@
   <h1>Loading</h1>
   <div class="spinner">⏳</div>
 </div>
-} `
+}

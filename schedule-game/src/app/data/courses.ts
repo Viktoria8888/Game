@@ -54,6 +54,11 @@ export const RESERVED_COURSES: Record<string, number> = {
   '3825': 6,
   '4118': 6,
   '4087': 6,
+
+  // '3813': 7, // Scala
+  // '4142': 7, // Automata
+  // '4144': 7, // E A
+  // '3834': 7, // Prolog
 };
 
 type GoldenSlot = { day: Day; startTime: number };
@@ -99,6 +104,12 @@ const L3_MIN_STARTS: Record<Day, number> = {
   Fri: 17,
 };
 
+const L7_STAIRCASE_WINDOWS: Partial<Record<Day, { min: number; max: number }>> = {
+  Tue: { min: 14, max: 20 },
+  Wed: { min: 12, max: 17 },
+  Thu: { min: 10, max: 15 },
+  Fri: { min: 8, max: 12 },
+};
 function isValidTimeFornumber(day: Day, hour: number, duration: number, level?: number): boolean {
   if (level === 3 && hour < L3_MIN_STARTS[day]) return false;
 
@@ -106,6 +117,11 @@ function isValidTimeFornumber(day: Day, hour: number, duration: number, level?: 
     if (hour % 2 === 0) return false;
   }
 
+  if (level === 7) {
+    const window = L7_STAIRCASE_WINDOWS[day];
+    if (!window) return false;
+    if (hour < window.min || hour > window.max) return false;
+  }
   return true;
 }
 

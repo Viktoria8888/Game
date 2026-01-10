@@ -955,22 +955,32 @@ export const createTypeSegregationRule = (
   };
 };
 
-export const createStaircaseRule = (config: RuleConfig): Rule => {
+
+export const createStaircaseRule = (
+  config: RuleConfig,
+  stepDirection: 'down' | 'up' = 'down'
+): Rule => {
   const { id, level, category = 'Goal', scoreReward = 2000, priority = 80, messages } = config;
+
+  const isGoingDown = stepDirection === 'down';
+
+  const defaultTitle = isGoingDown ? 'The Staircase' : 'Reverse Staircase';
+  const defaultDesc = isGoingDown
+    ? 'Classes on Tuesday must start later than Monday, Wednesday later than Tuesday, etc.'
+    : 'Classes on Tuesday must start earlier than Monday, Wednesday earlier than Tuesday, etc.';
 
   return {
     id,
-    title: config.title ?? 'The Staircase',
-    description:
-      config.description ??
-      'Classes on Tuesday must start later than Monday, Wednesday later than Tuesday, etc.',
+    title: config.title ?? defaultTitle,
+    description: config.description ?? defaultDesc,
     category,
     level,
     priority,
     scoreReward,
     validate: (ctx) => {
       const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
-      let previousStart = -1;
+
+      let previousStart = isGoingDown ? -1 : 25;
       let brokenDay = '';
 
       for (const day of days) {
@@ -979,18 +989,22 @@ export const createStaircaseRule = (config: RuleConfig): Rule => {
 
         const dayStart = Math.min(...daySlots.map((s) => s.startTime));
 
-        if (dayStart <= previousStart) {
+        const failed = isGoingDown ? dayStart <= previousStart : dayStart >= previousStart;
+
+        if (failed) {
           brokenDay = day;
           break;
         }
         previousStart = dayStart;
       }
 
+      const failMessage = isGoingDown
+        ? `Staircase broken on ${brokenDay}. Must start strictly after ${previousStart}:00.`
+        : `Reverse Staircase broken on ${brokenDay}. Must start strictly before ${previousStart}:00.`;
+
       return {
         satisfied: !brokenDay,
-        message: !brokenDay
-          ? 'Perfect ascending schedule.'
-          : `The sheer weight of knowledge pulls your schedule downwards! Broken on ${brokenDay}. Must start after ${previousStart}:00. Duplicates are not counted :)`,
+        message: resolveMessage(!brokenDay, messages, 'Perfect schedule.', failMessage),
       };
     },
   };

@@ -1,5 +1,8 @@
 <div class="header">
   <h3>Weekly Schedule</h3>
+  @if (schedule().length > 0) {
+  <button class="clear-btn" (click)="clearSchedule()">Clear Schedule</button>
+  }   
 </div>
 
 <div class="grid-view">

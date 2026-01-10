@@ -24,14 +24,12 @@ export class SoundService {
 
   play(key: 'add' | 'collisions' | 'delete' | 'success' | 'typing' | 'tab') {
     if (this.isMuted) return;
-
     const audio = this.sounds.get(key);
-    console.log('play');
     if (audio) {
-      // Resetuj czas, żeby można było odtworzyć szybko raz po razie
       audio.currentTime = 0;
       audio.play().catch((err) => console.error('Audio play failed', err));
     }
+    // Decide to remove the sounds
   }
 
   toggleMute() {
