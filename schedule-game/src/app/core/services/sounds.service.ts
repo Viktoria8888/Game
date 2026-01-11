@@ -22,7 +22,7 @@ export class SoundService {
     this.sounds.set(key, audio);
   }
 
-  play(key: 'add' | 'collisions' | 'delete' | 'success' | 'typing' | 'tab') {
+  play(key: 'add' | 'collisions' | 'delete' | 'success'  | 'tab') {
     if (this.isMuted) return;
     const audio = this.sounds.get(key);
     if (audio) {

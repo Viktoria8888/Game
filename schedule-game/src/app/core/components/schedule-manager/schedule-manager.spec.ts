@@ -34,6 +34,7 @@ interface MockGameService {
 interface MockCourseSelectionService {
   selectedCourses: WritableSignal<Course[]>;
   collisions: WritableSignal<Array<{ course1: Course; course2: Course }>>;
+  previewCourse: WritableSignal<Course | null>;
 }
 
 interface MockScheduleService {
@@ -103,6 +104,7 @@ describe('ScheduleManagerComponent', () => {
     mockSelectionService = {
       selectedCourses: selectedCoursesSig,
       collisions: collisionsSig,
+      previewCourse: signal(null),
     };
 
     mockScheduleService = {

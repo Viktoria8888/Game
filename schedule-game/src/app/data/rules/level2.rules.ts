@@ -17,8 +17,8 @@ export const LEVEL_2_RULES: Rule[] = [
       id: 'l2-min',
       level: 2,
       category: 'Mandatory',
-      title: 'Min ECTS',
-      description: 'Did you know that 19 is a "happy" number?',
+      title: 'Living on the Edge"',
+      description: "Calculated risk. One credit less and you'd be expelled",
     },
     19
   ),
@@ -86,7 +86,7 @@ export const LEVEL_2_RULES: Rule[] = [
   createPrerequisiteRule({
     id: 'l2-prereqs',
     level: 2,
-    title: "Rome wasn't build in a day...",
+    title: "Rome wasn't built in a day...",
     description: '...so is your basic knowledge. Watch out for prerequsities!',
   }),
   createTagRequirementRule(
@@ -106,7 +106,7 @@ export const LEVEL_2_RULES: Rule[] = [
       level: 2,
       scoreReward: 300,
       title: 'Anti-Zombie Protocol',
-      description: "More than 6 hours of class in one day? Do you hate yourself? Don't do it.",
+      description: 'More than 6 hours of class in one day? Do you hate yourself?',
     },
     6
   ),

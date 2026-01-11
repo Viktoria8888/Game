@@ -1,4 +1,4 @@
-import { Injectable, inject, signal, computed } from '@angular/core';
+import { Injectable, inject, signal, computed, effect } from '@angular/core';
 import { HistoryService } from './history.service';
 import { CourseSelectionService } from './courses-selection';
 import { ComplexGameMetadata, GameStateDTO, GameStateMetadata } from '../models/game_state.dto';
@@ -31,6 +31,13 @@ export class GameService {
   readonly totalScore = signal(0);
 
   readonly showLevelSummaryModal = signal(false);
+
+  constructor() {
+    // find different fix
+    effect(() => {
+      this.schedule.setLevel(this.currentLevel());
+    });
+  }
 
   readonly SEMESTER_BUDGET = 20;
   private readonly MAX_LEVEL = 6;

@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ScheduleGrid } from './schedule-grid';
 import { CourseSelectionService } from '../../services/courses-selection';
-import { provideZonelessChangeDetection } from '@angular/core';
+import { provideZonelessChangeDetection, signal } from '@angular/core'; // <--- 1. Import signal
 import { By } from '@angular/platform-browser';
 import { ScheduleSlot, Course } from '../../models/course.interface';
 
@@ -34,10 +34,11 @@ const MOCK_SLOT_2: ScheduleSlot = {
 describe('ScheduleGrid', () => {
   let component: ScheduleGrid;
   let fixture: ComponentFixture<ScheduleGrid>;
-  let mockCourseSelectionService: jasmine.SpyObj<CourseSelectionService>;
+  let mockCourseSelectionService: any;
 
   beforeEach(async () => {
     mockCourseSelectionService = jasmine.createSpyObj('CourseSelectionService', ['removeCourse']);
+    mockCourseSelectionService.previewCourse = signal(null);
 
     await TestBed.configureTestingModule({
       imports: [ScheduleGrid],

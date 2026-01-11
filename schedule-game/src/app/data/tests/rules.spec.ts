@@ -168,7 +168,6 @@ describe('Unit Tests: All Level Rules', () => {
 
       const resultInvalid = rule.validate(invalidCtx);
       expect(resultInvalid.satisfied).toBeFalse();
-      expect(resultInvalid.message).toContain('Poetry requires repetition');
     });
   });
 

@@ -50,8 +50,8 @@ export const LEVEL_4_RULES = [
       level: 4,
       category: 'Mandatory',
       priority: 50,
-      title: 'Mandatory Lunch',
-      description: 'More food! Keep 13:00-14:00 free.',
+      title: "Go and get your student's 20% discount!",
+      description: 'Keep 13:00-14:00 free.',
     },
     13,
     14

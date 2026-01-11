@@ -44,7 +44,7 @@ const MANDATORY_INTERNSHIP = createMinFreeDaysRule(
 
 const TRIFECTA: Rule = {
   id: 'l6-trifecta',
-  title: 'Minimalism',
+  title: 'Burnout',
   description: 'Your motivation is at 0%. You physically cannot handle more than 3 courses.',
   category: 'Mandatory',
   level: 6,
@@ -63,7 +63,7 @@ const TRIFECTA: Rule = {
 
 const NO_FLUFF: Rule = {
   id: 'l6-no-fluff',
-  title: 'No Fluff',
+  title: 'Sudden Self-Respect',
   description:
     'Do not waste time on small courses. Every subject must be worth at least 4 ECTS total.',
   category: 'Goal',

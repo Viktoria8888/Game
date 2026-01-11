@@ -12,9 +12,9 @@ const WORD_CHAIN = createWordChainRule({
   level: 5,
   category: 'Mandatory',
   scoreReward: 500,
-  title: 'The Ouroboros',
+  title: 'The Ghost of the Past',
   description:
-    'The snake eats its tail. The last letter of a course must match the first letter of the next.',
+    'Your previous choices haunt you. The last letter of a course name must summon the first letter of the next one.',
 });
 
 const TCS_MASTER = createTagSpecialistRule(
@@ -24,7 +24,7 @@ const TCS_MASTER = createTagSpecialistRule(
 );
 const ALLITERATION: Rule = {
   id: 'l5-alliteration',
-  title: 'Poetic Alliteration',
+  title: 'Switching to Journalism Major',
   description: 'Select at least 3 distinct subjects that start with the same letter.',
   category: 'Goal',
   level: 5,
@@ -48,15 +48,16 @@ const ALLITERATION: Rule = {
       message:
         max >= 3
           ? `Beautiful alliteration on '${letter}'! (${max} subjects).`
-          : `Poetry requires repetition. Max same-start subjects: ${max}/3.`,
+          : `Journalism requires repetition. Max same-start subjects: ${max}/3.`,
     };
   },
 };
 
 const NO_NUMBERS: Rule = {
   id: 'l5-no-numbers',
-  title: 'Digit Allergic',
-  description: 'You prefer only pure math. No numbers! Course names must not contain digits (0-9).',
+  title: "I Can't Count Anymore",
+  description:
+    'After 5 semesters, seeing a number makes you ill. Avoid courses with digits (0-9) in their name.',
   category: 'Goal',
   level: 5,
   scoreReward: 100,
@@ -67,8 +68,8 @@ const NO_NUMBERS: Rule = {
       satisfied: withNumbers.length === 0 && ctx.coursesSelected.length > 0,
       message:
         withNumbers.length === 0
-          ? 'A purely textual schedule.'
-          : `Digits found in: ${withNumbers.map((c) => c.name).join(', ')}.`,
+          ? 'Safe. No scary numbers here.'
+          : `Aaaah! A number! Get it away: ${withNumbers.map((c) => c.name).join(', ')}.`,
     };
   },
 };
@@ -97,7 +98,7 @@ export const LEVEL_5_RULES: ReadonlyArray<Rule> = [
       category: 'Mandatory',
       title: 'x<sup>y</sup> = y<sup>x</sup>?',
       description: "Guess which min number of ECTS is required! (don't cheat)",
-    },  
+    },
     16
   ),
   WORD_CHAIN,

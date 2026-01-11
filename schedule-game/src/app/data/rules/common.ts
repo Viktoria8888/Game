@@ -128,7 +128,7 @@ export const mandatorySubjectForLevel = (
         message: resolveMessage(
           satisfied,
           messages,
-          'All mandatory subjects selected.',
+          'All mandatory subjects are selected or passed.',
           `Missing: ${missingNames}.`
         ),
       };
@@ -954,7 +954,6 @@ export const createTypeSegregationRule = (
     },
   };
 };
-
 
 export const createStaircaseRule = (
   config: RuleConfig,

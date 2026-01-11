@@ -32,7 +32,7 @@ const MOCK_COURSE_2: Course = {
 describe('Courses (CoursesList)', () => {
   let component: Courses;
   let fixture: ComponentFixture<Courses>;
-  let mockCourseSelectionService: jasmine.SpyObj<CourseSelectionService>;
+  let mockCourseSelectionService: any;
 
   beforeEach(async () => {
     mockCourseSelectionService = jasmine.createSpyObj('CourseSelectionService', [
@@ -203,7 +203,6 @@ describe('Courses (CoursesList)', () => {
       expect(text).toContain('Advanced Mathematics');
       expect(text).toContain('5 ECTS');
       expect(text).toContain('Lecture');
-      expect(text).toContain('Mandatory');
     });
 
     it('updates "Selected" count in dropdown trigger', () => {

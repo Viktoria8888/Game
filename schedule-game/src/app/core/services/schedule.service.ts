@@ -1,4 +1,4 @@
-import { Injectable, Signal, computed, inject } from '@angular/core';
+import { Injectable, Signal, computed, inject, signal } from '@angular/core';
 import { ScheduleSlot, Course, Day } from '../models/course.interface';
 import { ComplexGameMetadata, SimpleGameMetadata } from '../models/game_state.dto';
 import { CourseSelectionService } from './courses-selection';
@@ -21,6 +21,23 @@ export const WILLPOWER_PRICES = {
 export class ScheduleService {
   private readonly courseSelectionService = inject(CourseSelectionService);
 
+  private readonly _currentLevel = signal(1);
+
+  public setLevel(level: number): void {
+    this._currentLevel.set(level);
+  }
+
+  public readonly currentPrices = computed(() => {
+    const level = this._currentLevel();
+    const prices = { ...WILLPOWER_PRICES };
+    if (level >= 5) {
+      prices.EXAM_STRESS -= 1;
+      prices.THE_CLOPEN -= 1;
+    }
+
+    return prices;
+  });
+
   public readonly scheduleSlots: Signal<ScheduleSlot[]> = computed(() => {
     const selectedCourses = this.courseSelectionService.selectedCourses();
     return this.coursesToScheduleSlots(selectedCourses);
@@ -28,12 +45,13 @@ export class ScheduleService {
 
   public readonly complexMetadata = computed<ComplexGameMetadata>(() => {
     const schedule = this.scheduleSlots();
+    const prices = this.currentPrices();
 
     if (schedule.length === 0) {
       return this.createEmptyComplexMetadata();
     }
 
-    return this.calculateComplexMetadata(schedule);
+    return this.calculateComplexMetadata(schedule, prices);
   });
 
   public readonly simpleMetadata = computed<SimpleGameMetadata>(() => {
@@ -63,7 +81,10 @@ export class ScheduleService {
     return `${label.padEnd(22, ' ')} -${cost} WP`;
   }
 
-  calculateComplexMetadata(schedule: ScheduleSlot[]): ComplexGameMetadata {
+  calculateComplexMetadata(
+    schedule: ScheduleSlot[],
+    prices = WILLPOWER_PRICES
+  ): ComplexGameMetadata {
     const hoursByDay: Record<string, number[]> = { Mon: [], Tue: [], Wed: [], Thu: [], Fri: [] };
     schedule.forEach((slot) => hoursByDay[slot.day].push(slot.startTime));
     Object.values(hoursByDay).forEach((hours) => hours.sort((a, b) => a - b));
@@ -75,8 +96,9 @@ export class ScheduleService {
     const uniqueExams = new Set(
       schedule.filter((s) => s.course?.hasExam).map((s) => s.course!.subjectId)
     ).size;
+
     if (uniqueExams > 0) {
-      const cost = uniqueExams * WILLPOWER_PRICES.EXAM_STRESS;
+      const cost = uniqueExams * prices.EXAM_STRESS;
       willpowerCost += cost;
       breakdown.push(this.formatWPEntry(`Exams (${uniqueExams})`, cost));
     }
@@ -99,26 +121,26 @@ export class ScheduleService {
 
       // 2. Willpower: Commuter Tax
       if (hours.length <= 2) {
-        willpowerCost += WILLPOWER_PRICES.COMMUTER_TAX;
-        breakdown.push(this.formatWPEntry(`${day}: Commuter Tax`, WILLPOWER_PRICES.COMMUTER_TAX));
+        willpowerCost += prices.COMMUTER_TAX;
+        breakdown.push(this.formatWPEntry(`${day}: Commuter Tax`, prices.COMMUTER_TAX));
       }
 
       // 3. Willpower: Early Start
       if (start === 8) {
-        willpowerCost += WILLPOWER_PRICES.EARLY_RISER;
-        breakdown.push(this.formatWPEntry(`${day}: Early Riser`, WILLPOWER_PRICES.EARLY_RISER));
+        willpowerCost += prices.EARLY_RISER;
+        breakdown.push(this.formatWPEntry(`${day}: Early Riser`, prices.EARLY_RISER));
       }
 
       // 4. Willpower: Night Shift
       if (end > 18) {
-        willpowerCost += WILLPOWER_PRICES.NIGHT_SHIFT;
-        breakdown.push(this.formatWPEntry(`${day}: Night Shift`, WILLPOWER_PRICES.NIGHT_SHIFT));
+        willpowerCost += prices.NIGHT_SHIFT;
+        breakdown.push(this.formatWPEntry(`${day}: Night Shift`, prices.NIGHT_SHIFT));
       }
 
       // 5. Willpower: Friday Drag
       if (day === 'Fri' && end > 16) {
-        willpowerCost += WILLPOWER_PRICES.FRIDAY_DRAG;
-        breakdown.push(this.formatWPEntry(`Friday Drag`, WILLPOWER_PRICES.FRIDAY_DRAG));
+        willpowerCost += prices.FRIDAY_DRAG;
+        breakdown.push(this.formatWPEntry(`Friday Drag`, prices.FRIDAY_DRAG));
       }
 
       // 6. Willpower: Clopen
@@ -128,8 +150,8 @@ export class ScheduleService {
         if (prevHours.length > 0) {
           const prevEnd = prevHours[prevHours.length - 1] + 1;
           if (prevEnd >= 18 && start <= 10) {
-            willpowerCost += WILLPOWER_PRICES.THE_CLOPEN;
-            breakdown.push(this.formatWPEntry(`The Clopen`, WILLPOWER_PRICES.THE_CLOPEN));
+            willpowerCost += prices.THE_CLOPEN;
+            breakdown.push(this.formatWPEntry(`The Clopen`, prices.THE_CLOPEN));
           }
         }
       }
@@ -147,14 +169,13 @@ export class ScheduleService {
           dailyMaxGap = Math.max(dailyMaxGap, gap);
 
           if (gap >= 3) {
-            willpowerCost += WILLPOWER_PRICES.HUGE_GAP;
-            breakdown.push(this.formatWPEntry(`${day}: Huge Gap`, WILLPOWER_PRICES.HUGE_GAP));
+            willpowerCost += prices.HUGE_GAP;
+            breakdown.push(this.formatWPEntry(`${day}: Huge Gap`, prices.HUGE_GAP));
           }
 
-          // 9. Willpower: Starvation (6+ hours of consecutive classes)
           if (consecutive + 1 >= 6) {
-            willpowerCost += WILLPOWER_PRICES.STARVATION;
-            breakdown.push(this.formatWPEntry(`${day}: Starvation`, WILLPOWER_PRICES.STARVATION));
+            willpowerCost += prices.STARVATION;
+            breakdown.push(this.formatWPEntry(`${day}: Starvation`, prices.STARVATION));
           }
 
           consecutive = 0;
@@ -162,8 +183,8 @@ export class ScheduleService {
       }
 
       if (consecutive + 1 >= 6) {
-        willpowerCost += WILLPOWER_PRICES.STARVATION;
-        breakdown.push(this.formatWPEntry(`${day}: Starvation`, WILLPOWER_PRICES.STARVATION));
+        willpowerCost += prices.STARVATION;
+        breakdown.push(this.formatWPEntry(`${day}: Starvation`, prices.STARVATION));
       }
 
       maxGapInAnyDay = Math.max(maxGapInAnyDay, dailyMaxGap);
@@ -182,12 +203,10 @@ export class ScheduleService {
 
   private coursesToScheduleSlots(courses: Course[]): ScheduleSlot[] {
     const slots: ScheduleSlot[] = [];
-
     for (const course of courses) {
       const timeBlock = course.schedule;
       for (let hourOffset = 0; hourOffset < timeBlock.durationHours; hourOffset++) {
         const hour = timeBlock.startTime + hourOffset;
-
         slots.push({
           id: `${timeBlock.day}_${hour}`,
           day: timeBlock.day,
@@ -196,7 +215,6 @@ export class ScheduleService {
         });
       }
     }
-
     return slots;
   }
 

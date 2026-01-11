@@ -75,7 +75,8 @@ export const LEVEL_1_RULES: ReadonlyArray<Rule> = [
       id: 'l1-no-advanced',
       level: 1,
       category: 'Mandatory',
-      description: 'You are still too weak to get the advanced subject kit.',
+      title: 'Skill issue',
+      description: 'You are still too weak to advance.',
     },
     'ADVANCED'
   ),
