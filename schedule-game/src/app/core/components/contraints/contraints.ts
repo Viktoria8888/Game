@@ -32,7 +32,7 @@ export class Contraints {
   private readonly rulesService = inject(RulesService);
   private readonly soundsService = inject(SoundService);
 
-  readonly isTouch = window.matchMedia('(pointer: coarse)').matches; // TEST !!!
+  readonly isTouch = window.matchMedia('(pointer: coarse)').matches; 
 
   readonly validationContext = input.required<ValidationContext>();
   readonly validationResults = input.required<ValidationResultMap>();
@@ -131,7 +131,7 @@ export class Contraints {
     constraint.showHint = !constraint.showHint;
   }
 
-  scrollContainer = viewChild<ElementRef>('scrollContainer'); //test
+  scrollContainer = viewChild<ElementRef>('scrollContainer'); 
   onWheel(event: WheelEvent) {
     if (this.isTouch) return;
 

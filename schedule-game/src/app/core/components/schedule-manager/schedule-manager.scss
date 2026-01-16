@@ -4,12 +4,9 @@
   display: flex;
   flex-direction: column;
   height: 98vh;
-  // overflow: hidden;
 
   @include mobile {
     height: auto;
-    // min-height: 100vh;
-    // overflow-y: visible;
     overflow-x: hidden;
   }
 }

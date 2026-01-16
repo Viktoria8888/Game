@@ -98,7 +98,7 @@ describe('ScheduleManagerComponent', () => {
       currentSemesterOutcome: signal<SemesterOutcome>(defaultSemesterOutcome),
       completeLevel: jasmine.createSpy('completeLevel'),
       canPassLevel: signal(false),
-      showLevelSummaryModal: signal(false), // Added this
+      showLevelSummaryModal: signal(false), 
     };
 
     mockSelectionService = {

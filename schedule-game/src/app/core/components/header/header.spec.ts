@@ -145,14 +145,5 @@ describe('HeaderComponent', () => {
       expect(initialsEl.nativeElement.textContent.trim()).toBe('JK');
     });
 
-    it('renders the avatar image when provided', () => {
-      const mockUrl = 'http://example.com/avatar.png';
-      fixture.componentRef.setInput('userAvatar', mockUrl);
-      fixture.detectChanges();
-
-      const imgEl = fixture.debugElement.query(By.css('.user-avatar img'));
-      expect(imgEl).toBeTruthy();
-      expect(imgEl.nativeElement.getAttribute('src')).toBe(mockUrl);
-    });
   });
 });

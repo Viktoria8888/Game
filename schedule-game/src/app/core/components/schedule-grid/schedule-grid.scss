@@ -344,24 +344,3 @@
     transform: translate3d(4px, 0, 0);
   }
 }
-
-.walker {
-  position: absolute;
-  z-index: 100;
-  font-size: 24px;
-  width: 30px;
-  height: 30px;
-  pointer-events: none;
-  transition: top 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), left 0.5s linear;
-  animation: bounce 0.5s infinite alternate;
-  filter: drop-shadow(0 4px 2px rgba(0, 0, 0, 0.3));
-}
-
-@keyframes bounce {
-  from {
-    transform: translateY(0);
-  }
-  to {
-    transform: translateY(-5px);
-  }
-}
