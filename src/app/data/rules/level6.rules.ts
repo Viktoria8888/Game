@@ -56,7 +56,7 @@ const TRIFECTA: Rule = {
       message:
         count === 3
           ? 'Maximum laziness achieved (3 courses).'
-          : `Too much effort! You have ${count} courses. Aim for exactly 3.`,
+          : `You have ${count} courses. Aim for exactly 3.`,
     };
   },
 };
@@ -99,12 +99,15 @@ const BRIEFING_MODE: Rule = {
   priority: 100,
   validate: (ctx) => {
     const violations = ctx.coursesSelected.filter((c) => c.name.length >= 15);
+
+    const uniqueNames = [...new Set(violations.map((c) => c.name))];
+
     return {
       satisfied: violations.length === 0 && ctx.coursesSelected.length > 0,
       message:
         violations.length === 0
           ? 'Short and sweet.'
-          : `I ain't reading all that: ${violations.map((c) => c.name).join(', ')}.`,
+          : `I ain't reading all that: ${uniqueNames.join(', ')}.`,
     };
   },
 };

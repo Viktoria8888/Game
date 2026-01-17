@@ -1,16 +1,10 @@
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { PersistenceService } from '../persistence.service';
-import {
-  provideZonelessChangeDetection,
-  signal,
-  Signal,
-  ɵunwrapWritableSignal,
-} from '@angular/core';
+import { provideZonelessChangeDetection, signal } from '@angular/core';
 import { GameStateDTO } from '../../models/game_state.dto';
 import { GameService } from '../game.service';
 import { FirestoreService } from '../firestore.service';
 import { AuthService } from '../auth.service';
-import { WriteBatch } from 'firebase/firestore';
 
 describe('PersistenceService', () => {
   let service: PersistenceService;
@@ -122,6 +116,27 @@ describe('PersistenceService', () => {
 
       tick(500);
       expect(mockFirestoreService.set).toHaveBeenCalled();
+    }));
+
+    it('does not initialize if auth is not loaded', fakeAsync(() => {
+      mockAuthService.isAuthLoaded.set(false);
+
+      setup();
+
+      expect(mockFirestoreService.get).not.toHaveBeenCalled();
+      expect(mockFirestoreService.subscribeToUser).not.toHaveBeenCalled();
+    }));
+
+    it('initializes AUTOMATICALLY when isAuthLoaded switches to true', fakeAsync(() => {
+      mockAuthService.isAuthLoaded.set(false);
+      setup();
+      expect(mockFirestoreService.get).not.toHaveBeenCalled();
+
+      mockAuthService.isAuthLoaded.set(true);
+      tick();
+
+      expect(mockFirestoreService.get).toHaveBeenCalledWith('test-user-id');
+      expect(mockFirestoreService.subscribeToUser).toHaveBeenCalled();
     }));
   });
 });

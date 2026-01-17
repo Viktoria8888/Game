@@ -17,7 +17,7 @@ export const LEVEL_2_RULES: Rule[] = [
       id: 'l2-min',
       level: 2,
       category: 'Mandatory',
-      title: 'Living on the Edge"',
+      title: 'Living on the Edge',
       description: "Calculated risk. One credit less and you'd be expelled",
     },
     19

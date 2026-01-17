@@ -96,7 +96,7 @@ export const LEVEL_5_RULES: ReadonlyArray<Rule> = [
       id: 'l5-min',
       level: 5,
       category: 'Mandatory',
-      title: 'x<sup>y</sup> = y<sup>x</sup>?',
+      title: 'ECTS ≥ x<sup>4</sup> = 4<sup>x</sup>?',
       description: "Guess which min number of ECTS is required! (don't cheat)",
     },
     16

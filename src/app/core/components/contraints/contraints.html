@@ -54,6 +54,7 @@
 
 @if (canPassLevel()) {
 <button class="action-btn" (click)="goNextLevel()">
-  All Requirements Met – Go to the next level →
+  @if (validationContext().level === 6){ Go Summary } @else{ All Requirements Met - Go to the next
+  level →}
 </button>
 }

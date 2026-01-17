@@ -16,7 +16,7 @@ export class AuthService {
   private readonly auth = inject(Auth);
   // readonly user = signal<User | null>(null)
   readonly user = signal<User | null>(null, { equal: (a, b) => false });
-  readonly isAuthLoaded = signal(false); // test race condition
+  readonly isAuthLoaded = signal(false); //
   readonly isAnonymous = computed(() => this.user()?.isAnonymous ?? false);
 
   readonly username = computed(() => {

@@ -20,5 +20,7 @@
     </div>
   </div>
 
-  <button class="next-btn" (click)="onProceed.emit()">Start Next Semester ➞</button>
+  <button class="next-btn" (click)="onProceed.emit()">
+    @if (level() === 6){ Graduate! } @else {Start Next Semester ➞}
+  </button>
 </div>
