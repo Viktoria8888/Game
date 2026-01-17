@@ -9,12 +9,13 @@ import {
   signInAnonymously,
   EmailAuthProvider,
   linkWithCredential,
+  GoogleAuthProvider,
+  signInWithPopup,
 } from '@angular/fire/auth';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly auth = inject(Auth);
-  // readonly user = signal<User | null>(null)
   readonly user = signal<User | null>(null, { equal: (a, b) => false });
   readonly isAuthLoaded = signal(false); //
   readonly isAnonymous = computed(() => this.user()?.isAnonymous ?? false);
@@ -60,14 +61,24 @@ export class AuthService {
   get userId(): string | null {
     return this.user()?.uid ?? null;
   }
-  // add upgrading to the permanent user after signing-in anonymously
 
   async upgradeToPermanent(email: string, password: string) {
     const currentUser = this.user();
-    if (!currentUser) throw new Error('No user to upgrade'); // TEST IT !!!
+    if (!currentUser) throw new Error('No user to upgrade');
 
     const credential = EmailAuthProvider.credential(email, password);
     const result = await linkWithCredential(currentUser, credential);
     this.user.set(result.user);
+  }
+
+  async loginWithGoogle() {
+    const provider = new GoogleAuthProvider();
+    try {
+      const result = await signInWithPopup(this.auth, provider);
+      return result.user;
+    } catch (error) {
+      console.error('Error with logging in using Google:', error);
+      throw error;
+    }
   }
 }

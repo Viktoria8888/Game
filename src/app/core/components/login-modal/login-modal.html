@@ -40,6 +40,13 @@
         @if (mode() === 'link') { Save & Sign Up } @else { Log In }
       </button>
 
+      <div class="separator">or</div>
+
+      <button (click)="loginWithGoogle()" class="google-login-button">
+        <img src="google_logo.png" alt="" />
+        Continue with Google
+      </button>
+
       <div class="toggle-link">
         @if (mode() === 'link') {
         <span>Already have an account? </span>

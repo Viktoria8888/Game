@@ -59,4 +59,16 @@ export class LoginModal {
       this.errorMsg.set(err.message || 'An error occurred.');
     }
   }
+
+  async loginWithGoogle() {
+    this.errorMsg.set('');
+    try {
+      await this.authService.loginWithGoogle();
+      this.close.emit(); 
+    } catch (err: any) {
+      if (err.code !== 'auth/popup-closed-by-user') {
+        this.errorMsg.set('Google login failed. Please try again.');
+      }
+    }
+  }
 }
