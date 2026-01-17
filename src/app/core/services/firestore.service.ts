@@ -54,8 +54,9 @@ export class FirestoreService<T extends GameStateDTO> {
   }
 
   async getPercentile(field: string, value: number): Promise<number> {
-    const totalQuery = query(this.collectionRef);
-    const lowerQuery = query(this.collectionRef, where(field, '<', value));
+    const totalQuery = query(this.collectionRef, where('score', '>', 0));
+
+    const lowerQuery = query(this.collectionRef, where('score', '>', 0), where(field, '<', value));
 
     const [totalSnap, lowerSnap] = await Promise.all([
       getCountFromServer(totalQuery),
