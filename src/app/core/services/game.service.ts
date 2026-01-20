@@ -33,7 +33,6 @@ export class GameService {
   readonly showLevelSummaryModal = signal(false);
 
   constructor() {
-    // find different fix
     effect(() => {
       this.schedule.setLevel(this.currentLevel());
     });
